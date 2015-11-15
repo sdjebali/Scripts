@@ -40,6 +40,8 @@ fi
 
 # Variable assignment
 #####################
+path="`dirname \"$0\"`" # relative path
+rootDir="`( cd \"$path\" && pwd )`" # absolute path
 junctions=$1
 annot=$2
 feat=$3
@@ -52,8 +54,8 @@ i=$key\_from_$feat
 
 # Programs
 ###########
-GFF2GFF=../Awk/gff2gff.awk
-OVERLAP=../bin/overlap
+GFF2GFF=$rootDir/../Awk/gff2gff.awk
+OVERLAP=$rootDir/../bin/overlap
 
 # Make a gff file for the junctions
 ###################################

@@ -55,16 +55,10 @@ then
     exit 1
 fi
 
-# Programs
-##########
-GFF2GFF=../Awk/gff2gff.awk
-MAKEGNPAIRS=../Awk/make_gene_pairs_from_annot_better.awk
-MAKEINTRONS=../Awk/make_introns.awk
-RECONSTRUCT=../Awk/reconstruct_chimtr.awk
-RETRIEVER=../bin/gem-retriever 
-
 # Assign variables
 ##################
+path="`dirname \"$0\"`" # relative path
+rootDir="`( cd \"$path\" && pwd )`" # absolute path
 annot=$1
 anntmp=`basename $annot`
 anntmp2=${anntmp%.gtf}
@@ -74,6 +68,14 @@ n1=$3
 n2=$4
 n3=$5
 n4=$6
+
+# Programs
+##########
+GFF2GFF=$rootDir/../Awk/gff2gff.awk
+MAKEGNPAIRS=$rootDir/../Awk/make_gene_pairs_from_annot_better.awk
+MAKEINTRONS=$rootDir/../Awk/make_introns.awk
+RECONSTRUCT=$rootDir/../Awk/reconstruct_chimtr.awk
+RETRIEVER=$rootDir/../bin/gem-retriever 
 
 
 # Make a file with the name of the 4 categories and the numbers of chimeric transcripts wanted (useful for the loops)

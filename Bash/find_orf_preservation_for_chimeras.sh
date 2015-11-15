@@ -44,11 +44,6 @@
 # - supposes that the cds file has transcript id in field no 12 and 
 # - cannot be run several times in the same dir without erasing previous files
 
-# Programs
-###########
-CUTGFF=../Awk/cutgff.awk
-GFF2GFF=../Awk/gff2gff.awk
-OVERLAP=../bin/overlap
 
 # Input from the user
 #####################
@@ -75,6 +70,16 @@ cdsfile=$2
 fldgnbt1=$3
 fldgnbt2=$4
 fi
+
+path="`dirname \"$0\"`" # relative path
+rootDir="`( cd \"$path\" && pwd )`" # absolute path
+
+
+# Programs
+###########
+CUTGFF=$rootDir/../Awk/cutgff.awk
+GFF2GFF=$rootDir/../Awk/gff2gff.awk
+OVERLAP=$rootDir/../bin/overlap
 
 # 0) make a cds file ok for overlap and that has an additional key,value for the frame (since not possible to report it otherwise)
 ##################################################################################################################################

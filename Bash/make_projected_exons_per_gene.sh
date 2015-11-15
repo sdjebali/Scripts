@@ -20,6 +20,8 @@ fi
 
 # Variable from input
 #####################
+path="`dirname \"$0\"`" # relative path
+rootDir="`( cd \"$path\" && pwd )`" # absolute path
 annot=$1
 b=`basename $annot`
 b2tmp=${b%.gff}
@@ -28,9 +30,9 @@ outdir=$2
 
 # Programs
 ##########
-CUTGFF=../Awk/cutgff.awk 
-GFF2GFF=../Awk/gff2gff.awk
-MAKESP=../bin/makeSP
+CUTGFF=$rootDir/../Awk/cutgff.awk 
+GFF2GFF=$rootDir/../Awk/gff2gff.awk
+MAKESP=$rootDir/../bin/makeSP
 
 # Call the projected exons of each gene 
 #######################################

@@ -29,19 +29,21 @@ then
     echo Be careful: it is not possible to run two instances at the same time \in the same directory since produces intermediate files not indexed >&2
     echo Be careful: the gene id and the transcript id of exon features have to be \in column no 10 and 12 respectively >&2
     echo "" >&2
-    exit 0
+    exit 1
 fi
 
 # Initialize variables
 ######################
+path="`dirname \"$0\"`" # relative path
+rootDir="`( cd \"$path\" && pwd )`" # absolute path
 annotation=$1
 annotbase=`basename ${annotation%.gtf}`
  
 # Programs
 ###########
-EXTRACT3p=../Awk/extract_most_3p.awk
-CUTGFF=../Awk/cutgff.awk
-GFF2GFF=../Awk/gff2gff.awk
+EXTRACT3p=$rootDir/../Awk/extract_most_3p.awk
+CUTGFF=$rootDir/../Awk/cutgff.awk
+GFF2GFF=$rootDir/../Awk/gff2gff.awk
 
 
 ##########################################################

@@ -64,7 +64,8 @@ fi
 
 # Variable assignment
 #####################
-ref=$1
+path="`dirname \"$0\"`" # relative path
+rootDir="`( cd \"$path\" && pwd )`" # absolute pathref=$1
 predtrsets=$2
 refbasetmp=`basename ${ref%.gtf}`
 refbase=${refbasetmp%.gff}
@@ -76,8 +77,8 @@ refnrtts=$refdir/$refbase\_tts_sites_nr.gff
 
 # Programs
 ##########
-REFINEOUTPUT=../Awk/refine_comptr_to_table_stats.awk 
-BOXPLOT=boxplots.sh
+REFINEOUTPUT=$rootDir/../Awk/refine_comptr_to_table_stats.awk 
+BOXPLOT=$rootDir/boxplots.sh
 
 # Start of the script
 #####################

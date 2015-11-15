@@ -58,6 +58,9 @@ fi
 
 # Variable from input
 #####################
+path="`dirname \"$0\"`" # relative path
+rootDir="`( cd \"$path\" && pwd )`" # absolute path
+
 input=$1
 b=`basename $input`
 b2=${b%.tsv}
@@ -66,8 +69,8 @@ valkey=$3
 
 # Programs
 ##########
-STAT=stats.sh
-SAMPLE=sample_lines_better.sh
+STAT=$rootDir/stats.sh
+SAMPLE=$rootDir/sample_lines_better.sh
 
 # Start the computation
 #######################

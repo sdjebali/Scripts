@@ -39,6 +39,8 @@ fi
 
 # Set variables
 ###############
+path="`dirname \"$0\"`" # relative path
+rootDir="`( cd \"$path\" && pwd )`" # absolute path
 annot=$1
 b1=`basename $annot`
 b12tmp=${b1%.gff}
@@ -67,10 +69,10 @@ fi
 
 # Programs
 ##########
-CUTGFF=../Awk/cutgff.awk 
-GFF2GFF=../Awk/gff2gff.awk
-MAKESP=../bin/makeSP
-COUNT=add_sense_antisense_read_counts_to_segments_frombam.sh
+CUTGFF=$rootDir/../Awk/cutgff.awk 
+GFF2GFF=$rootDir/../Awk/gff2gff.awk
+MAKESP=$rootDir/../bin/makeSP
+COUNT=$rootDir/add_sense_antisense_read_counts_to_segments_frombam.sh
 
 # Call the projected exons of each gene 
 #######################################

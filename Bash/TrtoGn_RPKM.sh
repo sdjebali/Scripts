@@ -20,9 +20,6 @@
 # 16	HAVANA	gene	68279207	68294961	.	+	.	gene_id "ENSG00000103066.8"; transcript_ids "ENST00000413021.2,ENST00000565744.1,ENST00000219345.5,ENST00000566978.1,ENST00000564827.2,ENST00000566188.1,ENST00000444212.2,ENST00000562966.1,ENST00000568082.1,ENST00000568599.1,ENST00000562449.2,ENST00000565460.1,"; RPKM 0.494646; reads 78;
 
 
-# Programs
-##########
-GFF2GFF=../Awk/gff2gff.awk
 
 # In case the user does not provide any annotation file or any flux output file
 ###############################################################################
@@ -37,11 +34,18 @@ then
     exit 1
 fi
 
+path="`dirname \"$0\"`" # relative path
+rootDir="`( cd \"$path\" && pwd )`" # absolute path
+
 annot=$1
 tr=$2
 
 annotbase=`basename $annot`
 trbase=`basename $tr`
+
+# Programs
+##########
+GFF2GFF=$rootDir/../Awk/gff2gff.awk
 
 echo "I am making the file of genes with associated transcripts from the annotation" >&2
 awk '$3=="transcript"{split($12,a,"\""); trlist[$10]=(trlist[$10])(a[2])(",");}$3=="gene"{line[$10]=$1"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6"\t"$7"\t"$8"\t"$9" "$10}END{for(g in line){print line[g], "transcript_ids", "\""trlist[g]"\"\;"}}' $annot | awk -f $GFF2GFF > ${annotbase%.gtf}.gene.withtrlist.gff

@@ -50,6 +50,8 @@ fi
 
 # Set variables
 ###############
+path="`dirname \"$0\"`" # relative path
+rootDir="`( cd \"$path\" && pwd )`" # absolute path
 annot=$1
 b1=`basename $annot`
 b12tmp=${b1%.gff}
@@ -82,8 +84,8 @@ set -e -o pipefail
 
 # Programs
 ##########
-GFF2GFF=../Awk/gff2gff.awk
-INTER2GFF=../Awk/intersectBed_pestrandedbam_with_eltgff_to_gff_with_s_as_mappings.awk
+GFF2GFF=$rootDir/../Awk/gff2gff.awk
+INTER2GFF=$rootDir/../Awk/intersectBed_pestrandedbam_with_eltgff_to_gff_with_s_as_mappings.awk
 
 # Extend the annotation by the number of bp required
 ####################################################

@@ -34,6 +34,8 @@ fi
 
 # Initialize variables
 ######################
+path="`dirname \"$0\"`" # relative path
+rootDir="`( cd \"$path\" && pwd )`" # absolute path
 annotation=$1
 annotbase=`basename ${annotation%.gtf}`
 if [ -n "$2" ] 
@@ -43,9 +45,9 @@ fi
     
 # Programs
 ##########
-EXTRACT5p=../Awk/extract_most_5p.awk
-CUTGFF=../Awk/cutgff.awk
-GFF2GFF=../Awk/gff2gff.awk
+EXTRACT5p=$rootDir/../Awk/extract_most_5p.awk
+CUTGFF=$rootDir/../Awk/cutgff.awk
+GFF2GFF=$rootDir/../Awk/gff2gff.awk
 
 
 ##########################################################

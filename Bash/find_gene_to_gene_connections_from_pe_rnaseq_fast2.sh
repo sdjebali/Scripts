@@ -103,17 +103,20 @@ else
 fi
 
 
+path="`dirname \"$0\"`" # relative path
+rootDir="`( cd \"$path\" && pwd )`" # absolute path
+
 # Will exit if there is an error in a pipe
 ###########################################
 set -e -o pipefail
 
 # Programs
 ##########
-CUTGFF=../Awk/cutgff.awk
-INTER=../bin/intersectBed
-INTER2GNLIST=../Awk/intersectBed_pebam_with_elt_to_mateid_with_geneidlist_okorientation.awk
-REMOVEREDUND=../Awk/remove_redund_better.awk
-GFF2GFF=../Awk/gff2gff.awk
+CUTGFF=$rootDir/../Awk/cutgff.awk
+INTER=$rootDir/../bin/intersectBed
+INTER2GNLIST=$rootDir/../Awk/intersectBed_pebam_with_elt_to_mateid_with_geneidlist_okorientation.awk
+REMOVEREDUND=$rootDir/../Awk/remove_redund_better.awk
+GFF2GFF=$rootDir/../Awk/gff2gff.awk
 
 # Intersect the bam file with the exons of the annotation (longest step)
 ########################################################################

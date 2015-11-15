@@ -74,6 +74,9 @@ fi
 
 # Assign variables
 ##################
+path="`dirname \"$0\"`" # relative path
+rootDir="`( cd \"$path\" && pwd )`" # absolute path
+
 annot=$1
 genome=$2
 basetmp=`basename $annot`
@@ -82,12 +85,12 @@ base=${basetmp2%.gff}
 
 # Programs
 ##########
-MAKEINTRONS=../Awk/make_introns.awk
-CUTGFF=../Awk/cutgff.awk
-GFF2GFF=../Awk/gff2gff.awk
-DUPLSEQ=~../bin/duplseq
-CANONICAL=../Awk/intron_is_canonical_gal.awk
-PROP=../Awk/compute_prop.awk
+MAKEINTRONS=$rootDir/../Awk/make_introns.awk
+CUTGFF=$rootDir/../Awk/cutgff.awk
+GFF2GFF=$rootDir/../Awk/gff2gff.awk
+DUPLSEQ=$rootDir/../bin/duplseq
+CANONICAL=$rootDir/../Awk/intron_is_canonical_gal.awk
+PROP=$rootDir/../Awk/compute_prop.awk
 
 # Makes the introns from the annotation
 #######################################

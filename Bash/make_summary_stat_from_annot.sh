@@ -46,15 +46,18 @@ then
     exit 1
 fi
 
+path="`dirname \"$0\"`" # relative path
+rootDir="`( cd \"$path\" && pwd )`" # absolute path
+
 annot=$1
 b=`basename ${annot%.gff}`
 b2=${b%.gtf} 
 
 # Programs
 ##########
-INTRONS=../Awk/make_introns.awk
-GFF2GFF=../Awk/gff2gff.awk
-BOUNDARIES=../Awk/compute_boundaries.awk
+INTRONS=$rootDir/../Awk/make_introns.awk
+GFF2GFF=$rootDir/../Awk/gff2gff.awk
+BOUNDARIES=$rootDir/../Awk/compute_boundaries.awk
 
 # Make necesary gff files for the stats
 echo Making the necesary gff files for the stats >&2

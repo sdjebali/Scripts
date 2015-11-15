@@ -38,12 +38,6 @@
 # also consider a distance for the transcripts on the same strand but close
 # and consider those as extension and not ig as it is now
 
-# Programs
-##########
-MAKETSS=make_TSS_file_from_annotation_simple.sh
-COMPTR=../bin/comptr
-OVERLAP=../bin/overlap
-INTER=../bin/intersectBed 
 
 # Check the arguments
 #####################
@@ -59,11 +53,19 @@ then
     exit 1
 fi
 
-mytr=$1
+path="`dirname \"$0\"`" # relative path
+rootDir="`( cd \"$path\" && pwd )`" # absolute pathmytr=$1
 annot=$2
 mytrbasetmp=`basename ${mytr%.gff}`
 mytrbase=`basename ${mytrbasetmp%.gtf}`
 annbase=`basename ${annot%.gtf}`
+
+# Programs
+##########
+MAKETSS=$rootDir/make_TSS_file_from_annotation_simple.sh
+COMPTR=$rootDir/../bin/comptr
+OVERLAP=$rootDir/../bin/overlap
+INTER=intersectBed 
 
 # 1. Make gff files of annotated exons, genes and TSS respectively
 ###################################################################

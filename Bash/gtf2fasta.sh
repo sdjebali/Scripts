@@ -35,6 +35,9 @@ fi
 
 # Variable from input
 #####################
+path="`dirname \"$0\"`" # relative path
+rootDir="`( cd \"$path\" && pwd )`" # absolute path
+
 b=`basename $annot`
 b2tmp=${b%.gtf}
 b2=${b2tmp%.gff}
@@ -42,7 +45,7 @@ b2=${b2tmp%.gff}
 
 # Programs
 ##########
-RETRIEVER=../bin/gem-retriever 
+RETRIEVER=$rootDir/../bin/gem-retriever 
 # for example in /users/rg/brodriguez/Chimeras_project/Chimeras_detection_pipeline/ChimPipe/bin/gemtools-1.7.1-i3/
 
 

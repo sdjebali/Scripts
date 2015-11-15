@@ -51,6 +51,8 @@ fi
 
 # Assigns the 3 mandatory files to variables
 ############################################
+path="`dirname \"$0\"`" # relative path
+rootDir="`( cd \"$path\" && pwd )`" # absolute path
 infile=$1
 ex=$2
 gn=$3 

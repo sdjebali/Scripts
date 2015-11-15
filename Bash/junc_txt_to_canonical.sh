@@ -51,6 +51,8 @@ fi
 
 # Variables
 ###########
+path="`dirname \"$0\"`" # relative path
+rootDir="`( cd \"$path\" && pwd )`" # absolute path
 junc=$1
 genome=$2
 btmp=${junc%.txt}
@@ -59,10 +61,10 @@ b=`basename $btmp2`
 
 # Programs
 ##########
-CHIMTOBED=../Awk/chim_txt_to_bedpe.awk 
-BEDTODONACC=../Awk/chim_bedpe_to_don_acc_tsv.awk
-RETRIEVER=../bin/gem-retriever
-CANONICAL=../Awk/intron_is_canonical_gal.awk 
+CHIMTOBED=$rootDir/../Awk/chim_txt_to_bedpe.awk 
+BEDTODONACC=$rootDir/../Awk/chim_bedpe_to_don_acc_tsv.awk
+RETRIEVER=$rootDir/../bin/gem-retriever
+CANONICAL=$rootDir/../Awk/intron_is_canonical_gal.awk 
 
 awk 'NR>=2&&$1!~/NA/{split($1,a,":"); split(a[1],a1,"_"); split(a[2],a2,"_"); print $1, $2, ".", a1[2], a2[2]}' $junc | awk -f $CHIMTOBED > $b\_ok.bedpe
 # chr17	35479452	35479453	chr17	37374425	37374426	chr17_35479453_-:chr17_37374426_-	.	-	-

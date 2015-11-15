@@ -79,14 +79,15 @@ else
     ref=$1
     pred=$2
 fi
-
+path="`dirname \"$0\"`" # relative path
+rootDir="`( cd \"$path\" && pwd )`" # absolute path
 
 # Programs and scripts
-ChimToGff=../Awk/chim_txt_to_gff_ssext.awk
-GFF2GFF=../Awk/gff2gff.awk
-OVER=../bin/overlap
-RMRND=../Awk/remove_redund_better.awk
-COMP=../Awk/compare_chim_junc.awk
+ChimToGff=$rootDir/../Awk/chim_txt_to_gff_ssext.awk
+GFF2GFF=$rootDir/../Awk/gff2gff.awk
+OVER=$rootDir/../bin/overlap
+RMRND=$rootDir/../Awk/remove_redund_better.awk
+COMP=$rootDir/../Awk/compare_chim_junc.awk
 
 # Compute basic numbers and print junctions that are exactly identical
 ######################################################################
