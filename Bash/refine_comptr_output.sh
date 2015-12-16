@@ -3,7 +3,7 @@
 
 # takes as input two mandatory arguments:
 ########################################
-# - a set of transcripts to compare to the annotation as a gff 2 file containing both exons and transcripts, assuming transcript id is in 12th column
+# - a set of transcripts to compare to the annotation as a gff 2 file containing at least exon rows
 # - an annotation gtf file that has at least exon and gene rows
 
 # and provides as output:
@@ -11,7 +11,8 @@
 # - the comptr tsv output (classes are Monoexonic, Overlap, Inclusion, Extension, Intergenic_or_antisense, Exact) 
 #   with additional and broader classes (annot, antisense, extension, intergenic) and with the number of exons 
 
-# on sept 22nd make it possible to pass input file with comment
+# on sept 22nd 2015 make it possible to pass input file with comment
+# on dec 15th 2015 make it possible to have annot and transcript file with gene_id and transcript_id anywhere and to have only exons in predictions
 
 # Example of usage
 ##################
@@ -46,7 +47,7 @@ then
     echo "" >&2
     echo Usage: refine_comptr_output.sh mytr.gff annot.gtf >&2
     echo "where:" >&2
-    echo "- mytr.gff is a set of transcripts in gff 2 format (exon and transcript rows) one wants to compare to the annotation (transcript id is in column 12)" >&2
+    echo "- mytr.gff is a set of transcripts in gff 2 format (exon rows at least) one wants to compare to the annotation" >&2
     echo "- annot.gtf is an annotation file in gtf format (exon and gene rows at least) one wants to compare to the annotation" >&2
     echo "!!! Cannot be run in parallel in the same directory since it produces files with constant name !!!" >&2
     echo "" >&2
@@ -54,7 +55,8 @@ then
 fi
 
 path="`dirname \"$0\"`" # relative path
-rootDir="`( cd \"$path\" && pwd )`" # absolute pathmytr=$1
+rootDir="`( cd \"$path\" && pwd )`" # absolute path
+mytr=$1
 annot=$2
 mytrbasetmp=`basename ${mytr%.gff}`
 mytrbase=`basename ${mytrbasetmp%.gtf}`
@@ -62,27 +64,36 @@ annbase=`basename ${annot%.gtf}`
 
 # Programs
 ##########
+MAKEOK=$rootDir/../Awk/make_gff_ok.awk
 MAKETSS=$rootDir/make_TSS_file_from_annotation_simple.sh
+MAKESUM=$rootDir/make_summary_stat_from_annot.sh
 COMPTR=$rootDir/../bin/comptr
 OVERLAP=$rootDir/../bin/overlap
+GFF2GFF=$rootDir/../Awk/gff2gff.awk
 INTER=intersectBed 
 
 # 1. Make gff files of annotated exons, genes and TSS respectively
 ###################################################################
 echo I am making gff files of annotated exons, genes and TSS respectively >&2
-awk '$3=="exon"' $annot > annot_exons.gff
-awk '$3=="gene"' $annot > annot_genes.gff
+awk '$3=="exon"' $annot | awk -f $MAKEOK > annot_exons.gff
+awk '$3=="gene"' $annot | awk -f $MAKEOK > annot_genes.gff
 $MAKETSS $annot
 echo done >&2
 
-# 2. Compute the number of exons of each transcript to be compared to the annotation
+# 2. Make a complete file from the prediction
+#############################################
+echo I am making a complete file for the predictions >&2
+$MAKESUM $mytr > prediction_sumstat.txt
+echo done >&2
+
+# 3. Compute the number of exons of each transcript to be compared to the annotation
 #####################################################################################
 echo I am computing the number of exons of each transcript to be compared to the annotation >&2
-awk '$3=="exon"' $mytr > $mytrbase\_exons.gff
+awk '$3=="exon"' $mytr | awk -f $MAKEOK > $mytrbase\_exons.gff
 awk '{nbex[$12]++}END{for(t in nbex){print t, nbex[t];}}' $mytrbase\_exons.gff > trid_nbex.txt
 echo done >&2
 
-# 3. I am running comptr on the input transcripts and the annotation
+# 4. I am running comptr on the input transcripts and the annotation
 ####################################################################
 echo I am running comptr >&2
 $COMPTR $mytrbase\_exons.gff annot_exons.gff -o $mytrbase\_vs_annot.tsv
@@ -90,7 +101,7 @@ echo The classes from comptr >&2
 awk '{print $2}' $mytrbase\_vs_annot.tsv | sort | uniq -c | sort -k1,1nr >&2
 echo done >&2
 
-# 4. Refine the comptr class using the following rules/ideas:
+# 5. Refine the comptr class using the following rules/ideas:
 #############################################################
 #    For the Overlap and the Monoexonic class, I need to know whether their extent overlaps the annotated genes on the same strand
 #    and if not whether they overlap them on the opposite strand, otherwise they will be considered intergenic if they overlap the 
@@ -98,7 +109,7 @@ echo done >&2
 #    Intergenic_or_antisense class I need to know how many are ig and how many are antisense so in fact I will collapse the Monoexonic + 
 #    Overlap + Intergenic_or_antisense into one class and I will overlap their whole extent with annotated gene extents in both a stranded 
 #    and an unstranded way, and then for the ones strandedly overlapping I will also check whether this is extension or inclusion
-# 4.a. Make a transcript file with the monoexonic, overlap and intergenic_antisense class to retrive the ones that are extension or inclusion
+# 5.a. Make a transcript file with the monoexonic, overlap and intergenic_antisense class to retrive the ones that are extension or inclusion
 #############################################################################################################################################
 #      of the annotation on the same strand (but not respecting the structure), the ones that are antisense
 ###########################################################################################################
@@ -109,7 +120,7 @@ awk '$2=="Monoexonic"||$2=="Overlap"||$2=="Intergenic_or_antisense"{split($1,a,"
 echo The number of transcripts that are monoexonic, overlap or intergenic_antisense according to comptr >&2
 wc -l monoex_overlap_igas_trids.txt | awk '{print $1}' >&2
 
-awk -v fileRef=monoex_overlap_igas_trids.txt 'BEGIN{while (getline < fileRef >0){ok["\""$1"\";"]=1}} (($3=="transcript")&&(ok[$12]==1))' $mytr > $mytrbase\_tr_monoex_overlap_igas.gff
+awk -v fileRef=monoex_overlap_igas_trids.txt 'BEGIN{while (getline < fileRef >0){ok["\""$1"\";"]=1}} (($3=="transcript")&&(ok[$12]==1))' $mytrbase\_complete.gff > $mytrbase\_tr_monoex_overlap_igas.gff
 # chrX	Cufflinks	transcript	41782188	41782387	0.0	-	.	gene_id "SID38216-SID38217"-v.1121.1";";,"SID38222-SID38223"-v.725.1";"; transcript_id 208
 # 140 (12 fields)
 $OVERLAP $mytrbase\_tr_monoex_overlap_igas.gff annot_genes.gff -st 1 -f gn -o $mytrbase\_tr_monoex_overlap_igas_strover_genes.gff
@@ -143,25 +154,33 @@ awk '(($NF==1)&&($(NF-2)==0)){print $12}' $mytrbase\_tr_monoex_overlap_igas_stro
 echo "The number of antisense transcripts (at least 1 bp overlap) from those that are monoexonic, overlap or intergenic_antisense according to comptr" >&2
 wc -l as_overlapping.txt | awk '{print $1}' >&2
 
-# 4.b. From the transcripts that are monoexonic, overlap or intergenic_antisense according to comptr but that are not overlapping the annotation in any way 
+# 5.b. From the transcripts that are monoexonic, overlap or intergenic_antisense according to comptr but that are not overlapping the annotation in any way 
 ##########################################################################################################################################################
-#      look whether there TSS is close enough (500bp) to an annotated TSS in order to classify them as divergent from the annotation
-####################################################################################################################################
-awk -v ext=500 'BEGIN{OFS="\t"}(($NF==0)&&($(NF-2)==0)){if($7=="+"){pos=$4}else{pos=$5} if(pos-ext>0){print $1, pos-ext, pos+ext, $12, ".", $7}}' $mytrbase\_tr_monoex_overlap_igas_strover_genes_over_genes.gff > $mytrbase\_tr_monoex_overlap_igas_over_genes_ko_tss_500bpext.bed
+#      look whether their TSS is close enough (500bp) to an annotated TSS on the other strand in order to classify them as divergent from the annotation
+########################################################################################################################################################
+# chr1	Cufflinks	transcript	22263695	22263843	0.0	-	.	 gene_id "SID38212-SID38213"-v.9.1";";,"SID38204-SID38205"-v.22.1";"; transcript_id 72 ov_gn: 1 ov_gn: 1
+# 140 (16 fields)
+awk -v ext=500 'BEGIN{OFS="\t"}(($NF==0)&&($(NF-2)==0)){if($7=="+"){pos=$4}else{pos=$5} if(pos-ext>0){print $1, ".", ".", pos-ext+1, pos+ext, ".", $7, ".", "transcript_id", $12}}' $mytrbase\_tr_monoex_overlap_igas_strover_genes_over_genes.gff | awk -f $GFF2GFF > $mytrbase\_tr_monoex_overlap_igas_over_genes_ko_tss_500bpext.gff
+# old
+# awk -v ext=500 'BEGIN{OFS="\t"}(($NF==0)&&($(NF-2)==0)){if($7=="+"){pos=$4}else{pos=$5} if(pos-ext>0){print $1, pos-ext, pos+ext, $12, ".", $7}}' $mytrbase\_tr_monoex_overlap_igas_strover_genes_over_genes.gff > $mytrbase\_tr_monoex_overlap_igas_over_genes_ko_tss_500bpext.bed
 # chr1	147993729	147994729	4	.	+
 # 16 (6 fields)
-$INTER -a $mytrbase\_tr_monoex_overlap_igas_over_genes_ko_tss_500bpext.bed -b $annbase\_capped_sites_nr.gff -S -wao > $mytrbase\_tr_monoex_overlap_igas_over_genes_ko_tss_500bpext_overanntss.bed
+$OVERLAP $mytrbase\_tr_monoex_overlap_igas_over_genes_ko_tss_500bpext.gff $annbase\_capped_sites_nr.gff -st -1 -f cap -o $mytrbase\_tr_monoex_overlap_igas_over_genes_ko_tss_500bpext_overanntss.gff
+# old
+# $INTER -a $mytrbase\_tr_monoex_overlap_igas_over_genes_ko_tss_500bpext.bed -b $annbase\_capped_sites_nr.gff -S -wao -nonamecheck > $mytrbase\_tr_monoex_overlap_igas_over_genes_ko_tss_500bpext_overanntss.bed
 # chr1	1677232	1678232	1240	.	-	.	.	.	-1	-1	-1	.	.	.	0
 # 118 (16 fields)
 # 110 (25 fields)
-awk '$NF!=0{print $4}' $mytrbase\_tr_monoex_overlap_igas_over_genes_ko_tss_500bpext_overanntss.bed | sort | uniq > antisense_500bpwaytssannot.txt
+awk '$NF!=0{split($10,a,"\""); print a[2]}' $mytrbase\_tr_monoex_overlap_igas_over_genes_ko_tss_500bpext_overanntss.gff | sort | uniq > antisense_500bpwaytssannot.txt
+# old
+# awk '$NF!=0{print $4}' $mytrbase\_tr_monoex_overlap_igas_over_genes_ko_tss_500bpext_overanntss.bed | sort | uniq > antisense_500bpwaytssannot.txt
 # 338
 # 6 (1 fields)
 echo "The number of divergent transcripts from those (500bp from annotated tss)" >&2
 wc -l antisense_500bpwaytssannot.txt | awk '{print $1}' >&2
 echo done >&2
 
-# 4.c. I am gathering all the above information into a single tsv file which is an extension of the comptr file
+# 5.c. I am gathering all the above information into a single tsv file which is an extension of the comptr file
 ###############################################################################################################
 # !! if the broad class is Unstranded make the refined class unstranded !!!
 echo I am gathering all the collected information into a single tsv file which is an extension of the comptr file >&2
@@ -173,7 +192,7 @@ echo Number of initial transcripts from the different refined classes >&2
 awk 'NR>=2{print $4}'  $mytrbase\_comp_refinedclass_nbex.tsv | sort | uniq -c | sort -k1,1nr >&2
 echo done >&2
 
-# 5. Delete intermediate files
+# 6. Delete intermediate files
 ##############################
 echo I am deleting intermediate files >&2
 rm annot_exons.gff annot_genes.gff
@@ -191,8 +210,8 @@ rm $mytrbase\_tr_monoex_overlap_igas_strover_genes_ok_over_genes_totstrincl.gff
 rm included_but_not_respecting_annot_tr_structure.txt
 rm extension_but_not_respecting_annot_tr_structure.txt
 rm as_overlapping.txt
-rm $mytrbase\_tr_monoex_overlap_igas_over_genes_ko_tss_500bpext.bed
-rm $mytrbase\_tr_monoex_overlap_igas_over_genes_ko_tss_500bpext_overanntss.bed
+rm $mytrbase\_tr_monoex_overlap_igas_over_genes_ko_tss_500bpext.gff
+rm $mytrbase\_tr_monoex_overlap_igas_over_genes_ko_tss_500bpext_overanntss.gff
 rm antisense_500bpwaytssannot.txt
 echo done >&2
 

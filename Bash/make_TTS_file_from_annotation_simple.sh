@@ -12,9 +12,10 @@
 
 # Be careful: this script cannot be launched several times in the same directory
 # because it is writing files not indexed by the input file like tmp and exp_fld1_fld2.txt for example
-# This script supposes that the annotation file contains gene name of exon features in $10 and tr name in $12
 
 # - uses awk scripts
+
+# on dec15th 2015 able to take a gtf file with gene_id and transcript_id at any location
 
 # Usage:
 ########
@@ -26,8 +27,8 @@ if [ ! -n "$1" ]
 then
     echo "" >&2
     echo Usage: make_TTS_file_from_annotation_simple.sh annot.gtf [tr_biotypes.txt] >&2
+    echo Be careful: the input file must have at least exon rows and contain gene_id and transcript_id information for them >&2
     echo Be careful: it is not possible to run two instances at the same time \in the same directory since produces intermediate files not indexed >&2
-    echo Be careful: the gene id and the transcript id of exon features have to be \in column no 10 and 12 respectively >&2
     echo "" >&2
     exit 1
 fi
@@ -41,6 +42,7 @@ annotbase=`basename ${annotation%.gtf}`
  
 # Programs
 ###########
+MAKEOK=$rootDir/../Awk/make_gff_ok.awk
 EXTRACT3p=$rootDir/../Awk/extract_most_3p.awk
 CUTGFF=$rootDir/../Awk/cutgff.awk
 GFF2GFF=$rootDir/../Awk/gff2gff.awk
@@ -53,7 +55,7 @@ GFF2GFF=$rootDir/../Awk/gff2gff.awk
 # a. Extract most 3' exons of transcripts
 #########################################
 echo I am extracting the most 3\' exons of transcripts >&2
-awk '(($3=="exon")&&(($7=="+")||($7=="-")))' $annotation | awk -v fldno=12 -f $EXTRACT3p > $annotbase\_exons_most3p.gff
+awk '(($3=="exon")&&(($7=="+")||($7=="-")))' $annotation | awk -f $MAKEOK | awk -v fldno=12 -f $EXTRACT3p > $annotbase\_exons_most3p.gff
 echo done >&2
 
 # b. Then the most 3' bp of each transcript for each gene

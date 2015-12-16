@@ -20,17 +20,15 @@
 # from this it is then easy to retrieve additionally
 ####################################################
 # - nbexpertr
-# - nbdistinctexpertr
 # - nbexpergn
 # - nbdistinctexpergn
 # - nbtrpergn
 # - nbintronpertr
-# - nbdistinctintronpertr
 # - nbintronpergn
 # - nbdistinctintronpergn
 # by simply running this command:
 #################################
-# awk 'NR==2' $output_from_this_script | awk 'BEGIN{print "nbex nbdistinctex nbtr nbgn nbintrons nbdistinctintrons nbexpertr nbdistinctexpertr nbexpergn nbdistinctexpergn nbtrpergn nbintronpertr nbdistinctintronpertr nbintronpergn nbdistinctintronpergn"}{print $0, $1/$3, $2/$3, $1/$4, $2/$4, $3/$4, $5/$3, $6/$3, $5/$4, $6/$4}'
+# awk 'NR==2' $output_from_this_script | awk 'BEGIN{print "nbex nbdistinctex nbtr nbgn nbintrons nbdistinctintrons nbexpertr nbexpergn nbdistinctexpergn nbtrpergn nbintronpertr nbintronpergn nbdistinctintronpergn"}{print $0, $1/$3, $1/$4, $2/$4, $3/$4, $5/$3, $5/$4, $6/$4}'
 
 # example:
 ##########
@@ -55,13 +53,14 @@ b2=${b%.gtf}
 
 # Programs
 ##########
+MAKEOK=$rootDir/../Awk/make_gff_ok.awk
 INTRONS=$rootDir/../Awk/make_introns.awk
 GFF2GFF=$rootDir/../Awk/gff2gff.awk
 BOUNDARIES=$rootDir/../Awk/compute_boundaries.awk
 
 # Make necesary gff files for the stats
 echo Making the necesary gff files for the stats >&2
-awk '$3=="exon"' $annot | sort -k12,12 -k4,4n -k5,5n > $b2\_exons_sorted_by_tr.gff
+awk '$3=="exon"' $annot | awk -f $MAKEOK | sort -k12,12 -k4,4n -k5,5n > $b2\_exons_sorted_by_tr.gff
 awk -v fldgn=10 -v fldtr=12 -f $INTRONS $b2\_exons_sorted_by_tr.gff > $b2\_introns.gff
 awk -v toadd=transcript -v fldno=12 -f $BOUNDARIES $b2\_exons_sorted_by_tr.gff | awk -v fileRef=$b2\_exons_sorted_by_tr.gff 'BEGIN{while (getline < fileRef >0){gnid[$12]=$10}} {print $1, $2, $3, $4, $5, $6, $7, $8, "gene_id", gnid[$10], $9, $10}' | awk -f $GFF2GFF > $b2\_transcripts.gff
 awk -v toadd=gene -v fldno=10 -f $BOUNDARIES $b2\_exons_sorted_by_tr.gff | awk '{print $0, "transcript_id", $NF}' | awk -f $GFF2GFF > $b2\_genes.gff
