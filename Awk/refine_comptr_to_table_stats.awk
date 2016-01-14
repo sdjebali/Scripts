@@ -22,6 +22,15 @@
 # 00612182        35080   21.4754 1261    0.771962        33819   20.7034 23961   14.6685 3355    2.05387 20606   12.6146 0       0
 # 2 (34 fields)
 
+# then to print in 2 tables:
+############################
+# awk '{s=""; for(i=1; i<=20; i++){s=(s)($i)("\t")}print s}' refine_comptr_output_fortable.tsv
+# set     total   annot_nb        annot_% exact_nb        exact_% inclusion_nb    inclusion_%     other_spliced_nb        other_spliced_% other_monoex_nb other_monoex_%  extension_nb       extension_%     annot_compatible_nb     annot_compatible_%      other_spliced_nb        other_spliced_% other_monoex_nb other_monoex_%
+# lncrnagal4      5269    1772    33.6307 208     3.94762 414     7.85728 1124    21.3323 26      0.493452        1208    22.9266 426     8.08503 779     14.7846 3       0.0569368
+# awk '{s=$1"\t"$2"\t"; for(i=21; i<=NF; i++){s=(s)($i)("\t")}print s}' refine_comptr_output_fortable.tsv
+# set     total   intergenic_nb   intergenic_%    spliced_nb      spliced_%       monoex_nb       monoex_%        antisense_nb    antisense_%     spliced_nb      spliced_%       monoex_nb  monoex_%        unstr_nb        unstr_pcent
+# lncrnagal4      5268    1762    33.4472 1704    32.3462 58      1.10099 526     9.98481 477     9.05467 49      0.930144        0       0
+
 # check
 # from the log file of refine_comptr_output.sh
 ##############################################
@@ -49,7 +58,7 @@ BEGIN{
     OFS="\t";
 }
 
-{
+NR>=2{
     split($0,a,"\t"); 
     ntot++; 
     if(a[4]=="unstranded")
