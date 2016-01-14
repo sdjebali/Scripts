@@ -9,8 +9,8 @@
 # awk -f make_gff_ok.awk input.gff > output.gff
 
 $1!~/#/{
-    ten="NA";
-    twelve="NA";
+    ten="NA;";
+    twelve="NA;";
     split($0,a,"\t");
     split(a[9],b,"; ");
     k=1;
@@ -19,16 +19,25 @@ $1!~/#/{
 	split(b[k],c," ");
 	if(c[1]=="gene_id")
 	{
-	    ten=c[2]";";
+	    if(substr(c[2],length(c[2]))==";")
+		ten=c[2];
+	    else
+		ten=c[2]";";
+	    
 	}
 	else
 	{
 	    if(c[1]=="transcript_id")
 	    {
-		twelve=c[2]";";
+		if(substr(c[2],length(c[2]))==";")
+		    twelve=c[2];
+		else
+		    twelve=c[2]";";
 	    }
 	}
 	k++
     }
+    gsub(/;;/,";",ten);
+    gsub(/;;/,";",twelve);
     print a[1]"\t"a[2]"\t"a[3]"\t"a[4]"\t"a[5]"\t"a[6]"\t"a[7]"\t"a[8]"\tgene_id "ten" transcript_id "twelve;
 }
