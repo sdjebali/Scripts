@@ -50,6 +50,8 @@ fi
 
 # Variable assignment
 #####################
+path="`dirname \"$0\"`" # relative path
+rootDir="`( cd \"$path\" && pwd )`" # absolute path
 pred=$1
 basetmp=`basename ${pred%.gtf}`
 base=${basetmp%.gff}
@@ -64,13 +66,13 @@ annrtts=$annotdir/$annotbase\_tts_sites_nr.gff
 
 # Programs
 ##########
-MAKETSS=make_TSS_file_from_annotation_simple.sh
-MAKETTS=make_TTS_file_from_annotation_simple.sh
-MAKESUMMARY=make_summary_stat_from_annot.sh
-REFINECOMPTR=refine_comptr_output.sh
-EXTRACT5P=../Awk/extract_most_5p.awk 
-EXTRACT3P=../Awk/extract_most_3p.awk
-GFF2GFF=../Awk/gff2gff.awk
+MAKETSS=$rootDir/make_TSS_file_from_annotation_simple.sh
+MAKETTS=$rootDir/make_TTS_file_from_annotation_simple.sh
+MAKESUMMARY=$rootDir/make_summary_stat_from_annot.sh
+REFINECOMPTR=$rootDir/refine_comptr_output.sh
+EXTRACT5P=$rootDir/../Awk/extract_most_5p.awk 
+EXTRACT3P=$rootDir/../Awk/extract_most_3p.awk
+GFF2GFF=$rootDir/../Awk/gff2gff.awk
 
 
 # Start of the script
