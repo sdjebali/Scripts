@@ -162,5 +162,28 @@ NR>=2{
 
 END{
     print "set", "total", "annot_nb", "annot_%", "exact_nb", "exact_%", "inclusion_nb", "inclusion_%", "other_spliced_nb", "other_spliced_%", "other_monoex_nb", "other_monoex_%", "extension_nb", "extension_%", "annot_compatible_nb", "annot_compatible_%", "other_spliced_nb", "other_spliced_%", "other_monoex_nb", "other_monoex_%", "intergenic_nb", "intergenic_%", "spliced_nb", "spliced_%", "monoex_nb", "monoex_%", "antisense_nb", "antisense_%", "spliced_nb", "spliced_%", "monoex_nb", "monoex_%", "unstr_nb", "unstr_pcent";
-    print lid, ntot, nannot[1], nannot[1]/ntot*100, nannot[2], nannot[2]/ntot*100, nannot[3], nannot[3]/ntot*100, nannot[4], nannot[4]/ntot*100, nannot[5], nannot[5]/ntot*100, nextens[1], nextens[1]/ntot*100, nextens[2], nextens[2]/ntot*100, nextens[3], nextens[3]/ntot*100, nextens[4], nextens[4]/ntot*100, ninter[1], ninter[1]/ntot*100, ninter[2], ninter[2]/ntot*100, ninter[3], ninter[3]/ntot*100, nas[1], nas[1]/ntot*100, nas[2], nas[2]/ntot*100, nas[3], nas[3]/ntot*100, (nunstr!="" ? nunstr : 0), nunstr/ntot*100;
+    ntotok=nn(ntot);
+    nannot1=nn(nannot[1]);
+    nannot2=nn(nannot[2]);
+    nannot3=nn(nannot[3]);
+    nannot4=nn(nannot[4]);
+    nannot5=nn(nannot[5]);
+    nextens1=nn(nextens[1]);
+    nextens2=nn(nextens[2]);
+    nextens3=nn(nextens[3]);
+    nextens4=nn(nextens[4]);
+    ninter1=nn(ninter[1]);
+    ninter2=nn(ninter[2]);
+    ninter3=nn(ninter[3]);
+    nas1=nn(nas[1]);
+    nas2=nn(nas[2]);
+    nas3=nn(nas[3]);
+    nunstrok=nn(nunstr)
+    
+    print lid, ntotok, nannot1, nannot1/ntotok*100, nannot2, nannot2/ntotok*100, nannot3, nannot3/ntotok*100, nannot4, nannot4/ntotok*100, nannot5, nannot5/ntotok*100, nextens1, nextens1/ntotok*100, nextens2, nextens2/ntotok*100, nextens3, nextens3/ntotok*100, nextens4, nextens4/ntotok*100, ninter1, ninter1/ntotok*100, ninter2, ninter2/ntotok*100, ninter3, ninter3/ntotok*100, nas1, nas1/ntotok*100, nas2, nas2/ntotok*100, nas3, nas3/ntotok*100, nunstrok, nunstrok/ntotok*100;
 } 
+
+function nn(x)
+{
+    return (x!="" ? x : 0)
+}
