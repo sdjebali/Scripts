@@ -78,7 +78,7 @@ COUNT=$rootDir/add_sense_antisense_read_counts_to_segments_frombam.sh
 #######################################
 echo I am making the projected exons of each gene >&2
 echo "    first make a proper exon file for makeSP..." >&2
-awk '$3=="exon"{split($0,a,"\t"); split(a[9],b,"; "); k=1; while(b[k]!=""){split(b[k],c," "); if(c[1]=="gene_id"){gn=c[2]} if(c[1]=="transcript_id"){tr=c[2]} k++;} $10=tr";"; $12=gn";"; $9="transcript_id"; $11="gene_id"; print}' $annot | awk -v to=12 -f $CUTGFF | awk -f $GFF2GFF > $b12.formakeSP.gff
+awk '$3=="exon"&&($7=="+"||$7=="-"){split($0,a,"\t"); split(a[9],b,"; "); k=1; while(b[k]!=""){split(b[k],c," "); if(c[1]=="gene_id"){gn=c[2]} if(c[1]=="transcript_id"){tr=c[2]} k++;} $10=tr";"; $12=gn";"; $9="transcript_id"; $11="gene_id"; print}' $annot | awk -v to=12 -f $CUTGFF | awk -f $GFF2GFF > $b12.formakeSP.gff
 echo "    second apply makeSP..." >&2
 $MAKESP $b12.formakeSP.gff -f gff
 echo "    third make the projected exon file..." >&2
