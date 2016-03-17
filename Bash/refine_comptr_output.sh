@@ -96,7 +96,7 @@ echo done >&2
 # 4. I am running comptr on the input transcripts and the annotation
 ####################################################################
 echo I am running comptr >&2
-$COMPTR $mytrbase\_exons.gff annot_exons.gff -o $mytrbase\_vs_annot.tsv
+$COMPTR $mytrbase\_exons.gff annot_exons.gff -s 5000 -o $mytrbase\_vs_annot.tsv
 echo The classes from comptr >&2
 awk '{print $2}' $mytrbase\_vs_annot.tsv | sort | uniq -c | sort -k1,1nr >&2
 echo done >&2

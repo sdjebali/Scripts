@@ -34,6 +34,8 @@
 # time compare_multiple_trsets_wrt_reftrset.sh $annot annot_to_eval_small.tsv 2> compare_multiple_trsets_wrt_reftrset.err
 # real    0m50.384s
 
+
+
 # Check the inputs do exist
 ###########################
 if [ ! -n "$1" ] || [ ! -n "$2" ]
