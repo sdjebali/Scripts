@@ -67,7 +67,8 @@ fi
 # Variable assignment
 #####################
 path="`dirname \"$0\"`" # relative path
-rootDir="`( cd \"$path\" && pwd )`" # absolute pathref=$1
+rootDir="`( cd \"$path\" && pwd )`" # absolute path
+ref=$1
 predtrsets=$2
 refbasetmp=`basename ${ref%.gtf}`
 refbase=${refbasetmp%.gff}
