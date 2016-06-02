@@ -18,7 +18,7 @@ then
     echo "- peaks.bed is the list of peaks in bed format" >&2
     echo "- annot.tsv is a 2 column tsv file with no header with the name of the annotated element and the file containing these elements" >&2
     echo "  this should include at least the following categories: prom1Kb, prom5Kb, utr, cds and intron" >&2
-    echo "  for example for pig: /work2/project/fragencode/workspace/sdjebali/atacseq/pig/annotelt_file.tsv" >&2
+    echo "  for example for pig: /work2/project/fragencode/data/species/sus_scrofa/Sscrofa10.2.80/annotelt_file.tsv" >&2
     echo "- dist_stats.tsv is a tsv file containing the distribution of peaks into the annotation" >&2
     echo "BE CAREFUL: do not run several times in the same directory since it uses fixed names for outputs" >&2
     echo "" >&2
@@ -44,7 +44,7 @@ meta=$2
 # utr     /work2/project/fragencode/data/species/sus_scrofa/Sscrofa10.2.80/sus_scrofa.utr.positions.bed
 cat $meta | while read elt f
 do
-intersectBed -a $peaks -b $f -u > peaks_over_$elt.bed
+intersectBed -a $peaks -b $f -nonamecheck -u > peaks_over_$elt.bed
 done
 
 # Make the distribution of peaks with 2 different promoter definitions (1Kb and 5KB) and using this order in case of conflict
