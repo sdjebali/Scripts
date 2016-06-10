@@ -145,7 +145,7 @@ echo done >&2
 # Compute some statistics
 ##########################
 echo I am computing some statistics >&2
-echo "# and % of canonical introns"
+echo "# number and % of canonical introns"
 awk -f $PROP $base\_introns_24mer_don_acc_seq_ds_can.gff
 # in how many introns do we find a DS >= 5nt?
 ##############################################
