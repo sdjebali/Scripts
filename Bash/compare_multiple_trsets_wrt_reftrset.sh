@@ -175,7 +175,7 @@ echo "done" >&2
 echo "I am gathering across all prediction sets the lengths of several objects in order to have one plot per object type" >&2
 
 echo "  1. number of exons per transcript" >&2
-awk 'NR>=2{print $1, $2, NR-1}' $predtrsets | while read src pred no
+awk 'NR>=2{print $1, $2, ((NR-2)<=9 ? "0"(NR-2) : (NR-2))}' $predtrsets | while read src pred no
 do
 WORKDIR=`dirname $pred` 
 cd $WORKDIR
@@ -185,7 +185,7 @@ done | awk 'BEGIN{OFS="\t"; print "prediction", "nb_ex_in_transcript"}{print}' >
 echo "  done" >&2
 
 echo "  2. number of transcripts per gene" >&2
-awk 'NR>=2{print $1, $2, NR-1}' $predtrsets | while read src pred no
+awk 'NR>=2{print $1, $2, ((NR-2)<=9 ? "0"(NR-2) : (NR-2))}' $predtrsets | while read src pred no
 do
 WORKDIR=`dirname $pred` 
 cd $WORKDIR
@@ -195,7 +195,7 @@ done | awk 'BEGIN{OFS="\t"; print "prediction", "nb_tr_in_gene"}NF==2{print}' > 
 echo "  done" >&2
 
 echo "  3. exon length" >&2
-awk 'NR>=2{print $1, $2, NR-1}' $predtrsets | while read src pred no
+awk 'NR>=2{print $1, $2, ((NR-2)<=9 ? "0"(NR-2) : (NR-2))}' $predtrsets | while read src pred no
 do
 WORKDIR=`dirname $pred` 
 cd $WORKDIR
@@ -207,7 +207,7 @@ done | awk 'BEGIN{OFS="\t"; print "prediction", "exon_length"}{print}' > Plots/E
 echo "  done" >&2
 
 echo "  4. distinct exon length" >&2
-awk 'NR>=2{print $1, $2, NR-1}' $predtrsets | while read src pred no
+awk 'NR>=2{print $1, $2, ((NR-2)<=9 ? "0"(NR-2) : (NR-2))}' $predtrsets | while read src pred no
 do
 WORKDIR=`dirname $pred` 
 cd $WORKDIR
@@ -219,7 +219,7 @@ done | awk 'BEGIN{OFS="\t"; print "prediction", "distinct_exon_length"}{print}' 
 echo "  done" >&2
 
 echo "  5. transcript 5' exon length (for spliced and stranded tr)" >&2
-awk 'NR>=2{print $1, $2, NR-1}' $predtrsets | while read src pred no
+awk 'NR>=2{print $1, $2, ((NR-2)<=9 ? "0"(NR-2) : (NR-2))}' $predtrsets | while read src pred no
 do
 WORKDIR=`dirname $pred` 
 cd $WORKDIR
@@ -231,7 +231,7 @@ done | awk 'BEGIN{OFS="\t"; print "prediction", "fivep_exon_length_tr"}{print}' 
 echo "  done" >&2
 
 echo "  6. gene 5' exon length (for genes with spliced and stranded tr)" >&2
-awk 'NR>=2{print $1, $2, NR-1}' $predtrsets | while read src pred no
+awk 'NR>=2{print $1, $2, ((NR-2)<=9 ? "0"(NR-2) : (NR-2))}' $predtrsets | while read src pred no
 do
 WORKDIR=`dirname $pred` 
 cd $WORKDIR
@@ -243,7 +243,7 @@ done | awk 'BEGIN{OFS="\t"; print "prediction", "fivep_exon_length_gn"}{print}' 
 echo "  done" >&2
 
 echo "  7. transcript 3' exon length (for spliced and stranded tr)" >&2
-awk 'NR>=2{print $1, $2, NR-1}' $predtrsets | while read src pred no
+awk 'NR>=2{print $1, $2, ((NR-2)<=9 ? "0"(NR-2) : (NR-2))}' $predtrsets | while read src pred no
 do
 WORKDIR=`dirname $pred` 
 cd $WORKDIR
@@ -255,7 +255,7 @@ done | awk 'BEGIN{OFS="\t"; print "prediction", "threep_exon_length_tr"}{print}'
 echo "  done" >&2
 
 echo "  8. gene 3' exon length (for genes with spliced and stranded tr)" >&2
-awk 'NR>=2{print $1, $2, NR-1}' $predtrsets | while read src pred no
+awk 'NR>=2{print $1, $2, ((NR-2)<=9 ? "0"(NR-2) : (NR-2))}' $predtrsets | while read src pred no
 do
 WORKDIR=`dirname $pred` 
 cd $WORKDIR
@@ -267,7 +267,7 @@ done | awk 'BEGIN{OFS="\t"; print "prediction", "threep_exon_length_gn"}{print}'
 echo "  done" >&2
 
 echo "  9. internal exon length (for spliced and stranded tr)" >&2
-awk 'NR>=2{print $1, $2, NR-1}' $predtrsets | while read src pred no
+awk 'NR>=2{print $1, $2, ((NR-2)<=9 ? "0"(NR-2) : (NR-2))}' $predtrsets | while read src pred no
 do
 WORKDIR=`dirname $pred` 
 cd $WORKDIR
@@ -279,7 +279,7 @@ done | awk 'BEGIN{OFS="\t"; print "prediction", "internal_exon_length"}{print}' 
 echo "  done" >&2
 
 echo "  10. distinct internal exon length (for spliced and stranded tr)" >&2
-awk 'NR>=2{print $1, $2, NR-1}' $predtrsets | while read src pred no
+awk 'NR>=2{print $1, $2, ((NR-2)<=9 ? "0"(NR-2) : (NR-2))}' $predtrsets | while read src pred no
 do
 WORKDIR=`dirname $pred` 
 cd $WORKDIR
@@ -291,7 +291,7 @@ done | awk 'BEGIN{OFS="\t"; print "prediction", "distinct_internal_exon_length"}
 echo "  done" >&2
 
 echo "  11. monoexonic transcript exon length" >&2
-awk 'NR>=2{print $1, $2, NR-1}' $predtrsets | while read src pred no
+awk 'NR>=2{print $1, $2, ((NR-2)<=9 ? "0"(NR-2) : (NR-2))}' $predtrsets | while read src pred no
 do
 WORKDIR=`dirname $pred` 
 cd $WORKDIR
@@ -303,7 +303,7 @@ done | awk 'BEGIN{OFS="\t"; print "prediction", "monoextr_exon_length"}{print}' 
 echo "  done" >&2
 
 echo "  12. transcript length (exons + introns) (for spliced transcripts)" >&2
-awk 'NR>=2{print $1, $2, NR-1}' $predtrsets | while read src pred no
+awk 'NR>=2{print $1, $2, ((NR-2)<=9 ? "0"(NR-2) : (NR-2))}' $predtrsets | while read src pred no
 do
 WORKDIR=`dirname $pred` 
 cd $WORKDIR
@@ -315,7 +315,7 @@ done | awk 'BEGIN{OFS="\t"; print "prediction", "transcript_length"}{print}' > P
 echo "  done" >&2
 
 echo "  13. cDNA length (exons only) (for spliced tr)" >&2
-awk 'NR>=2{print $1, $2, NR-1}' $predtrsets | while read src pred no
+awk 'NR>=2{print $1, $2, ((NR-2)<=9 ? "0"(NR-2) : (NR-2))}' $predtrsets | while read src pred no
 do
 WORKDIR=`dirname $pred` 
 cd $WORKDIR
@@ -375,7 +375,7 @@ echo "done" >&2
 # Distribution of the smaller distance from predicted TSS to its matching refated transcript TSS for all prediction sets
 ########################################################################################################################
 echo "I am computing the distribution of the smaller distance from predicted TSS to its matching refated transcript TSS for all prediction sets" >&2
-awk 'NR>=2{print $1, $2, NR-1}' $predtrsets | while read src pred no
+awk 'NR>=2{print $1, $2, ((NR-2)<=9 ? "0"(NR-2) : (NR-2))}' $predtrsets | while read src pred no
 do
 WORKDIR=`dirname $pred` 
 cd $WORKDIR
