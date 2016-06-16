@@ -44,7 +44,7 @@ meta=$2
 # utr     /work2/project/fragencode/data/species/sus_scrofa/Sscrofa10.2.80/sus_scrofa.utr.positions.bed
 cat $meta | while read elt f
 do
-intersectBed -a $peaks -b $f -nonamecheck -u > peaks_over_$elt.bed
+intersectBed -a $peaks -b $f -u > peaks_over_$elt.bed
 done
 
 # Make the distribution of peaks with 2 different promoter definitions (1Kb and 5KB) and using this order in case of conflict
