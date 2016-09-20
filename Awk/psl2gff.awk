@@ -7,7 +7,7 @@
 
 BEGIN{OFS="\t";
 }
-{
+NF==21{
     split($21,tbeg,",");  # The begining positions of the blocks on the target sequence (0-based)
     split($19,size,",");  # The sizes of the blocks (there are $18 of them)
     split($20,qbeg, ","); # The begining positions of the blocks on the query sequence (0-based)
