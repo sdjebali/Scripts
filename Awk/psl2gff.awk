@@ -11,9 +11,10 @@ NF==21{
     split($21,tbeg,",");  # The begining positions of the blocks on the target sequence (0-based)
     split($19,size,",");  # The sizes of the blocks (there are $18 of them)
     split($20,qbeg, ","); # The begining positions of the blocks on the query sequence (0-based)
-    
+
+    nb[$10]++;
     for(k=1; k<=$18; k++)
     {
-	print $14, "p2g", "exon", tbeg[k]+1, tbeg[k]+size[k], ".", $9, ".", "gene_id \""$10"."NR"\"\; transcript_id \""$10"."NR"\"\;";
+	print $14, "p2g", "exon", tbeg[k]+1, tbeg[k]+size[k], ".", $9, ".", "gene_id \""$10"."nb[$10]"\"\; transcript_id \""$10"."nb[$10]"\"\;";
     }
 }
