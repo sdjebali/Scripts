@@ -74,7 +74,7 @@ fi
 echo I am extracting the most 3\' bp of each transcript for each gene, >&2
 echo associating a low confidence level when the tts comes from a tr where the CDS end not found tag was set, >&2
 echo and adding the list of tr and of tr biotypes the tts comes from. >&2
-awk '{i=9; while($i!="transcript_type"){i++}if($i=="transcript_type"){split($(i+1),c,"\""); trbiot=c[2];} ($0~/cds_end_NF/) ? confidence="low" : confidence="not_low"; ($7=="+") ? ttspos=$4 : ttspos=$5; split($10,a,"\""); split($12,b,"\""); print $1, "Gencode", "TTS", ttspos, ttspos, ".", $7, ".", "gene_id", a[2], "tr", b[2], "trbiot", trbiot, "confidence", confidence;}' $annotbase\_exons_most3p.gff | awk -f $GFF2GFF > $annotbase\_tts_sites.gff
+awk '{i=9; while($i!="transcript_type"){i++}if($i=="transcript_type"){split($(i+1),c,"\""); trbiot=c[2];} ($0~/cds_end_NF/) ? confidence="low" : confidence="not_low"; ($7=="+") ? ttspos=$5 : ttspos=$4; split($10,a,"\""); split($12,b,"\""); print $1, "Gencode", "TTS", ttspos, ttspos, ".", $7, ".", "gene_id", a[2], "tr", b[2], "trbiot", trbiot, "confidence", confidence;}' $annotbase\_exons_most3p.gff | awk -f $GFF2GFF > $annotbase\_tts_sites.gff
 
 # c. Finally collapse per gene and put a low confidence level when the collapsed tts has at least low inside it
 ###############################################################################################################
