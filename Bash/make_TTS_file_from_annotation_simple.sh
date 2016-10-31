@@ -61,7 +61,7 @@ echo done >&2
 # b. Then the most 3' bp of each transcript for each gene
 #########################################################
 echo I am extracting the most 3\' bp of each transcript for each gene >&2
-awk '{($7=="+") ? ttspos=$4 : ttspos=$5; print $1, ".", "TTS", ttspos, ttspos, ".", $7, ".", "gene_id", $10, "tr", $12}' $annotbase\_exons_most3p.gff | awk -f $GFF2GFF > $annotbase\_tts_sites.gff
+awk '{($7=="+") ? ttspos=$5 : ttspos=$4; print $1, ".", "TTS", ttspos, ttspos, ".", $7, ".", "gene_id", $10, "tr", $12}' $annotbase\_exons_most3p.gff | awk -f $GFF2GFF > $annotbase\_tts_sites.gff
 echo done >&2
 
 # c. Finally collapse per gene
