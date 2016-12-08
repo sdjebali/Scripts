@@ -69,7 +69,7 @@ echo done >&2
 # c. Finally collapse per gene
 ##############################
 echo I am collapsing all TSSs per gene >&2
-cat $annotbase\_capped_sites.gff | awk -v to=10 -f $CUTGFF | sort -n | uniq -c | awk '{$1=""; print $0}' | awk -f $GFF2GFF | awk -v fileRef=$annotbase\_capped_sites.gff 'BEGIN{while (getline < fileRef >0){split($12,a,"\""); trlist[$1"_"$4"_"$5"_"$7,$10]=(trlist[$1"_"$4"_"$5"_"$7,$10])(a[2])(",");}} {$11="trlist"; $12="\""(trlist[$1"_"$4"_"$5"_"$7,$10])"\"\;"; print $0}' | awk -f $GFF2GFF > $annotbase\_capped_sites_nr.gff
+cat $annotbase\_capped_sites.gff | awk -v to=10 -f $CUTGFF | sort -n | uniq -c | awk '{$1=""; print $0}' | awk -f $GFF2GFF | awk -v fileRef=$annotbase\_capped_sites.gff 'BEGIN{while (getline < fileRef >0){split($12,a,"\""); trlist[$1":"$4":"$5":"$7,$10]=(trlist[$1":"$4":"$5":"$7,$10])(a[2])(",");}} {$11="trlist"; $12="\""(trlist[$1":"$4":"$5":"$7,$10])"\"\;"; print $0}' | awk -f $GFF2GFF > $annotbase\_capped_sites_nr.gff
 echo done >&2
 
 # d. Clean
