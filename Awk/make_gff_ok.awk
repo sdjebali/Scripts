@@ -5,6 +5,7 @@
 # and outputs the same file but with only gene_id and transcript_id information, as the two first
 # (key,value) pairs
 # on June 15th 2016 added the other (key,value) pairs after the gene_id and transcript_id and double quotes around NA
+# on Dec 16ht 2016 replaced NA for trid by gnid if not NA and the same for gnid (replaced by trid if not NA)
 
 # usage
 # awk -f make_gff_ok.awk input.gff > output.gff
@@ -49,6 +50,37 @@ $1!~/#/{
 	k++
     }
     
+    if(ten=="\"NA\";")
+    {
+	if(twelve!="\"NA\";")
+	{
+	    ten2=twelve;
+	}
+	else
+	{
+	    ten2="\"NA\";";
+	}
+    }
+    else
+    {
+	ten2=ten;
+    }
     
-    print a[1]"\t"a[2]"\t"a[3]"\t"a[4]"\t"a[5]"\t"a[6]"\t"a[7]"\t"a[8]"\tgene_id "ten" transcript_id "(twelve)" "(s);
+    if(twelve=="\"NA\";")
+    {
+	if(ten!="\"NA\";")
+	{
+	    twelve2=ten;
+	}
+	else
+	{
+	    twelve2="\"NA\";";
+	}
+    }
+    else
+    {
+	twelve2=twelve;
+    }
+    
+    print a[1]"\t"a[2]"\t"a[3]"\t"a[4]"\t"a[5]"\t"a[6]"\t"a[7]"\t"a[8]"\tgene_id "ten2" transcript_id "twelve2" "(s);
 }

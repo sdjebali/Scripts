@@ -116,7 +116,7 @@ echo "done" >&2
 # Compute some basic statistics about the basic categories of spliced transcripts with respect to the reference transcripts
 ###########################################################################################################################
 echo "I am computing some basic statistics about the basic categories of spliced transcripts with respect to the reference transcripts" >&2
-awk 'NR>=2' $predtrsets | while read src pred
+awk 'NR>=2{print $1, $2}' $predtrsets | while read src pred
 do
 WORKDIR=`dirname $pred` 
 cd $WORKDIR
@@ -141,7 +141,7 @@ echo "done" >&2
 # Make a table with the distribution of predicted transcripts in the different classes and with respect to the reference set
 ############################################################################################################################
 echo "I am making a table with the distribution of predicted transcripts in the different classes and with respect to the reference set" >&2
-awk 'NR>=2' $predtrsets | while read src pred
+awk 'NR>=2{print $1, $2}' $predtrsets | while read src pred
 do
 WORKDIR=`dirname $pred` 
 cd $WORKDIR
@@ -157,7 +157,7 @@ echo "done" >&2
 # Make a table of basic summary statistics for the different prediction sets
 #############################################################################
 echo "I am making a table of basic summary statistics for the different prediction sets" >&2
-awk 'NR>=2' $predtrsets | while read src pred
+awk 'NR>=2{print $1, $2}' $predtrsets | while read src pred
 do
 WORKDIR=`dirname $pred` 
 cd $WORKDIR
@@ -333,7 +333,7 @@ echo "  done" >&2
 # 163350 (5 fields)
 echo "I am computing the sensitivity and precision of each prediction set with respect to the reference transcripts" >&2
 echo "using three definitions of true positives (Exact, Exact+Extension, Exact+Extension+Inclusion)" >&2
-awk 'NR>=2' $predtrsets | while read src pred
+awk 'NR>=2{print $1, $2}' $predtrsets | while read src pred
 do
 WORKDIR=`dirname $pred` 
 cd $WORKDIR
@@ -357,7 +357,7 @@ echo "done" >&2
 echo "I am making a table saying for different min dist x (50, 100, 500) the number and prop of exact tr of each prediction set that has its TSS closer than x to one of the matching reference tr, and the same for tts" >&2
 for dist in 50 100 500
 do
-awk 'NR>=2' $predtrsets | while read src pred
+awk 'NR>=2{print $1, $2}' $predtrsets | while read src pred
 do
 echo $dist >&2
 WORKDIR=`dirname $pred` 
@@ -389,7 +389,7 @@ echo "done" >&2
 # Make a simple table with number of stranded predicted transcripts, their genes, their individual and nr TSS and TTS
 #####################################################################################################################
 echo "I am making a simple table with number of stranded predicted transcripts, their genes, their individual and nr TSS and TTS" >&2
-awk 'NR>=2' $predtrsets | while read src pred
+awk 'NR>=2{print $1, $2}' $predtrsets | while read src pred
 do
 WORKDIR=`dirname $pred` 
 cd $WORKDIR
@@ -410,7 +410,7 @@ echo "done" >&2
 # Make a sensitivity table for nr reference tss and how they are hit by any predicted tss
 #########################################################################################
 echo "I am making a sensitivity table for nr reference tss and how they are hit by any predicted tss" >&2
-awk 'NR>=2' $predtrsets | while read src pred
+awk 'NR>=2{print $1, $2}' $predtrsets | while read src pred
 do
 WORKDIR=`dirname $pred` 
 cd $WORKDIR
@@ -430,7 +430,7 @@ echo "done" >&2
 # Make a sensitivity table for nr reference tts and how they are hit by any predicted tts
 #########################################################################################
 echo "I am making a sensitivity table for nr reference tts and how they are hit by any predicted tts" >&2
-awk 'NR>=2' $predtrsets | while read src pred
+awk 'NR>=2{print $1, $2}' $predtrsets | while read src pred
 do
 WORKDIR=`dirname $pred` 
 cd $WORKDIR
@@ -450,7 +450,7 @@ echo "done" >&2
 # Make a precision table for all distinct predicted tss with respect to the reference tss
 #########################################################################################
 echo "I am making a precision table for all distinct predicted tss with respect to the reference tss" >&2
-awk 'NR>=2' $predtrsets | while read src pred
+awk 'NR>=2{print $1, $2}' $predtrsets | while read src pred
 do
 WORKDIR=`dirname $pred` 
 cd $WORKDIR
@@ -470,7 +470,7 @@ echo "done" >&2
 # Make a precision table for all distinct predicted tts with respect to the reference tts
 #########################################################################################
 echo "I am making a precision table for all distinct predicted tts with respect to the reference tts" >&2
-awk 'NR>=2' $predtrsets | while read src pred
+awk 'NR>=2{print $1, $2}' $predtrsets | while read src pred
 do
 WORKDIR=`dirname $pred` 
 cd $WORKDIR

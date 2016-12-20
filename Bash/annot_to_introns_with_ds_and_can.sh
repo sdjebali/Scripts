@@ -106,10 +106,10 @@ echo done >&2
 # the 24don seq at 5' end of the intron is composed of 12 nt exon and then 12 nt introns which start with the GT
 # the 24acc seq at 3' end of the intron is composed of 12 nt intron which end with the AG and then 12 nt exon
 echo I am making a file of coordinates for the 24mers around donor and acceptor >&2
-awk '{intrbeg=$4; intrend=$5; if($7=="+"){donbeg=intrbeg-12; donend=intrbeg+12-1; accbeg=intrend-12+1; accend=intrend+12} else{if($7=="-"){donbeg=intrend-12+1; donend=intrend+12; accbeg=intrbeg-12; accend=intrbeg+12-1}} print $0, "24merdonbed", "\""$1"_"(donbeg-1)"_"donend"_"$7"\"\;", "24meraccbeg", "\""$1"_"(accbeg-1)"_"accend"_"$7"\"\;"}' $base\_introns.gff | awk -f $GFF2GFF > $base\_introns_24mer_don_acc.gff
+awk '{intrbeg=$4; intrend=$5; if($7=="+"){donbeg=intrbeg-12; donend=intrbeg+12-1; accbeg=intrend-12+1; accend=intrend+12} else{if($7=="-"){donbeg=intrend-12+1; donend=intrend+12; accbeg=intrbeg-12; accend=intrbeg+12-1}} print $0, "24merdonbed", "\""$1":"(donbeg-1)":"donend":"$7"\"\;", "24meraccbeg", "\""$1":"(accbeg-1)":"accend":"$7"\"\;"}' $base\_introns.gff | awk -f $GFF2GFF > $base\_introns_24mer_don_acc.gff
 # chr1  HAVANA  intron  12058   12178   .       +       .       gene_id "ENSG00000223972.5"; transcript_id "ENST00000450305.2"; 24merdonbed "chr1_12045_12069_+"; 24meraccbed "chr1_12166_12190_+";
 # 962475 (16 fields)
-awk '{split($(NF-2),a,"\""); split(a[2],a1,"_"); split($NF,b,"\""); split(b[2],b1,"_"); print a1[1], a1[2], a1[3], ".", ".", a1[4]; print b1[1], b1[2], b1[3], ".", ".", b1[4]}' $base\_introns_24mer_don_acc.gff | sort | uniq | awk '{print $1"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6}' > $base\_introns_24mers_don_acc_nr.bed
+awk '{split($(NF-2),a,"\""); split(a[2],a1,":"); split($NF,b,"\""); split(b[2],b1,":"); print a1[1], a1[2], a1[3], ".", ".", a1[4]; print b1[1], b1[2], b1[3], ".", ".", b1[4]}' $base\_introns_24mer_don_acc.gff | sort | uniq | awk '{print $1"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6}' > $base\_introns_24mers_don_acc_nr.bed
 # chr10 100009825       100009849       .       .       -
 # 652433 (6 fields)  *** real    0m19.786s
 echo done >&2
@@ -121,7 +121,7 @@ echo I am extracting the sequences of 24nt around donor and acceptor >&2
 fastaFromBed -tab -s -fi $genome -bed $base\_introns_24mers_don_acc_nr.bed -fo $base\_introns_24mer_don_acc_nr.tsv
 # chr10:100009825-100009849(-)  GGCGGAAAGCAGGTCAGAGgccgg
 # 652433 (2 fields)  *** real    0m32.324s
-awk -v fileRef=$base\_introns_24mer_don_acc_nr.tsv 'BEGIN{while (getline < fileRef >0){split($1,a,":"); split(a[2],b,"\("); split(b[1],c,"-"); split(b[2],d,"\)"); seq["\""a[1]"_"c[1]"_"c[2]"_"d[1]"\"\;"]=$2}} {print $0, "24merdonseq", seq[$(NF-2)], "24meraccseq",seq[$NF]}' $base\_introns_24mer_don_acc.gff | awk -f $GFF2GFF > $base\_introns_24mer_don_acc_seq.gff
+awk -v fileRef=$base\_introns_24mer_don_acc_nr.tsv 'BEGIN{while (getline < fileRef >0){split($1,a,":"); split(a[2],b,"\("); split(b[1],c,"-"); split(b[2],d,"\)"); seq["\""a[1]":"c[1]":"c[2]":"d[1]"\"\;"]=$2}} {print $0, "24merdonseq", seq[$(NF-2)], "24meraccseq",seq[$NF]}' $base\_introns_24mer_don_acc.gff | awk -f $GFF2GFF > $base\_introns_24mer_don_acc_seq.gff
 # chr1  HAVANA  intron  12058   12178   .       +       .       gene_id "ENSG00000223972.5"; transcript_id "ENST00000450305.2"; 24merdonbed: "chr1_12045_12069_+"; 24meraccbed: "chr1_12166_12190_+"; 24merdonseq GTGCAAGCTGAGCACTGGAGTGGA 24meraccseq ATAGGGGAAAGATTGGAGGAAAGA
 # 962475 (20 fields) *** real    0m17.557s
 echo done >&2

@@ -5,8 +5,10 @@
 # and produce several files that can then be used by the script compare_multiple_trsets_wrt_reftrset.sh
 # to generate a comparison of several sets of predicted transcript models with respect to a given reference
 # (or set of transcripts that we expect to find (usually in the rnaseq sample in question))
-# this script is expected to consume a lot of resources such as many tens of G of ram and also time
-# so it is better to launch in on a cluster
+# this script is expected to use a lot of resources such as many tens of G of ram and also time
+# so it is better to launch it on a cluster
+
+# on Dec 15th 2016 changed the _ delimitor by _ in order to accept ncbi annotation
 
 # takes as input
 ################
@@ -119,7 +121,7 @@ echo "I am making small intermediate 1 column files to be used by plotting scrip
 # exon length
 awk '$3=="exon"{print $5-$4+1}' $pred > exon_length_$base.txt
 # distinct exon length
-awk '$3=="exon"{print $1"_"$4"_"$5"_"$7}' $pred | sort | uniq | awk '{split($1,a,"_"); print a[3]-a[2]+1}' > distinct_exon_length_$base.txt
+awk '$3=="exon"{print $1":"$4":"$5":"$7}' $pred | sort | uniq | awk '{split($1,a,":"); print a[3]-a[2]+1}' > distinct_exon_length_$base.txt
 # spliced and stranded transcript 5' exon length 
 awk -v fileRef=$base\_complete_comp_refinedclass_nbex.tsv 'BEGIN{while(getline < fileRef >0){if($2=="Monoexonic"){ko["\""substr($1,2)"\";"]=1}}} (($3=="exon")&&(ko[$12]!=1))' $pred | awk -v fldno=12 -f $EXTRACT5P > tr_5p_exon_$base.gff 
 awk '{print $5-$4+1}' tr_5p_exon_$base.gff > tr_5p_exon_$base\_length.txt
@@ -133,10 +135,10 @@ awk '{print $5-$4+1}' tr_3p_exon_$base.gff > tr_3p_exon_$base\_length.txt
 awk -v fileRef=$base\_complete_comp_refinedclass_nbex.tsv 'BEGIN{while(getline < fileRef >0){if($2=="Monoexonic"){ko["\""substr($1,2)"\";"]=1}}} (($3=="exon")&&(ko[$12]!=1))' $pred | awk -v fldno=10 -f $EXTRACT3P > gn_3p_exon_$base.gff 
 awk '{print $5-$4+1}' gn_3p_exon_$base.gff > gn_3p_exon_$base\_length.txt
 # spliced and stranded tr internal exon length
-awk -v fileRef=$base\_complete_comp_refinedclass_nbex.tsv 'BEGIN{while(getline < fileRef >0){if($2=="Monoexonic"){ko["\""substr($1,2)"\";"]=1}}} ($3=="exon")&&(ko[$12]!=1)&&(($7=="+")||($7=="-"))' $pred | awk -v fileRef1=tr_5p_exon_$base.gff -v fileRef2=tr_3p_exon_$base.gff 'BEGIN{while(getline < fileRef1 >0){ko[$1"_"$4"_"$5"_"$7"_"$12]=1} while(getline < fileRef2 >0){ko[$1"_"$4"_"$5"_"$7"_"$12]=1}} ko[$1"_"$4"_"$5"_"$7"_"$12]!=1{print}' | awk -f $GFF2GFF > internal_exons_$base.gff
+awk -v fileRef=$base\_complete_comp_refinedclass_nbex.tsv 'BEGIN{while(getline < fileRef >0){if($2=="Monoexonic"){ko["\""substr($1,2)"\";"]=1}}} ($3=="exon")&&(ko[$12]!=1)&&(($7=="+")||($7=="-"))' $pred | awk -v fileRef1=tr_5p_exon_$base.gff -v fileRef2=tr_3p_exon_$base.gff 'BEGIN{while(getline < fileRef1 >0){ko[$1":"$4":"$5":"$7":"$12]=1} while(getline < fileRef2 >0){ko[$1":"$4":"$5":"$7":"$12]=1}} ko[$1":"$4":"$5":"$7":"$12]!=1{print}' | awk -f $GFF2GFF > internal_exons_$base.gff
 awk '{print $5-$4+1}' internal_exons_$base.gff > internal_exons_$base\_length.txt
 # spliced and stranded transcript 3' exon length
-awk '{print $1"_"$4"_"$5"_"$7}' internal_exons_$base.gff | sort | uniq | awk '{split($1,a,"_"); print a[3]-a[2]+1}' > distinct_internal_exon_length_$base.txt
+awk '{print $1":"$4":"$5":"$7}' internal_exons_$base.gff | sort | uniq | awk '{split($1,a,":"); print a[3]-a[2]+1}' > distinct_internal_exon_length_$base.txt
 # spliced and stranded transcript 3' exon length
 awk -v fileRef=$base\_complete_comp_refinedclass_nbex.tsv 'BEGIN{while(getline < fileRef >0){if($2=="Monoexonic"){ok["\""substr($1,2)"\";"]=1}}} ($3=="exon")&&(ok[$12]==1){print}' $pred | awk -f $GFF2GFF > monoextr_exons_$base.gff
 awk '{print $5-$4+1}' monoextr_exons_$base.gff > monoextr_exons_$base\_length.txt
@@ -166,7 +168,7 @@ awk -v fileRef1=$base\_capped_sites.gff -v fileRef2=$anntss -v fileRef3=$base\_t
 echo "done" >&2
 
 # Add the smaller distance to a matching annotated tr for tss and for tts
-#######################################################################
+##########################################################################
 echo "I am adding the smaller distance to a matching annotated tr for tss and for tts" >&2
 awk '{dtss=1000000000; dtts=1000000000; split($4,a,","); k=1; while(a[k]!=""){split($3,b,"_"); split(a[k],c,"_"); if(abs(b[2]-c[2])<dtss){dtss=abs(b[2]-c[2]);} k++} split($6,a,","); k=1; while(a[k]!=""){split($5,b,"_"); split(a[k],c,"_"); if(abs(b[2]-c[2])<dtts){dtts=abs(b[2]-c[2]);} k++} print $0, dtss, dtts} function abs(x){return x >= 0 ? x : -x;}' $base\_predtr_spliced_stranded_exact_$annotbase\_correstrlist_TSS_AnnotTSSlist_TTS_AnnotTTSlist.txt > $base\_predtr_spliced_stranded_exact_$annotbase\_correstrlist_TSS_AnnotTSSlist_TTS_AnnotTTSlist_smallerdist_TSS_TTS.txt
 echo "done" >&2
@@ -191,7 +193,7 @@ echo "done" >&2
 # Clean
 #######
 echo "I am cleaning" >&2
-rm $base\_complete.gff $base\_distinct_exons.txt $base\_distinct_introns.txt $base\_distinct_introns_bed.txt $base\_distinct_introns_minus1nteachside.txt $base\_trids.txt $base\_gnids.txt 
+rm $base\_complete.gff 
 rm tr_5p_exon_$base.gff tr_3p_exon_$base.gff 
 rm gn_5p_exon_$base.gff gn_3p_exon_$base.gff 
 rm internal_exons_$base.gff monoextr_exons_$base.gff

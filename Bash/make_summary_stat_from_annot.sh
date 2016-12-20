@@ -17,6 +17,8 @@
 #     junction coordinates can be obtained by going extending the intron coord by 1 nt on each side, which explains the current name (should be changed at one point?)
 #   * $b2\_trids.txt: the file of transcript ids
 #   * $b2\_gnids.txt: the file of gene ids
+#   * $b2\_trid_nbex.txt: the file of tr id with nb of exons
+#   * $b2\_gnid_nbtr.txt: the file of gene id with nb of transcripts
 # from this it is then easy to retrieve additionally
 ####################################################
 # - nbexpertr
@@ -28,13 +30,17 @@
 # - nbdistinctintronpergn
 # by simply running this command:
 #################################
-# awk 'NR==2' $output_from_this_script | awk 'BEGIN{print "nbex nbdistinctex nbtr nbgn nbintrons nbdistinctintrons nbexpertr nbexpergn nbdistinctexpergn nbtrpergn nbintronpertr nbintronpergn nbdistinctintronpergn"}{print $0, $1/$3, $1/$4, $2/$4, $3/$4, $5/$3, $5/$4, $6/$4}'
+# awk 'NR==2' $output_from_this_script | awk 'BEGIN{OFS="\t"; print "nbex\tnbdistinctex\tnbtr\tnbgn\tnbintrons\tnbdistinctintrons\tnbexpertr\tnbexpergn\tnbdistinctexpergn\tnbtrpergn\tnbintronpertr\tnbintronpergn\tnbdistinctintronpergn"}{print $0, $1/$3, $1/$4, $2/$4, $3/$4, $5/$3, $5/$4, $6/$4}'
 
 # example:
 ##########
 # annot=/users/rg/projects/encode/scaling_up/whole_genome/Gencode/version10/Long/Element/gen10.long.exon.gtf
 # time make_summary_stat_from_annot.sh $annot > gen10.long.sumstat.txt 2> gen10.long.sumstat.err
 # real	0m47.351s
+
+# NOTE: on Dec 13th 2016 added generation of files with nb of tr for each gene and nb of ex for each tr
+# in order to be able to compute the distribution of those things
+# On Dec 15th 2016 replaced the _ delimitor by : in order to be able to accept ncbi annotation
 
 if [ ! -n "$1" ]
 then
@@ -57,6 +63,7 @@ MAKEOK=$rootDir/../Awk/make_gff_ok.awk
 INTRONS=$rootDir/../Awk/make_introns.awk
 GFF2GFF=$rootDir/../Awk/gff2gff.awk
 BOUNDARIES=$rootDir/../Awk/compute_boundaries.awk
+STATS=$rootDir/stats.sh
 
 # Make necesary gff files for the stats
 echo Making the necesary gff files for the stats >&2
@@ -66,30 +73,41 @@ awk -v toadd=transcript -v fldno=12 -f $BOUNDARIES $b2\_exons_sorted_by_tr.gff |
 awk -v toadd=gene -v fldno=10 -f $BOUNDARIES $b2\_exons_sorted_by_tr.gff | awk '{print $0, "transcript_id", $NF}' | awk -f $GFF2GFF > $b2\_genes.gff
 echo done >&2
 
-# Make necesary txt files for the stats
-echo Making the necesary txt files for the stats >&2
-awk '{print $1"_"$4"_"$5"_"$7}' $b2\_exons_sorted_by_tr.gff | sort | uniq > $b2\_distinct_exons.txt
-awk '{print $1"_"$4"_"$5"_"$7}' $b2\_introns.gff | sort | uniq > $b2\_distinct_introns.txt
-awk '{print $1"_"($4-1)"_"$5"_"$7}' $b2\_introns.gff | sort | uniq > $b2\_distinct_introns_bed.txt
-awk '{print $1"_"($4-1)"_"($5+1)"_"$7}' $b2\_introns.gff | sort | uniq > $b2\_distinct_introns_minus1nteachside.txt
+# Make necesary txt files for the simple stats and distributions
+echo Making the necesary txt files for the simple stats >&2
+awk '{print $1":"$4":"$5":"$7}' $b2\_exons_sorted_by_tr.gff | sort | uniq > $b2\_distinct_exons.txt
+awk '{print $1":"$4":"$5":"$7}' $b2\_introns.gff | sort | uniq > $b2\_distinct_introns.txt
+awk '{print $1":"($4-1)":"$5":"$7}' $b2\_introns.gff | sort | uniq > $b2\_distinct_introns_bed.txt
+awk '{print $1":"($4-1)":"($5+1)":"$7}' $b2\_introns.gff | sort | uniq > $b2\_distinct_introns_minus1nteachside.txt
 awk '{split($12,a,"\""); print a[2]}' $b2\_transcripts.gff | sort | uniq > $b2\_trids.txt
 awk '{split($10,a,"\""); print a[2]}' $b2\_genes.gff | sort | uniq > $b2\_gnids.txt
 echo done >&2
+echo Making the necesary txt files for the distributions >&2
+awk '{nbex[$12]++}END{for(t in nbex){print t, nbex[t]}}' $b2\_exons_sorted_by_tr.gff > $b2\_trid_nbex.txt
+awk '{seen[$12,$10]++; if(seen[$12,$10]==1){nbtr[$10]++}}END{for(g in nbtr){print g, nbtr[g]}}' $b2\_exons_sorted_by_tr.gff > $b2\_gnid_nbtr.txt
+echo done >&2
 
-# Make the stats
-echo Making the stats >&2
+# Make the simple stats and distributions
+echo Making the simple stats >&2
 nbex=`wc -l $b2\_exons_sorted_by_tr.gff | awk '{print $1}'`
 nbdistinctex=`wc -l $b2\_distinct_exons.txt | awk '{print $1}'`
 nbtr=`wc -l $b2\_trids.txt | awk '{print $1}'`
 nbgn=`wc -l $b2\_gnids.txt | awk '{print $1}'`
 nbintrons=`wc -l $b2\_introns.gff | awk '{print $1}'`
 nbdistinctintrons=`wc -l $b2\_distinct_introns.txt | awk '{print $1}'`
-echo "nbex nbdistinctex nbtr nbgn nbintrons nbdistinctintrons"
-echo $nbex $nbdistinctex $nbtr $nbgn $nbintrons $nbdistinctintrons
+printf "nbex\tnbdistinctex\tnbtr\tnbgn\tnbintrons\tnbdistinctintrons\n"
+printf $nbex"\t"$nbdistinctex"\t"$nbtr"\t"$nbgn"\t"$nbintrons"\t"$nbdistinctintrons"\n"
+echo done >&2
+echo Making the distributions >&2
+printf "distribution of the number of exons per transcript\n"
+$STATS $b2\_trid_nbex.txt 2 
+printf "distribution of the number of transcripts per gene\n"
+$STATS $b2\_gnid_nbtr.txt 2
 echo done >&2
 
 # Clean
 echo Cleaning >&2
 cat $b2\_exons_sorted_by_tr.gff $b2\_introns.gff $b2\_transcripts.gff $b2\_genes.gff > $b2\_complete.gff
 rm $b2\_exons_sorted_by_tr.gff $b2\_introns.gff $b2\_transcripts.gff $b2\_genes.gff
+rm $b2\_distinct_exons.txt $b2\_distinct_introns.txt $b2\_distinct_introns_bed.txt $b2\_distinct_introns_minus1nteachside.txt $b2\_trids.txt $b2\_gnids.txt 
 echo done >&2
