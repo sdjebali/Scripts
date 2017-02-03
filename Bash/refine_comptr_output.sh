@@ -39,6 +39,7 @@
 # also consider a distance for the transcripts on the same strand but close
 # and consider those as extension and not ig as it is now
 
+# on Feb 3rd 2017 make it possible to use an annotation file which name ends in gff 
 
 # Check the arguments
 #####################
@@ -60,7 +61,8 @@ mytr=$1
 annot=$2
 mytrbasetmp=`basename ${mytr%.gff}`
 mytrbase=`basename ${mytrbasetmp%.gtf}`
-annbase=`basename ${annot%.gtf}`
+annbasetmp=`basename ${annot%.gtf}`
+annbase=${annbasetmp%.gff}
 
 # Programs
 ##########

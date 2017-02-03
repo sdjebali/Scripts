@@ -16,10 +16,11 @@
 # - uses awk scripts
 
 # on dec15th 2015 able to take a gtf file with gene_id and transcript_id at any location
+# on feb3rd 2017 able to take as input a file named gff as well
 
 # Usage:
 ########
-# make_TTS_file_from_annotation_simple.sh annot.gff [tr_bt_list] 2> make_TTS_file_with_confidence_better_from_annotation.err &
+# make_TTS_file_from_annotation_simple.sh annot.gtf [tr_bt_list] 2> make_TTS_file_with_confidence_better_from_annotation.err &
 
 # Check it has all it needs
 ###########################
@@ -38,8 +39,9 @@ fi
 path="`dirname \"$0\"`" # relative path
 rootDir="`( cd \"$path\" && pwd )`" # absolute path
 annotation=$1
-annotbase=`basename ${annotation%.gtf}`
- 
+annotbasetmp=`basename ${annotation%.gtf}`
+annotbase=${annotbasetmp%.gff}
+
 # Programs
 ###########
 MAKEOK=$rootDir/../Awk/make_gff_ok.awk
