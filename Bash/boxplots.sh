@@ -57,5 +57,4 @@ gp = gp + theme(axis.text.x=element_text(angle=60, hjust=1, vjust=1))
 gp = gp + labs(y='\'$4\'') 
 gp = gp + ylim(c(0,'$5'))   
 ggsave(filename="'$6'")
-dev.off()
 ' | R --vanilla
