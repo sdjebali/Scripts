@@ -25,17 +25,18 @@
 # 1_Gencv19_all   2
 # 1220427 (2 fields)
 
-if [ ! -n "$1" ] || [ ! -n "$2" ] || [ ! -n "$3" ] || [ ! -n "$4" ] || [ ! -n "$5" ] || [ ! -n "$6" ]
+if [ ! -n "$1" ] || [ ! -n "$2" ] || [ ! -n "$3" ] || [ ! -n "$4" ] || [ ! -n "$5" ] || [ ! -n "$6" ] || [ ! -n "$7" ]
 then
    echo "" >&2
-    echo Usage: boxplots.sh input.tsv headkey_xval headkey_yval yaxis_label max_yval output_file >&2
+    echo Usage: boxplots.sh input.tsv headkey_xval headkey_yval yaxis_label min_yval max_yval output_file >&2
     echo "" >&2
     echo "takes as input:" >&2
     echo "- absolute path to input tsv file" >&2
     echo "- header key for x values in the tsv file" >&2
     echo "- header key for y values in the tsv file" >&2
     echo "- label for y axis" >&2
-    echo "- max y value to be plotted (min value is assumed to be 0)" >&2
+    echo "- min y value to be plotted" >&2
+    echo "- max y value to be plotted" >&2
     echo "- absolute path to output file (with extension), could be pdf, png, eps." >&2
     echo "" >&2
     echo "produces as output:" >&2
@@ -55,6 +56,6 @@ gp = ggplot(data) + geom_boxplot(aes(y='$3',x=factor('$2')))
 gp = gp + scale_x_discrete(labels=gsub("[0-9]+_","",levels(as.factor(data$'$2'))))
 gp = gp + theme(axis.text.x=element_text(angle=60, hjust=1, vjust=1))
 gp = gp + labs(y='\'$4\'') 
-gp = gp + ylim(c(0,'$5'))   
-ggsave(filename="'$6'")
+gp = gp + ylim(c('$5','$6'))   
+ggsave(filename="'$7'")
 ' | R --vanilla
