@@ -67,8 +67,8 @@ STATS=$rootDir/stats.sh
 
 # Make necesary gff files for the stats
 echo Making the necesary gff files for the stats >&2
-awk '$3=="exon"' $annot | awk -f $MAKEOK | sort -k12,12 -k4,4n -k5,5n > $b2\_exons_sorted_by_tr.gff
-awk -v fldgn=10 -v fldtr=12 -f $INTRONS $b2\_exons_sorted_by_tr.gff > $b2\_introns.gff
+awk '$3=="exon"' $annot | awk -f $MAKEOK | awk -f $GFF2GFF | sort -k12,12 -k4,4n -k5,5n > $b2\_exons_sorted_by_tr.gff
+awk -v fldgn=10 -v fldtr=12 -f $INTRONS $b2\_exons_sorted_by_tr.gff | awk -f $GFF2GFF > $b2\_introns.gff
 awk -v toadd=transcript -v fldno=12 -f $BOUNDARIES $b2\_exons_sorted_by_tr.gff | awk -v fileRef=$b2\_exons_sorted_by_tr.gff 'BEGIN{while (getline < fileRef >0){gnid[$12]=$10}} {print $1, $2, $3, $4, $5, $6, $7, $8, "gene_id", gnid[$10], $9, $10}' | awk -f $GFF2GFF > $b2\_transcripts.gff
 awk -v toadd=gene -v fldno=10 -f $BOUNDARIES $b2\_exons_sorted_by_tr.gff | awk '{print $0, "transcript_id", $NF}' | awk -f $GFF2GFF > $b2\_genes.gff
 echo done >&2
