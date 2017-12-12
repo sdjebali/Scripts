@@ -491,43 +491,43 @@ echo "done" >&2
 ######################################################################################
 echo "I am making the plots for numbers and lengths of several objects across all the predictions" >&2
 echo "  1. number of exons per transcript" >&2
-$BOXPLOT Plots/ExonPerTranscript/prediction_nbexintr_forggplot.tsv prediction nb_ex_in_transcript "Number of exons per transcript" 20 Plots/ExonPerTranscript/prediction_nbexintr_forggplot.png
+$BOXPLOT Plots/ExonPerTranscript/prediction_nbexintr_forggplot.tsv prediction nb_ex_in_transcript "Number of exons per transcript" 0 20 Plots/ExonPerTranscript/prediction_nbexintr_forggplot.png
 echo "  done" >&2
 echo "  2. number of transcripts per gene" >&2
-$BOXPLOT Plots/TranscriptPerGene/prediction_nbtringn_forggplot.tsv prediction nb_tr_in_gene "Number of transcripts per gene" 20 Plots/TranscriptPerGene/prediction_nbtringn_forggplot.png
+$BOXPLOT Plots/TranscriptPerGene/prediction_nbtringn_forggplot.tsv prediction nb_tr_in_gene "Number of transcripts per gene" 0 20 Plots/TranscriptPerGene/prediction_nbtringn_forggplot.png
 echo "  done" >&2
 echo "  3. exon length" >&2
-$BOXPLOT Plots/ExonLength/prediction_exlg_forggplot.tsv prediction exon_length "Exon length" 500 Plots/ExonLength/prediction_exlg_forggplot.png
+$BOXPLOT Plots/ExonLength/prediction_exlg_forggplot.tsv prediction exon_length "Exon length" 0 500 Plots/ExonLength/prediction_exlg_forggplot.png
 echo "  done" >&2
 echo "  4. distinct exon length" >&2
-$BOXPLOT Plots/DistinctExonLength/prediction_distexlg_forggplot.tsv prediction distinct_exon_length "Distinct exon length" 500 Plots/DistinctExonLength/prediction_distexlg_forggplot.png
+$BOXPLOT Plots/DistinctExonLength/prediction_distexlg_forggplot.tsv prediction distinct_exon_length "Distinct exon length" 0 500 Plots/DistinctExonLength/prediction_distexlg_forggplot.png
 echo "  done" >&2
 echo "  5. transcript 5' exon length (for spliced and stranded tr)" >&2
-$BOXPLOT Plots/5pExonLength_Tr/prediction_5pexlgtr_forggplot.tsv prediction fivep_exon_length_tr "5p exon length (spliced, stranded tr)" 500 Plots/5pExonLength_Tr/prediction_5pexlgtr_forggplot.png
+$BOXPLOT Plots/5pExonLength_Tr/prediction_5pexlgtr_forggplot.tsv prediction fivep_exon_length_tr "5p exon length (spliced, stranded tr)" 0 500 Plots/5pExonLength_Tr/prediction_5pexlgtr_forggplot.png
 echo "  done" >&2
 echo "  6. gene 5' exon length (for genes with spliced and stranded tr)" >&2
-$BOXPLOT Plots/5pExonLength_Gn/prediction_5pexlggn_forggplot.tsv prediction fivep_exon_length_gn "5p exon length of genes (with spl str tr)" 500 Plots/5pExonLength_Gn/prediction_5pexlggn_forggplot.png
+$BOXPLOT Plots/5pExonLength_Gn/prediction_5pexlggn_forggplot.tsv prediction fivep_exon_length_gn "5p exon length of genes (with spl str tr)" 0 500 Plots/5pExonLength_Gn/prediction_5pexlggn_forggplot.png
 echo "  done" >&2
 echo "  7. transcript 3' exon length (for spliced and stranded tr)" >&2
-$BOXPLOT Plots/3pExonLength_Tr/prediction_3pexlgtr_forggplot.tsv prediction threep_exon_length_tr "3p exon length (spliced, stranded tr)" 500 Plots/3pExonLength_Tr/prediction_3pexlgtr_forggplot.png
+$BOXPLOT Plots/3pExonLength_Tr/prediction_3pexlgtr_forggplot.tsv prediction threep_exon_length_tr "3p exon length (spliced, stranded tr)" 0 500 Plots/3pExonLength_Tr/prediction_3pexlgtr_forggplot.png
 echo "  done" >&2
 echo "  8. gene 3' exon length (for genes with spliced and stranded tr)" >&2
-$BOXPLOT Plots/3pExonLength_Gn/prediction_3pexlggn_forggplot.tsv prediction threep_exon_length_gn "3p exon length of genes (with spl str tr)" 500 Plots/3pExonLength_Gn/prediction_3pexlggn_forggplot.png
+$BOXPLOT Plots/3pExonLength_Gn/prediction_3pexlggn_forggplot.tsv prediction threep_exon_length_gn "3p exon length of genes (with spl str tr)" 0 500 Plots/3pExonLength_Gn/prediction_3pexlggn_forggplot.png
 echo "  done" >&2
 echo "  9. internal exon length (for spliced and stranded tr)" >&2
-$BOXPLOT Plots/InternalExonLength/prediction_internexlg_forggplot.tsv prediction internal_exon_length "Internal exon length (spliced, stranded tr)" 260 Plots/InternalExonLength/prediction_internexlg_forggplot.png
+$BOXPLOT Plots/InternalExonLength/prediction_internexlg_forggplot.tsv prediction internal_exon_length "Internal exon length (spliced, stranded tr)" 0 260 Plots/InternalExonLength/prediction_internexlg_forggplot.png
 echo "  done" >&2
 echo "  10. distinct internal exon length (for spliced and stranded tr)" >&2
-$BOXPLOT Plots/DistinctInternalExonLength/prediction_distinternexlg_forggplot.tsv prediction distinct_internal_exon_length "Distinct internal exon length (spliced, stranded tr)" 260 Plots/DistinctInternalExonLength/prediction_distinternexlg_forggplot.png
+$BOXPLOT Plots/DistinctInternalExonLength/prediction_distinternexlg_forggplot.tsv prediction distinct_internal_exon_length "Distinct internal exon length (spliced, stranded tr)" 0 260 Plots/DistinctInternalExonLength/prediction_distinternexlg_forggplot.png
 echo "  done" >&2
 echo "  11. monoexonic transcript exon length" >&2
-$BOXPLOT Plots/MonoExTrExLength/prediction_monoextrexlg_forggplot.tsv prediction monoextr_exon_length "Monoexonic transcript exon length" 500 Plots/MonoExTrExLength/prediction_monoextrexlg_forggplot.png
+$BOXPLOT Plots/MonoExTrExLength/prediction_monoextrexlg_forggplot.tsv prediction monoextr_exon_length "Monoexonic transcript exon length" 0 500 Plots/MonoExTrExLength/prediction_monoextrexlg_forggplot.png
 echo "  done" >&2
 echo "  12. transcript length (exons + introns) (for spliced transcripts)" >&2
-$BOXPLOT Plots/TrLength/prediction_trlg_forggplot.tsv prediction transcript_length "Transcript length (exons + introns) (spliced tr)" 50000 Plots/TrLength/prediction_trlg_forggplot.png
+$BOXPLOT Plots/TrLength/prediction_trlg_forggplot.tsv prediction transcript_length "Transcript length (exons + introns) (spliced tr)" 0 50000 Plots/TrLength/prediction_trlg_forggplot.png
 echo "  done" >&2
 echo "  13. cDNA length (exons only) (for spliced tr)" >&2
-$BOXPLOT Plots/cDNALength/prediction_cdnalg_forggplot.tsv prediction cDNA_length "cDNA length (only exons) (for spliced tr)" 4000 Plots/cDNALength/prediction_trlg_forggplot.png
+$BOXPLOT Plots/cDNALength/prediction_cdnalg_forggplot.tsv prediction cDNA_length "cDNA length (only exons) (for spliced tr)" 0 4000 Plots/cDNALength/prediction_trlg_forggplot.png
 echo "  done" >&2
 echo "done" >&2
 

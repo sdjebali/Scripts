@@ -7,7 +7,8 @@
 #   * header key for x values in the tsv file
 #   * header key for y values in the tsv file
 #   * label for y axis
-#   * max y value to be plotted (min value is assumed to be 0)
+#   * min y value to be plotted
+#   * max y value to be plotted
 #   * absolute path to output file (with extension), could be pdf, png, eps.
 # Note1: needs reshape2 and ggplot2 libraries to be installed
 # Note2: in order to have the boxplots in a given order one can number the different sets for which we want boxplots
