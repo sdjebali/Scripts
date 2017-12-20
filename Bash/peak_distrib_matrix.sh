@@ -6,11 +6,10 @@
 ################
 # - a file of unstranded peaks in bed format
 # - a file of gene annotation with at least exon rows that must have at least gene_id in the 9th field in gtf or gff2 format
-# produces as output in the working directory
-#############################################
+# produces as standard output
+#############################
 # - the peaks distribution matrix as a tsv file with header that has peaks in rows and list of genes reflecting
 #   the intersection with different genomic domains as columns (exons, introns, tss, tss1kb, tss5kb, tts, tts1kb, tts5kb)
-# - multiple intermediate tsv files with individual intersection results
 # !!! be careful not made to be used several times in the same directory since uses fixed names !!!
 
 # Example
@@ -18,8 +17,8 @@
 # cd /work/project/fragencode/workspace/sdjebali/atacseq/fragencode/peaks/peakdistrib/pergene_andrea/test
 # pig=/work/project/fragencode/results/atacseq/sus_scrofa/indiv.peaks.merged/mergedpeaks.peaknb.readcov.bed
 # annot=/work/project/fragencode/data/species/sus_scrofa/Sscrofa10.2.84/sus_scrofa.gtf
-# time peak_distrib_matrix.sh $pig $annot 2> peak_distrib_matrix.err
-# real	0m26.723s  *** ok and no difference with file generated manually
+# time peak_distrib_matrix.sh $pig $annot > mergedpeaks_allinfo.tsv 2> peak_distrib_matrix.err
+# real	0m26.723s  
 
 # More precisely The body of the matrix will contain the following:
 ###################################################################
@@ -67,7 +66,7 @@
 
 # Check if both needed inputs are present otherwise exits
 #########################################################
-if [ ! -n "$1" ]  || [ ! -n "$2" ]
+if [ ! -n "$1" ] || [ ! -n "$2" ]
 then
     echo Usage: peak_distrib_matrix.sh peaks.bed annot.gff >&2
     echo "" >&2
@@ -102,7 +101,7 @@ INTRONS=$rootDir/../Awk/make_introns.awk
 MAKETSS=$rootDir/make_TSS_file_from_annotation_simple.sh
 MAKETTS=$rootDir/make_TTS_file_from_annotation_simple.sh
 GFF2GFF=$rootDir/../Awk/gff2gff.awk
-OVERLAP=$rootDir/overlap
+OVERLAP=$rootDir/../bin/overlap
 CLASSIF=$rootDir/../Awk/peakoverlap2classif.awk
 
 
@@ -252,7 +251,7 @@ echo done >&2
 # - list of genes with the 5kb window around their most 3' bp overlapping the atac-seq peak
 # 1	161924	162248	.	1	161924	162248	ENSSSCG00000030218,	1	161924	162248	.	1	161924	162248	.	1	161924	162248	ENSSSCG00000030218,	1161924	162248	.	1	161924	162248	.	1	161924	162248	ENSSSCG00000030218,
 echo "I am gathering all the intersection information in a single matrix for final output" >&2
-paste mergedpeaks_over_exons.bed mergedpeaks_over_introns.tsv mergedpeaks_over_tss.bed mergedpeaks_over_tss_ext1000.bed mergedpeaks_over_tss_ext5000.bed mergedpeaks_over_tts.bed mergedpeaks_over_tts_ext1000.bed mergedpeaks_over_tts_ext5000.bed | awk -f $CLASSIF > mergedpeaks_allinfo.tsv
+paste mergedpeaks_over_exons.bed mergedpeaks_over_introns.tsv mergedpeaks_over_tss.bed mergedpeaks_over_tss_ext1000.bed mergedpeaks_over_tss_ext5000.bed mergedpeaks_over_tts.bed mergedpeaks_over_tts_ext1000.bed mergedpeaks_over_tts_ext5000.bed | awk -f $CLASSIF 
 echo done >&2
 # chr	beg	end	exon	intron	tss	tss1000	tss5000	tts	tts1000	tts5000
 # ...
@@ -283,5 +282,8 @@ rm mergedpeaks.gff exons.gff introns.gff
 rm exons_capped_sites.gff exons_capped_sites_nr.gff 
 rm exons_tts_sites.gff exons_tts_sites_nr.gff
 rm exons_capped_sites_nr_ext1000.gff exons_capped_sites_nr_ext5000.gff
-rm exons_tts_sites_nr_ext1000.gff exons_tts_sites_nr_ext5000.gff 
+rm exons_tts_sites_nr_ext1000.gff exons_tts_sites_nr_ext5000.gff
+rm mergedpeaks_over_exons.bed mergedpeaks_over_introns.tsv
+rm mergedpeaks_over_tss.bed mergedpeaks_over_tss_ext1000.bed mergedpeaks_over_tss_ext5000.bed
+rm mergedpeaks_over_tts.bed mergedpeaks_over_tts_ext1000.bed mergedpeaks_over_tts_ext5000.bed
 echo done >&2
