@@ -1,14 +1,21 @@
 #!/bin/bash
+# added strand option on dec 20th 2017 and tested on bos taurus atacseq peaks and ref gene annot without strand
+# added possibility to write transcript id instead of gene in final matrix on jan 11th 2018 and tested on bos taurus polya site clusters
+# and ref gene annot with strand, and gene or transcript or match as element (I did not really check the transcript info was ok
+# specially the output of the script peakoverlap2classif.awk ) however I did check that the prop of polya clusters in the 8 gx domains
+# was the same with both genes and transcripts (which is good)
 
 # peak_distrib_matrix.sh
 ########################
 # takes as input
 ################
-# - a file of unstranded peaks in bed format
-# - a file of gene annotation with at least exon rows that must have at least gene_id in the 9th field in gtf or gff2 format
+# - a file of segments or peaks in bed format
+# - a file of gene annotation with at least exon rows that must have at least gene_id and transcript_id in the 9th field and in gtf or gff2 format 
+# - an optional argument about whether the overlap has to be done in stranded way (no strand by default)
+# - another optional argument if we want to print transcript ids instead of gene ids in the matrix (gene id by default)
 # produces as standard output
 #############################
-# - the peaks distribution matrix as a tsv file with header that has peaks in rows and list of genes reflecting
+# - the peaks distribution matrix as a tsv file with header that has peaks in rows and list of genes (or transcripts) reflecting
 #   the intersection with different genomic domains as columns (exons, introns, tss, tss1kb, tss5kb, tts, tts1kb, tts5kb)
 # !!! be careful not made to be used several times in the same directory since uses fixed names !!!
 
@@ -17,70 +24,104 @@
 # cd /work/project/fragencode/workspace/sdjebali/atacseq/fragencode/peaks/peakdistrib/pergene_andrea/test
 # pig=/work/project/fragencode/results/atacseq/sus_scrofa/indiv.peaks.merged/mergedpeaks.peaknb.readcov.bed
 # annot=/work/project/fragencode/data/species/sus_scrofa/Sscrofa10.2.84/sus_scrofa.gtf
-# time peak_distrib_matrix.sh $pig $annot > mergedpeaks_allinfo.tsv 2> peak_distrib_matrix.err
+# time peak_distrib_matrix.sh $pig $annot 0 gene > mergedpeaks_allinfo.tsv 2> peak_distrib_matrix.err
 # real	0m26.723s  
 
-# More precisely The body of the matrix will contain the following:
+# More precisely the body of the matrix will contain the following:
 ###################################################################
 # - chromosome of the atac-seq peak
 # - beg of the atac-seq peak (in bed coord)
 # - end of the atac-seq peak (in bed coord)
-# - list of genes with at least one exon overlapping the atac-seq peak (by at least 1 bp)
-# - list of genes with at least one intron encompassing the atac-seq peak
-# - list of genes with their most 5' bp overlapping the atac-seq peak
-# - list of genes with the 1kb window around their most 5' bp overlapping the atac-seq peak
-# - list of genes with the 5kb window around their most 5' bp overlapping the atac-seq peak
-# - list of genes with their most 3' bp overlapping the atac-seq peak
-# - list of genes with the 1kb window around their most 3' bp overlapping the atac-seq peak
-# - list of genes with the 5kb window around their most 3' bp overlapping the atac-seq peak
+# - list of genes (or transcripts) with at least one exon overlapping the atac-seq peak (by at least 1 bp)
+# - list of genes (or transcripts) with at least one intron encompassing the atac-seq peak
+# - list of genes (or transcripts) with their most 5' bp overlapping the atac-seq peak
+# - list of genes (or transcripts) with the 1kb window around their most 5' bp overlapping the atac-seq peak
+# - list of genes (or transcripts) with the 5kb window around their most 5' bp overlapping the atac-seq peak
+# - list of genes (or transcripts) with their most 3' bp overlapping the atac-seq peak
+# - list of genes (or transcripts) with the 1kb window around their most 3' bp overlapping the atac-seq peak
+# - list of genes (or transcripts) with the 5kb window around their most 3' bp overlapping the atac-seq peak
 
 # For this I need to do the following intersections:
 ####################################################
-# 1) peaks with exons and get the gene list
-# 2) peaks with introns (inclusion option) and get the gene list
-# 3) peaks with most 5' bp of each gene and get the gene list
-# 4) peaks with window of 1kb around most 5'bp of each gene and get the gene list
-# 5) peaks with window of 5kb around most 5'bp of each gene and get the gene list
-# 6) peaks with most 3' bp of each gene and get the gene list
-# 7) peaks with window of 1kb around most 3'bp of each gene and get the gene list
-# 8) peaks with window of 5kb around most 3'bp of each gene and get the gene list
+# 1) peaks with exons and get the gene (or transcript) list
+# 2) peaks with introns (inclusion option) and get the gene (or transcript) list
+# 3) peaks with most 5' bp of each gene (or transcript) and get the gene (or transcript) list
+# 4) peaks with window of 1kb around most 5'bp of each gene (or transcript) and get the gene (or transcript) list
+# 5) peaks with window of 5kb around most 5'bp of each gene (or transcript)and get the gene (or transcript) list
+# 6) peaks with most 3' bp of each  gene (or transcript) and get the gene (or transcript) list
+# 7) peaks with window of 1kb around most 3'bp of each gene (or transcript) and get the gene (or transcript) list
+# 8) peaks with window of 5kb around most 3'bp of each gene (or transcript) and get the gene (or transcript) list
 
 # This way I will be able to know
 #################################
-# - list of genes with at least one exon overlapping the atac-seq peak (by at least 1 bp)
+# - list of genes (or transcripts) with at least one exon overlapping the atac-seq peak (by at least 1 bp)
 #   --> using 1)
-# - list of genes with at least one intron encompassing the atac-seq peak
-#   --> using 2) and 1) since could be overlapping an exon and totally included in an intron of the same gene
-# - list of genes with their most 5' bp overlapping the atac-seq peak
+# - list of genes (or transcripts) with at least one intron encompassing the atac-seq peak
+#   --> using 2) and 1) for genes since could be overlapping an exon and totally included in an intron of the same gene
+#       but using only 2) for transcripts
+# - list of genes (or transcripts) with their most 5' bp overlapping the atac-seq peak
 #   --> using 3)
-# - list of genes with the 1kb window around their most 5' bp overlapping the atac-seq peak
+# - list of genes (or transcripts) with the 1kb window around their most 5' bp overlapping the atac-seq peak
 #   --> using 4)
-# - list of genes with the 5kb window around their most 5' bp overlapping the atac-seq peak
+# - list of genes (or transcripts) with the 5kb window around their most 5' bp overlapping the atac-seq peak
 #   --> using 5)
-# - list of genes with their most 3' bp overlapping the atac-seq peak
+# - list of genes (or transcripts) with their most 3' bp overlapping the atac-seq peak
 #   --> using 6)
-# - list of genes with the 1kb window around their most 3' bp overlapping the atac-seq peak
+# - list of genes (or transcripts) with the 1kb window around their most 3' bp overlapping the atac-seq peak
 #   --> using 7)
-# - list of genes with the 5kb window around their most 3' bp overlapping the atac-seq peak
+# - list of genes (or transcripts) with the 5kb window around their most 3' bp overlapping the atac-seq peak
 #   --> using 8)
 
 # Check if both needed inputs are present otherwise exits
 #########################################################
 if [ ! -n "$1" ] || [ ! -n "$2" ]
 then
-    echo Usage: peak_distrib_matrix.sh peaks.bed annot.gff >&2
+    echo Usage: peak_distrib_matrix.sh peaks.bed annot.gff [stranded] >&2
     echo "" >&2
     echo "Takes as input" >&2
-    echo "- a file of unstranded peaks in bed format" >&2
-    echo "- a file of gene annotation with at least exon rows that must have at least gene_id in the 9th field in gtf or gff2 format" >&2
+    echo "- a file of segments or peaks in bed format" >&2
+    echo "- a file of gene annotation with at least exon rows that must have at least gene_id and transcript_id in the 9th field in gtf or gff2 format" >&2
+    echo "- an optional argument which indicates whether the overlap has to be done strandedly (0 will be unstranded, positive value will be stranded," >&2
+    echo "  negative value inversely stranded, default is unstranded)" >&2
+    echo "- an optional argument with the kind of object (gene or transcript) for which we provide overlap information in the matrix (gene by default)" >&2
+    echo "  " >&2
     echo "" >&2
     echo "Provides as output in the working directory" >&2
-    echo "- the peaks distribution matrix as a tsv file with header that has peaks in rows and list of genes reflecting" >&2
+    echo "- the peak distribution matrix as a tsv file with header that has peaks in rows and list of genes or transcripts reflecting" >&2
     echo "  the intersection with different genomic domains as columns (exons, introns, tss, tss1kb, tss5kb, tts, tts1kb, tts5kb)" >&2
-    echo "- multiple intermediate tsv files with individual intersection results" >&2
     echo "" >&2
     echo "!!! be careful: do not run twice simulaneously in the same working directory since uses files with fixed names !!!" >&2
     exit 1
+fi
+
+if [ -n "$3" ]
+then
+    stranded=$3
+else
+    stranded=0
+fi
+
+# parses the elt argument, which conditions the place in gtf where to find info and the tss and tts file name extension
+if [ -n "$4" ]   
+then
+    elt=$4
+    if [ $elt = "gene" ]
+    then
+	fld=10
+	fext="_nr"
+    else
+	if [ $elt = "transcript" ]
+	then
+	    fld=12
+	    fext=""
+	else
+	    exit 1
+	fi
+    fi
+else
+    elt=gene
+    fld=10
+    fext="_nr"
 fi
 
 # General variables
@@ -136,7 +177,7 @@ awk -v fldgn=10 -v fldtr=12 -f $INTRONS exons.gff > introns.gff
 ####################################################################################################
 echo "  - The TSS file" >&2
 $MAKETSS exons.gff
-# has created a file called exons_capped_sites_nr.gff
+# has created a file called exons_capped_sites.gff to be used for tr info and a file called exons_capped_sites_nr.gff to be used for gn info
 # GL892233.1	.	TSS	21	21	.	+	.	gene_id "ENSSSCG00000028326"; trlist "ENSSSCT00000029565,";
 # 29134 (12 fields) *** real	0m12.975s
 
@@ -144,31 +185,41 @@ $MAKETSS exons.gff
 ####################################################################################################
 echo "  - The TTS file" >&2
 $MAKETTS exons.gff
-# has created a file called exons_tts_sites_nr.gff
+# has created a file called exons_tts_sites.gff to be used for tr info and a file called exons_tts_sites_nr.gff to be used for gn info
 # GL892233.1	.	TTS	1787	1787	.	+	.	gene_id "ENSSSCG00000028326"; trlist "ENSSSCT00000029565,";
 # 29096 (12 fields)
 
-# f. Make a gff2 file of TSS 1kb and a gff2 file of TSS 5kb windows from the TSS file generated above
-#####################################################################################################
-echo "  - The TSS file extended by 1kb on each side" >&2
+# f. Make a gff2 file of nr and normal TSS 1kb and a gff2 file of TSS 5kb windows from the TSS files generated above
+####################################################################################################################
+echo "  - The nr TSS file extended by 1kb on each side" >&2
 awk -v ext=1000 '{$4=$4-ext; $5=$5+ext; $3=($3)"ext"(toext); if($4<0){$4=0} print $0}' exons_capped_sites_nr.gff | awk -f $GFF2GFF > exons_capped_sites_nr_ext1000.gff
 # GL892233.1	.	TSSext	0	1021	.	+	.	gene_id "ENSSSCG00000028326"; trlist "ENSSSCT00000029565,";
 # 29134 (12 fields) *** real	0m0.226s  *** checked that most are 2001 bp
-echo "  - The TSS file extended by 5kb on each side" >&2
+echo "  - The nr TSS file extended by 5kb on each side" >&2
 awk -v ext=5000 '{$4=$4-ext; $5=$5+ext; $3=($3)"ext"(toext); if($4<0){$4=0} print $0}' exons_capped_sites_nr.gff | awk -f $GFF2GFF > exons_capped_sites_nr_ext5000.gff
 # GL892233.1	.	TSSext	0	5021	.	+	.	gene_id "ENSSSCG00000028326"; trlist "ENSSSCT00000029565,";
 # 29134 (12 fields)  *** checked that most are 10 001 bp
 
-# g. Make a gff2 file of TTS 1kb and a gff2 file of TTS 5kb windows from the TTS file generated above
-#####################################################################################################
-echo "  - The TTS file extended by 1kb on each side" >&2
+echo "  - The TSS file extended by 1kb on each side" >&2
+awk -v ext=1000 '{$4=$4-ext; $5=$5+ext; $3=($3)"ext"(toext); if($4<0){$4=0} print $0}' exons_capped_sites.gff | awk -f $GFF2GFF > exons_capped_sites_ext1000.gff
+echo "  - The TSS file extended by 5kb on each side" >&2
+awk -v ext=5000 '{$4=$4-ext; $5=$5+ext; $3=($3)"ext"(toext); if($4<0){$4=0} print $0}' exons_capped_sites.gff | awk -f $GFF2GFF > exons_capped_sites_ext5000.gff
+
+# g. Make a gff2 file of nr and normal TTS 1kb and a gff2 file of TTS 5kb windows from the TTS files generated above
+####################################################################################################################
+echo "  - The nr TTS file extended by 1kb on each side" >&2
 awk -v ext=1000 '{$4=$4-ext; $5=$5+ext; $3=($3)"ext"(toext); if($4<0){$4=0} print $0}' exons_tts_sites_nr.gff | awk -f $GFF2GFF > exons_tts_sites_nr_ext1000.gff
 # GL892233.1	.	TTSext	787	2787	.	+	.	gene_id "ENSSSCG00000028326"; trlist "ENSSSCT00000029565,";
 # 29096 (12 fields)
-echo "  - The TTS file extended by 5kb on each side" >&2
+echo "  - The nr TTS file extended by 5kb on each side" >&2
 awk -v ext=5000 '{$4=$4-ext; $5=$5+ext; $3=($3)"ext"(toext); if($4<0){$4=0} print $0}' exons_tts_sites_nr.gff | awk -f $GFF2GFF > exons_tts_sites_nr_ext5000.gff
 # GL892233.1	.	TTSext	0	6787	.	+	.	gene_id "ENSSSCG00000028326"; trlist "ENSSSCT00000029565,";
 # 29096 (12 fields)
+
+echo "  - The TTS file extended by 1kb on each side" >&2
+awk -v ext=1000 '{$4=$4-ext; $5=$5+ext; $3=($3)"ext"(toext); if($4<0){$4=0} print $0}' exons_tts_sites.gff | awk -f $GFF2GFF > exons_tts_sites_ext1000.gff
+echo "  - The TTS file extended by 5kb on each side" >&2
+awk -v ext=5000 '{$4=$4-ext; $5=$5+ext; $3=($3)"ext"(toext); if($4<0){$4=0} print $0}' exons_tts_sites.gff | awk -f $GFF2GFF > exons_tts_sites_ext5000.gff
 echo done >&2
 
 
@@ -179,57 +230,57 @@ echo done >&2
 echo "I am making all the intersections" >&2
 # a. Intersect the 1st file elements with the exons of the 2nd file and remember the list of gene_id in an nr way
 ################################################################################################################
-echo "  - the intersection between the peaks and the exons and remembering the nr list of gene ids" >&2
-$OVERLAP mergedpeaks.gff exons.gff -m 10 -nr -f ex -v | sort -k1,1 -k4,4n -k5,5n | awk 'BEGIN{OFS="\t"}{gsub(/\;/,"",$NF); gsub(/\"/,"",$NF); print $1, $4-1, $5, $NF}' > mergedpeaks_over_exons.bed
+echo "  - the intersection between the peaks and the exons and remembering the nr list of gene or transcript ids" >&2
+$OVERLAP mergedpeaks.gff exons.gff -m $fld -nr -f ex -st $stranded -v | sort -k1,1 -k4,4n -k5,5n | awk 'BEGIN{OFS="\t"}{gsub(/\;/,"",$NF); gsub(/\"/,"",$NF); print $1, $4-1, $5, $NF}' > mergedpeaks_over_exons.bed
 # 1	1912	2237	.
 # 56364 (4 fields)
 
 # b. Intersect the 1st file elements with the introns of the 2nd file and remember the list of gene_id in an nr way and with inclusion mode
 ###########################################################################################################################################
-echo "  - the intersection between the peaks and the introns (total inclusion) and remembering the nr list of gene ids" >&2
-$OVERLAP mergedpeaks.gff introns.gff -m 10 -i 1 -nr -f intr -v | sort -k1,1 -k4,4n -k5,5n | awk 'BEGIN{OFS="\t"}{gsub(/\;/,"",$NF); gsub(/\"/,"",$NF); print $1, $4-1, $5, $NF}' > mergedpeaks_over_introns.tsv
+echo "  - the intersection between the peaks and the introns (total inclusion) and remembering the nr list of gene ids or transcript ids" >&2
+$OVERLAP mergedpeaks.gff introns.gff -m $fld -i 1 -nr -f intr -st $stranded -v | sort -k1,1 -k4,4n -k5,5n | awk 'BEGIN{OFS="\t"}{gsub(/\;/,"",$NF); gsub(/\"/,"",$NF); print $1, $4-1, $5, $NF}' > mergedpeaks_over_introns.tsv
 # 1	1912	2237	.
 # 56364 (4 fields)
 
-# c. Intersect the 1st file elements with the TSS of the 2nd file and remember the list of gene_id in an nr way
-###############################################################################################################
-echo "  - the intersection between the peaks and the TSS and remembering the nr list of gene ids" >&2
-$OVERLAP mergedpeaks.gff exons_capped_sites_nr.gff -m 10 -nr -f tss -v | sort -k1,1 -k4,4n -k5,5n | awk 'BEGIN{OFS="\t"}{gsub(/\;/,"",$NF); gsub(/\"/,"",$NF); print $1, $4-1, $5, $NF}' > mergedpeaks_over_tss.bed
+# c. Intersect the 1st file elements with the nr or normal TSS of the 2nd file and remember the list of gene_id or transcript_id in an nr way
+#############################################################################################################################################
+echo "  - the intersection between the peaks and the nr or nomral TSS and remembering the nr list of gene ids or transcript ids" >&2
+$OVERLAP mergedpeaks.gff exons_capped_sites$fext.gff -m $fld -nr -f tss -st $stranded -v | sort -k1,1 -k4,4n -k5,5n | awk 'BEGIN{OFS="\t"}{gsub(/\;/,"",$NF); gsub(/\"/,"",$NF); print $1, $4-1, $5, $NF}' > mergedpeaks_over_tss.bed
 # 1	1912	2237	.
 # 56364 (4 fields)
 
-# d. Intersect the 1st file elements with the 1kb TSS windows of the 2nd file and remember the list of gene_id in an nr way
-############################################################################################################################
-echo "  - the intersection between the peaks and the TSS extended by 1 kb and remembering the nr list of gene ids" >&2
-$OVERLAP mergedpeaks.gff exons_capped_sites_nr_ext1000.gff -m 10 -nr -f tss1000 -v | sort -k1,1 -k4,4n -k5,5n | awk 'BEGIN{OFS="\t"}{gsub(/\;/,"",$NF); gsub(/\"/,"",$NF); print $1, $4-1, $5, $NF}' > mergedpeaks_over_tss_ext1000.bed
+# d. Intersect the 1st file elements with the nr or normal 1kb TSS windows of the 2nd file and remember the list of gene_id or transcript_id in an nr way
+#########################################################################################################################################################
+echo "  - the intersection between the peaks and the nr or normal TSS extended by 1 kb and remembering the nr list of gene ids or transcript ids" >&2
+$OVERLAP mergedpeaks.gff exons_capped_sites$fext\_ext1000.gff -m $fld -nr -f tss1000 -st $stranded -v | sort -k1,1 -k4,4n -k5,5n | awk 'BEGIN{OFS="\t"}{gsub(/\;/,"",$NF); gsub(/\"/,"",$NF); print $1, $4-1, $5, $NF}' > mergedpeaks_over_tss_ext1000.bed
 # 1	1912	2237	.
 # 56364 (4 fields)
 
-# e. Intersect the 1st file elements with the 5kb TSS windows of the 2nd file and remember the list of gene_id in an nr way
-############################################################################################################################
-echo "  - the intersection between the peaks and the TSS extended by 5 kb and remembering the nr list of gene ids" >&2
-$OVERLAP mergedpeaks.gff exons_capped_sites_nr_ext5000.gff -m 10 -nr -f tss5000 -v | sort -k1,1 -k4,4n -k5,5n | awk 'BEGIN{OFS="\t"}{gsub(/\;/,"",$NF); gsub(/\"/,"",$NF); print $1, $4-1, $5, $NF}' > mergedpeaks_over_tss_ext5000.bed
+# e. Intersect the 1st file elements with the nr or normal 5kb TSS windows of the 2nd file and remember the list of gene_id or transcript_id in an nr way
+#########################################################################################################################################################
+echo "  - the intersection between the peaks and the nr or normal TSS extended by 5 kb and remembering the nr list of gene ids or transcript ids" >&2
+$OVERLAP mergedpeaks.gff exons_capped_sites$fext\_ext5000.gff -m $fld -nr -f tss5000 -st $stranded -v | sort -k1,1 -k4,4n -k5,5n | awk 'BEGIN{OFS="\t"}{gsub(/\;/,"",$NF); gsub(/\"/,"",$NF); print $1, $4-1, $5, $NF}' > mergedpeaks_over_tss_ext5000.bed
 # 1	1912	2237	.
 # 56364 (4 fields)
 
-# f. Intersect the 1st file elements with the TTS of the 2nd file and remember the list of gene_id in an nr way
-################################################################################################################
-echo "  - the intersection between the peaks and the TTS and remembering the nr list of gene ids" >&2
-$OVERLAP mergedpeaks.gff exons_tts_sites_nr.gff -m 10 -nr -f tts -v | sort -k1,1 -k4,4n -k5,5n | awk 'BEGIN{OFS="\t"}{gsub(/\;/,"",$NF); gsub(/\"/,"",$NF); print $1, $4-1, $5, $NF}' > mergedpeaks_over_tts.bed
+# f. Intersect the 1st file elements with the nr or normal TTS of the 2nd file and remember the list of gene_id or transcript_id in an nr way
+#############################################################################################################################################
+echo "  - the intersection between the peaks and the nr or normal TTS and remembering the nr list of gene ids or transcript ids" >&2
+$OVERLAP mergedpeaks.gff exons_tts_sites$fext.gff -m $fld -nr -f tts -st $stranded -v | sort -k1,1 -k4,4n -k5,5n | awk 'BEGIN{OFS="\t"}{gsub(/\;/,"",$NF); gsub(/\"/,"",$NF); print $1, $4-1, $5, $NF}' > mergedpeaks_over_tts.bed
 # 1	1912	2237	.
 # 56364 (4 fields)
 
-# g. Intersect the 1st file elements with the 1kb TTS windows of the 2nd file and remember the list of gene_id in an nr way
-############################################################################################################################
-echo "  - the intersection between the peaks and the TTS extended by 1 kb and remembering the nr list of gene ids" >&2
-$OVERLAP mergedpeaks.gff exons_tts_sites_nr_ext1000.gff -m 10 -nr -f tts1000 -v | sort -k1,1 -k4,4n -k5,5n | awk 'BEGIN{OFS="\t"}{gsub(/\;/,"",$NF); gsub(/\"/,"",$NF); print $1, $4-1, $5, $NF}' > mergedpeaks_over_tts_ext1000.bed
+# g. Intersect the 1st file elements with the nr or normal 1kb TTS windows of the 2nd file and remember the list of gene_id or transcript_id in an nr way
+#########################################################################################################################################################
+echo "  - the intersection between the peaks and the nr or normal TTS extended by 1 kb and remembering the nr list of gene ids or transcript ids" >&2
+$OVERLAP mergedpeaks.gff exons_tts_sites$fext\_ext1000.gff -m $fld -nr -f tts1000 -st $stranded -v | sort -k1,1 -k4,4n -k5,5n | awk 'BEGIN{OFS="\t"}{gsub(/\;/,"",$NF); gsub(/\"/,"",$NF); print $1, $4-1, $5, $NF}' > mergedpeaks_over_tts_ext1000.bed
 # 1	1912	2237	.
 # 56364 (4 fields)
 
-# h. Intersect the 1st file elements with the 5kb TTS windows of the 2nd file and remember the list of gene_id in an nr way
-############################################################################################################################
-echo "  - the intersection between the peaks and the TTS extended by 5 kb and remembering the nr list of gene ids" >&2
-$OVERLAP mergedpeaks.gff exons_tts_sites_nr_ext5000.gff -m 10 -nr -f tts5000 -v | sort -k1,1 -k4,4n -k5,5n | awk 'BEGIN{OFS="\t"}{gsub(/\;/,"",$NF); gsub(/\"/,"",$NF); print $1, $4-1, $5, $NF}' > mergedpeaks_over_tts_ext5000.bed
+# h. Intersect the 1st file elements with the nr or normal 5kb TTS windows of the 2nd file and remember the list of gene_id or transcript_id in an nr way
+#########################################################################################################################################################
+echo "  - the intersection between the peaks and the nr or normal TTS extended by 5 kb and remembering the nr list of gene ids or transcript ids" >&2
+$OVERLAP mergedpeaks.gff exons_tts_sites$fext\_ext5000.gff -m $fld -nr -f tts5000 -st $stranded -v | sort -k1,1 -k4,4n -k5,5n | awk 'BEGIN{OFS="\t"}{gsub(/\;/,"",$NF); gsub(/\"/,"",$NF); print $1, $4-1, $5, $NF}' > mergedpeaks_over_tts_ext5000.bed
 # 1	1912	2237	.
 # 56364 (4 fields)
 echo done >&2
@@ -241,14 +292,14 @@ echo done >&2
 # - chromosome of the atac-seq peak
 # - beg of the atac-seq peak (in bed coord)
 # - end of the atac-seq peak (in bed coord)
-# - list of genes with at least one exon overlapping the atac-seq peak (by at least 1 bp)
-# - list of genes with at least one intron encompassing the atac-seq peak
-# - list of genes with their most 5' bp overlapping the atac-seq peak
-# - list of genes with the 1kb window around their most 5' bp overlapping the atac-seq peak
-# - list of genes with the 5kb window around their most 5' bp overlapping the atac-seq peak
-# - list of genes with their most 3' bp overlapping the atac-seq peak
-# - list of genes with the 1kb window around their most 3' bp overlapping the atac-seq peak
-# - list of genes with the 5kb window around their most 3' bp overlapping the atac-seq peak
+# - list of genes or transcripts with at least one exon overlapping the atac-seq peak (by at least 1 bp)
+# - list of genes or transcripts with at least one intron encompassing the atac-seq peak
+# - list of genes or transcripts with their most 5' bp overlapping the atac-seq peak
+# - list of genes or transcripts with the 1kb window around their most 5' bp overlapping the atac-seq peak
+# - list of genes or transcripts with the 5kb window around their most 5' bp overlapping the atac-seq peak
+# - list of genes or transcripts with their most 3' bp overlapping the atac-seq peak
+# - list of genes or transcripts with the 1kb window around their most 3' bp overlapping the atac-seq peak
+# - list of genes or transcripts with the 5kb window around their most 3' bp overlapping the atac-seq peak
 # 1	161924	162248	.	1	161924	162248	ENSSSCG00000030218,	1	161924	162248	.	1	161924	162248	.	1	161924	162248	ENSSSCG00000030218,	1161924	162248	.	1	161924	162248	.	1	161924	162248	ENSSSCG00000030218,
 echo "I am gathering all the intersection information in a single matrix for final output" >&2
 paste mergedpeaks_over_exons.bed mergedpeaks_over_introns.tsv mergedpeaks_over_tss.bed mergedpeaks_over_tss_ext1000.bed mergedpeaks_over_tss_ext5000.bed mergedpeaks_over_tts.bed mergedpeaks_over_tts_ext1000.bed mergedpeaks_over_tts_ext5000.bed | awk -f $CLASSIF 
@@ -283,6 +334,8 @@ rm exons_capped_sites.gff exons_capped_sites_nr.gff
 rm exons_tts_sites.gff exons_tts_sites_nr.gff
 rm exons_capped_sites_nr_ext1000.gff exons_capped_sites_nr_ext5000.gff
 rm exons_tts_sites_nr_ext1000.gff exons_tts_sites_nr_ext5000.gff
+rm exons_capped_sites_ext1000.gff exons_capped_sites_ext5000.gff
+rm exons_tts_sites_ext1000.gff exons_tts_sites_ext5000.gff
 rm mergedpeaks_over_exons.bed mergedpeaks_over_introns.tsv
 rm mergedpeaks_over_tss.bed mergedpeaks_over_tss_ext1000.bed mergedpeaks_over_tss_ext5000.bed
 rm mergedpeaks_over_tts.bed mergedpeaks_over_tts_ext1000.bed mergedpeaks_over_tts_ext5000.bed
