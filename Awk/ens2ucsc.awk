@@ -3,6 +3,7 @@
 # usage
 # awk -f ens2ucsc.awk features_in_ens.bed > features_in_ucsc.bed
 # but also works for gff like files
+# for gff or gtf files it is better to use gff2gff afterwards otherwise tabs everywhere
 
 
 BEGIN{
