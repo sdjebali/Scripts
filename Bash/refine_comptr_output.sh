@@ -4,20 +4,16 @@
 # on dec 15th 2015 make it possible to have annot and transcript file with gene_id and transcript_id anywhere and to have only exons in predictions
 # on Feb 3rd 2017 make it possible to use an annotation file which name ends in gff 
 # on jan 12th 2018 add a column with intermediate class which is one of the following 4
-# 1) annot = predicted transcript that have exactly the same exon structure as a reference tr but with
-#    +-10bp in 5' and/or 3' (I can use my Exact class but add the constraint that the distance between the
-#    5' end of the predicted transcript most 5' exon and the 5' end of the annotated transcript most 5' exon
-#    is not more than 10bp and that the distance between the 3' end of the predicted transcript most 3' exon
-#    and the 3' end of the annotated transcript most 3' exon is not more than 10bp                                                                         
-# 2) extension = predicted transcript that are not in 1) but that have exactly the same exon structure as    
-#    a reference tr but that extend more than 10bp in 5' and/or in 3' (I can use my Exact class but that are
-#    not in class 1)
-# 3) novel_of_annot = new isoform or variant of reference genes = predicted transcripts that are not in 1) or 2) but that
+#   1) annot = predicted transcript that have exactly the same exon structure as a reference tr but that do not
+#    extend the annotated transcript on either side (I can use my Exact class but add the constraint that there
+#    is no extension)
+#   2) extension = predicted transcript that have exactly the same exon structure as a reference tr but that are
+#    not in 1) but (I can use my Exact class but that are not in class 1)
+#   3) novel_of_annot = new isoform or variant of reference genes = predicted transcripts that are not in 1) or 2) but that
 #    have at least one common intron with a reference annotated tr (I have to compute it from scratch by
 #    asking for one common intron same strand as the reference and then ask that the transcript is neither
 #    in class 1 nor in class 2                                                 
-# 4) novel = new transcript = the ones not in 1) or 2) or 3)
-
+#   4) novel = new transcript = the ones not in 1) or 2) or 3)
 
 # takes as input two mandatory arguments:
 ########################################
@@ -222,14 +218,11 @@ echo done >&2
 
 # 6. Add the intermediate class and gene list wrt annot, the class being annot, extension, novel_of_annot or novel: 
 ###################################################################################################################
-# 1) annotated = predicted transcript that have exactly the same exon structure as a reference tr but with
-#    +-10bp in 5' and/or 3' (I can use my Exact class but add the constraint that the distance between the
-#    5' end of the predicted transcript most 5' exon and the 5' end of the annotated transcript most 5' exon
-#    is not more than 10bp and that the distance between the 3' end of the predicted transcript most 3' exon
-#    and the 3' end of the annotated transcript most 3' exon is not more than 10bp                                                                         
+# 1) annot = predicted transcript that have exactly the same exon structure as a reference tr but that do not
+#    extend the annotated transcript on neither side (I can use my Exact class but add the constraint that there
+#    is no extension
 # 2) extension = predicted transcript that are not in 1) but that have exactly the same exon structure as    
-#    a reference tr but that extend more than 10bp in 5' and/or in 3' (I can use my Exact class but that are
-#    not in class 1)
+#    a reference tr (I can use my Exact class but that are not in class 1)
 # 3) novel_of_annot = new isoform or variant of reference genes = predicted transcripts that are not in 1) or 2) but that
 #    have at least one common intron with a reference annotated tr (I have to compute it from scratch by
 #    asking for one common intron same strand as the reference and then ask that the transcript is neither

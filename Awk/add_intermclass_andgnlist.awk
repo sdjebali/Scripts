@@ -9,20 +9,22 @@
 # and outputs the last file but with 2 additional fields:
 ##########################################################
 # - its intermediate class which is one of those 4:
-#   1) annotated = predicted transcript that have exactly the same exon structure as a reference tr but with
-#      +-10bp in 5' and/or 3' (I can use my Exact class but add the constraint that the distance between the
-#      5' end of the predicted transcript most 5' exon and the 5' end of the annotated transcript most 5' exon
-#      is not more than 10bp and that the distance between the 3' end of the predicted transcript most 3' exon
-#      and the 3' end of the annotated transcript most 3' exon is not more than 10bp                                                                         
-#   2) extension = predicted transcript that are not in 1) but that have exactly the same exon structure as    
-#      a reference tr but that extend more than 10bp in 5' and/or in 3' (I can use my Exact class but that are
-#      not in class 1)
+#   1) annot = predicted transcript that have exactly the same exon structure as a reference tr but that do not
+#    extend the annotated transcript on either side (I can use my Exact class but add the constraint that there
+#    is no extension)
+#   2) extension = predicted transcript that have exactly the same exon structure as a reference tr but that are
+#    not in 1) but (I can use my Exact class but that are not in class 1)
 #   3) novel_of_annot = new isoform or variant of reference genes = predicted transcripts that are not in 1) or 2) but that
-#      have at least one common intron with a reference annotated tr (I have to compute it from scratch by
-#      asking for one common intron same strand as the reference and then ask that the transcript is neither
-#      in class 1 nor in class 2                                                 
+#    have at least one common intron with a reference annotated tr (I have to compute it from scratch by
+#    asking for one common intron same strand as the reference and then ask that the transcript is neither
+#    in class 1 nor in class 2                                                 
 #   4) novel = new transcript = the ones not in 1) or 2) or 3)
 # - the list of corresponding annotated genes
+
+# note: to be considered annot we used to have this condition before
+# if((abs(gbeg[$1]-gbeg2[a[k]])<=10)&&(abs(gend[$1]-gend2[a[k]])<=10))
+# but in fact it was wrong because then a transcript more than 10bp inward
+# was considered an extension
 
 # example
 #########
@@ -64,7 +66,7 @@
 
 BEGIN{
     OFS="\t";
-    while (getline < fileRef1 >0)
+    while (getline < fileRef1 >0)  # file of predicted transcripts with at least transcript rows in gff format
     {
 	if($3=="transcript")    # for each predicted transcript, store its gene id as well as its beg and end (beg<end)
 	{
@@ -75,7 +77,8 @@ BEGIN{
 	    gend["t"b[2]]=$5;
 	}
     }
-    while (getline < fileRef2 >0)    # for each annotated transcript, store its gene id as well as its beg and end (beg<end)
+    while (getline < fileRef2 >0)  # file of annotated transcripts with gene_id and transcript_id as 1st subfields in 9th field of a gff formated file
+	                           # for each annotated transcript, store its gene id as well as its beg and end (beg<end)
     {
 	split($10,a,"\"");
 	split($12,b,"\"");
@@ -83,7 +86,8 @@ BEGIN{
 	gbeg2[b[2]]=$4;
 	gend2[b[2]]=$5;
     }
-    while (getline < fileRef3 >0)   # for each predicted transcript, store the nr list of annotated genes with an intron common with it
+    while (getline < fileRef3 >0)        # tsv file of predicted transcripts with the nr list of annotated genes with an intron common with them
+                                         # for each predicted transcript, store the nr list of annotated genes with an intron common with it
     {
 	commonintron_gnlist["t"$1]=$2;
     }
@@ -104,30 +108,31 @@ NR>=2{
 	k=1;
 	while(a[k]!="")   # for each annotated transcript corresponding to this predicted transcript
 	{
-	    if((abs(gbeg[$1]-gbeg2[a[k]])<=10)&&(abs(gend[$1]-gend2[a[k]])<=10))  # look if the two annotated transcript ends are less than 10bp away from the two predicted transcript ends respectively
-		                                                                  # in this case it is of the class annot but only associated to this transcript
+	    if((gbeg[$1]<gbeg2[a[k]])||(gend[$1]>gend2[a[k]]))   # check if the predicted transcript extends the annotated transcript even by a single bp on either side
+		                                                 # in this case it is of the class extension but only associated to this transcript
 	    {
-		class="annot";   # remember it is of class "annot" but just associated to annotated transcript number k
-		ok[$1,k]=1;      # and remember the number of the annotated transcript associated to it
+		class="extension";   # remember it is of class "annot" but just associated to annotated transcript number k
+		ok[$1,k]=1;          # and remember the number of the annotated transcript associated to it
 	    }
 	    k++;
 	}
-	if(class=="annot")
+	if(class=="extension")
 	{
 	    for(i=1; i<=k; i++)
 	    {
 		if(ok[$1,i]==1)
 		{
-		    gnlist=(gnlist)(gn2[a[k]])(",");
+		    gnlist=(gnlist)(gn2[a[k]])(",");   # we only remember the genes that correspond to the annotated transcripts that are extended by the current predicted tr
+		                                       # note that this list could be redundant
 		}
 	    }
 	}
 	else
 	{
-	    class="extension";
+	    class="annot";
 	    for(i=1; i<=k; i++)
 	    {
-		gnlist=(gnlist)(gn2[a[k]])(",");
+		gnlist=(gnlist)(gn2[a[k]])(",");   # in case it was never an extension than it is an annotatd one and it takes the genes of all the transcripts to which it is similar
 	    }
 	}
     }
