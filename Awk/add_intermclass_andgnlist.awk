@@ -129,7 +129,7 @@ NR>=2{
 	    if((gbeg[$1]<gbeg2[a[k]])||(gend[$1]>gend2[a[k]]))   # check if the predicted transcript extends the annotated transcript even by a single bp on either side
 		                                                 # in this case it is of the class extension but only associated to this transcript
 	    {
-		class="extension";   # remember it is of class "annot" but just associated to annotated transcript number k
+		class="extension";   # remember it is of class "extension" but just associated to annotated transcript number k
 		ok[$1,k]=1;          # and remember the number of the annotated transcript associated to it
 	    }
 	    k++;
@@ -140,7 +140,8 @@ NR>=2{
 	    {
 		if(ok[$1,i]==1)
 		{
-		    gnlist=(gnlist)(gn2[a[k]])(",");   # we only remember the genes that correspond to the annotated transcripts that are extended by the current predicted tr
+		    if(gn2[a[i]]!="")
+			gnlist=(gnlist)(gn2[a[i]])(",");   # we only remember the genes that correspond to the annotated transcripts that are extended by the current predicted tr
 		                                       # note that this list could be redundant
 		}
 	    }
@@ -150,7 +151,8 @@ NR>=2{
 	    class="known";
 	    for(i=1; i<=k; i++)
 	    {
-		gnlist=(gnlist)(gn2[a[k]])(",");   # in case it was never an extension than it is an annotated one and it takes the genes of all the transcripts to which it is similar
+		if(gn2[a[i]]!="")
+		    gnlist=(gnlist)(gn2[a[i]])(",");   # in case it was never an extension than it is an annotated one and it takes the genes of all the transcripts to which it is similar
 	    }
 	}
     }
@@ -169,12 +171,19 @@ NR>=2{
 		if(monoex_newclass[$1]!="")
 		{
 		    class=monoex_newclass[$1];
-		    split(monoex_reftrlist[$1],a,",");
-		    k=1;
-		    while(a[k]!="")   # for each annotated transcript corresponding to this predicted transcript find its corresponding gene
+		    if(class=="novel")
 		    {
-			gnlist=(gnlist)(gn2[a[k]])(",");
-			k++;
+			gnlist="."
+		    }
+		    else
+		    {
+			split(monoex_reftrlist[$1],a,",");
+			k=1;
+			while(a[k]!="")   # for each annotated transcript corresponding to this predicted transcript find its corresponding gene
+			{
+			    gnlist=(gnlist)(gn2[a[k]])(",");
+			    k++;
+			}
 		    }
 		}
 	    }
