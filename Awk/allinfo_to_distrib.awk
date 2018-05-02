@@ -1,9 +1,11 @@
 # allinfo_to_distrib.awk
-# takes as input a segment matrix with indication of 8 genomics domains (not nec a partition of the whole)
-# as the one given by the script peak_distrib_matrix.sh and provides as output a tsv file to make a barplot
-# with two informations that could be species and kind of peaks (from the 3 we had for atac peaks), or species
+# takes as input a segment matrix with indication of 9 genomic domains (not nec a partition of the whole)
+# which are the ones given by the script peak_distrib_matrix.sh plus the ig one which are peaks not in any
+# of the 8 ctegories and provides as output a tsv file to make a barplot with two pieces of information
+# that could be species and kind of peaks (from the 3 we had for atac peaks), or species
 # and all, da or not da for atac peaks so that we can make a barplot split by 1st information (~ in ggplot)
 # and then with as many gx distributions as we have the 2nd information
+# note: 9th category (intergenic) added on May 2nd 2018
 
 # example
 # chr	beg	end	exon	intron	tss	tss1000	tss5000	tts	tts1000	tts5000
@@ -50,37 +52,81 @@ BEGIN{
 
 NR>=2{
     n++;
+    nb0=0;
     if($4!="NA")
     {
 	nex++;
     }
+    else
+    {
+	nb0++;
+    }
+
     if($5!="NA")
     {
 	nintr++;
     }
+    else
+    {
+	nb0++;
+    }
+    
     if($6!="NA")
     {
 	ntss++;
     }
+    else
+    {
+	nb0++;
+    }
+
     if($7!="NA")
     {
 	ntss1++;
     }
+    else
+    {
+	nb0++;
+    }
+
     if($8!="NA")
     {
 	ntss5++;
     }
+    else
+    {
+	nb0++;
+    }
+
     if($9!="NA")
     {
 	ntts++;
     }
+    else
+    {
+	nb0++;
+    }
+
     if($10!="NA")
     {
 	ntts1++;
     }
+    else
+    {
+	nb0++;
+    }
+
     if($11!="NA")
     {
 	ntts5++;
+    }
+    else
+    {
+	nb0++;
+    }
+    if(nb0==8)
+    {
+	nig++;
     }
 }
 
@@ -93,4 +139,5 @@ END{
     print info1, info2, ntts, ntts/n*100, "6_tts";
     print info1, info2, ntts1, ntts1/n*100, "7_tts1kb";
     print info1, info2, ntts5, ntts5/n*100, "8_tts5kb";
+    print info1, info2, nig, nig/n*100, "9_intergenic";
 }
