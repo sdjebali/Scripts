@@ -5,7 +5,7 @@
 # this script takes as input the CANDIDATE chimeric junctions obtained with chimpipe version 0.9.4 at least
 # or the concatenation of the filtered and the final junctions where the second header has been removed
 # and produces a matrix with all the chimeric junctions from different experiments 
-# with at least x spanning reads in one expt or tech rep and no too high similarity between the two connected 
+# with at least x spanning reads and y paired end reads in one expt or tech rep and no too high similarity between the two connected 
 # genes (less than 30 nt sim or less than 80% sim), with their beg and end across all experiments, 
 # whether the two parts are on the same chr and strand, whether they are on the expected 
 # genomic order, their distance, the list of genes which exons overlap each part of the junction, 
