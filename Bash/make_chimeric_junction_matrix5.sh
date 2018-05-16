@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# ~sdjebali/bin/make_chimeric_junction_matrix5.sh
-#################################################
+# make_chimeric_junction_matrix5.sh
+###################################
 # this script takes as input the CANDIDATE chimeric junctions obtained with chimpipe version 0.9.4 at least
 # or the concatenation of the filtered and the final junctions where the second header has been removed
 # and produces a matrix with all the chimeric junctions from different experiments 
