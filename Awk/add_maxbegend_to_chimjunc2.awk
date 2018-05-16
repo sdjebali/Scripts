@@ -22,13 +22,16 @@
 ########
 # a n = 3+m column file with junction id first, then beg and end, and then m fields which are the ones from fld2+1 to the end in the input matrix
 
+BEGIN{OFS="\t"}
+
 {
     if(info[$1]=="")
     {
-	for(i=(fld2+1); i<=NF; i++)
+	for(i=(fld2+1); i<=NF-1; i++)
 	{
-	    info[$1]=(info[$1])($i)(" ");
+	    info[$1]=(info[$1])($i)("\t");
 	}
+	info[$1]=(info[$1])($i);
     }
     split($1,a,":"); 
     split(a[1],a1,"_"); 
