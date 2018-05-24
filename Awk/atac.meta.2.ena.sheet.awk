@@ -23,6 +23,12 @@
 # /work/project/fragencode/data/reads/atacseq/bos_taurus/cd4/cattle3/ATAC36_atacseq_combined_R1.fastq.gz	bos_taurus	bostauruscd4FR6125612130	cd4	female	FR6125612130	cattle3	ATAC36	1	cattle3.cd4
 # 77 (10 fields)
 
+# output
+# SAMPLE_DESCRIPTOR	EXPERIMENT_alias	TITLE	STUDY_REF	DESIGN_DESCRIPTION	LIBRARY_NAME	LIBRARY_STRATEGY	LIBRARY_SOURCE	LIBRARY_SELECTION	LIBRARY_LAYOUTNOMINAL_LENGTH	NOMINAL_SDEV	LIBRARY_CONSTRUCTION_PROTOCOL	PLATFORM	INSTRUMENT_MODEL
+# SAMEA1088339	INRA_FRAGENCODE_20170927_ATACSEQ_BOS_2130_CD4	Cattle chromatin accessibility profiling in cd4 cells by the FAANG pilot project FR-AgENCODE	INRA_FRAGENCODE_20180228_ATACSEQ	Paired-end ATAC-Seq of chromatin from cd4 cells on an Illumina HiSeq 3000	INRA_FRAGENCODE_20170927_ATACSEQ_BOS_2130_CD4	ATAC-Seq	GENOMIC	not applicable	PAIRED	265	not available	ATAC-seq from Buenrostro, 2014 protocol adapted for fresh tissue and primary cells	ILLUMINA	Illumina HiSeq 3000
+# 1 (15 fields)
+# 38 (53 fields)
+
 # - SAMPLE_DESCRIPTOR = this is the biosample id, so take it from rnaseq as the one associated to a given combination of animal and tissue (in second column) (ex SAMEA1088320)
 # - EXPERIMENT_alias = this is the experiment alias I made up and put in the run sheet (eg INRA_FRAGENCODE_20170716_RNASEQ_SUS_1346_CD4)
 # - TITLE = do same as rnaseq, example Pig chromatin accessibility profiling in cd4 cells by the FAANG pilot project FR-AgENCODE (change the species and the tissue each time)
