@@ -1,0 +1,98 @@
+# atac.meta.2.ena.sheet.awk
+
+# example
+# cd /work/project/fragencode/workspace/sdjebali/fragencode/data_submission/atacseq
+# rna=/work/project/fragencode/workspace/sdjebali/fragencode/data_submission/rnaseq/rnaseq.experiment_ena.tsv
+# insert=/work/project/fragencode/data/metadata/atacseq/atacseq_insert.tsv
+# meta=/work/project/fragencode/data/metadata/atacseq/atacseq_combinedreadfile_metadata.tsv
+# awk -v fileRef1=$rna -v fileRef2=$insert -f atac.meta.2.ena.sheet.awk $meta > atacseq.experiment_ena.tsv
+
+# $rna
+# SAMPLE_DESCRIPTOR	EXPERIMENT_alias	TITLE	STUDY_REF	DESIGN_DESCRIPTION	LIBRARY_NAME	LIBRARY_STRATEGY	LIBRARY_SOURCE	LIBRARY_SELECTION	LIBRARY_LAYOUTNOMINAL_LENGTH	NOMINAL_SDEV	LIBRARY_CONSTRUCTION_PROTOCOL	PLATFORM	INSTRUMENT_MODEL
+# SAMEA1088320	INRA_FRAGENCODE_20170716_RNASEQ_SUS_1346_CD4	Pig transcriptome profiling in cd4 cells by the FAANG pilot project FR-AgENCODE	INRA_FRAGENCODE_20180228_RNASEQ	Paired-end RNA-Seq of polyA+ transcripts from cd4 cells on an Illumina HiSeq 3000	INRA_FRAGENCODE_20170716_RNASEQ_SUS_1346_CD4	RNA-Seq	TRANSCRIPTOMIC	Oligo-dT	PAIRED	515	not available TruSeq Stranded mRNA Sample Preparation kit V2 Guide (with a reduction of the fragmentation time from 8 to 2 minutes)	ILLUMINA	Illumina HiSeq 3000
+# 1 (15 fields)
+# 42 (60 fields)
+
+# $insert
+# ATAC27	186
+# ATAC28	175
+# 47 (2 fields)
+
+# $meta
+# path	species	olabExpId	tissue	sex	animal	animal_short	atacsample	read_no	labExpId
+# /work/project/fragencode/data/reads/atacseq/bos_taurus/cd4/cattle3/ATAC36_atacseq_combined_R1.fastq.gz	bos_taurus	bostauruscd4FR6125612130	cd4	female	FR6125612130	cattle3	ATAC36	1	cattle3.cd4
+# 77 (10 fields)
+
+# - SAMPLE_DESCRIPTOR = this is the biosample id, so take it from rnaseq as the one associated to a given combination of animal and tissue (in second column) (ex SAMEA1088320)
+# - EXPERIMENT_alias = this is the experiment alias I made up and put in the run sheet (eg INRA_FRAGENCODE_20170716_RNASEQ_SUS_1346_CD4)
+# - TITLE = do same as rnaseq, example Pig chromatin accessibility profiling in cd4 cells by the FAANG pilot project FR-AgENCODE (change the species and the tissue each time)
+# - STUDY_REF = do same as rnaseq and take from study_alias in study sheet so here will be INRA_FRAGENCODE_20180228_ATACSEQ
+# - DESIGN_DESCRIPTION = do same as rnaseq , ex Paired-end ATAC-Seq of chromatin from cd4 cells on an Illumina HiSeq 3000 (change tissue each time)
+# - LIBRARY_NAME = same as the experiment_alias in field no 2
+# - LIBRARY_STRATEGY = ATAC-Seq
+# - LIBRARY_SOURCE = DNA (they recommend to look in drop-down menu but I cannot find it) ???
+# - LIBRARY_SELECTION = PAIRED?? (they recommend to look in drop-down menu but I cannot find it) ???
+# - LIBRARY_LAYOUTNOMINAL_LENGTH = take from tsv file by Olivier
+# - NOMINAL_SDEV = not available
+# - LIBRARY_CONSTRUCTION_PROTOCOL = look in the paper we submitted
+# - PLATFORM = ILLUMINA
+# - INSTRUMENT_MODEL = Illumina HiSeq 3000
+
+BEGIN{
+    OFS="\t";
+    # correspondance between long species and short species names
+    corr["bos_taurus"]="BOS";
+    corr["capra_hircus"]="CAP";
+    corr["gallus_gallus"]="GAL";
+    corr["sus_scrofa"]="SUS";
+    # correspondance between lowercase and uppercase tissue names
+    corr["cd4"]="CD4";
+    corr["cd8"]="CD8";
+    corr["liver"]="LIVER";
+    # correspondance between long species and nice species names
+    corr2["bos_taurus"]="Cattle";
+    corr2["capra_hircus"]="Goat";
+    corr2["gallus_gallus"]="Chicken";
+    corr2["sus_scrofa"]="Pig";
+
+    # for 3 chicken, 1 cattle and 1 pig tcell atacseq experiments, provide correspondance between metadata and biosample id manually
+    # since biosample metadata is badly organized (2 files, one for liver, one for tcells, not same format and more in the file)
+    # an added complication is that tcell samples are not directly linked to the animal sample but via spleen/splenocyte samples
+    # for chicken and via blood sample for cattle/pig
+    biosamp["GAL_2657_CD4"]="SAMEA1088331";
+    biosamp["GAL_2657_CD8"]="SAMEA1088311";
+    biosamp["GAL_2756_CD4"]="SAMEA1088349";
+    biosamp["BOS_0986_CD8"]="SAMEA1088340";
+    biosamp["SUS_1203_CD4"]="SAMEA1088372";
+    
+    # read the rnaseq ena file in order to associate a sample to 
+    while (getline < fileRef1 >0)
+    {
+	split($2,a,"_");
+	biosamp[a[5]"_"a[6]"_"a[7]]=$1;
+    }
+    # read the insert size file in order to associate a size to each library
+    while (getline < fileRef2 >0)
+    {
+	size[$1]=$2;
+    }
+
+    # print the header of the ena file we want
+    print "SAMPLE_DESCRIPTOR", "EXPERIMENT_alias", "TITLE", "STUDY_REF", "DESIGN_DESCRIPTION",	"LIBRARY_NAME", "LIBRARY_STRATEGY", "LIBRARY_SOURCE", "LIBRARY_SELECTION", "LIBRARY_LAYOUTNOMINAL_LENGTH", "NOMINAL_SDEV", "LIBRARY_CONSTRUCTION_PROTOCOL", "PLATFORM", "INSTRUMENT_MODEL";
+}
+
+# Read the metadata file of fastq files but just read the /1 rows since exact same info in /2 and we need it once
+$9==1{
+    n=split($1,a,"/");
+    split(a[n],b,"_R1.fastq.gz");
+    # the animal id
+    n2=split($6,c,"");
+    s="";
+    for(i=n2-3; i<=n2; i++)
+    {
+	s=(s)(c[i]);
+    }
+    auxlib=corr[$2]"_"s"_"corr[$4];
+    libid="INRA_FRAGENCODE_20170927_ATACSEQ_"auxlib;
+    print biosamp[auxlib], libid, corr2[$2]" chromatin accessibility profiling in "$4" cells by the FAANG pilot project FR-AgENCODE", "INRA_FRAGENCODE_20180228_ATACSEQ", "Paired-end ATAC-Seq of chromatin from "$4" cells on an Illumina HiSeq 3000", libid, "ATAC-Seq", "GENOMIC", "PAIRED", size[$8], "not available", "ATAC-seq from Buenrostro, 2014 protocol adapted for fresh tissue and primary cells", "ILLUMINA", "Illumina HiSeq 3000";
+}
