@@ -31,8 +31,9 @@
 # - LIBRARY_NAME = same as the experiment_alias in field no 2
 # - LIBRARY_STRATEGY = ATAC-Seq
 # - LIBRARY_SOURCE = DNA (they recommend to look in drop-down menu but I cannot find it) ???
-# - LIBRARY_SELECTION = PAIRED?? (they recommend to look in drop-down menu but I cannot find it) ???
-# - LIBRARY_LAYOUTNOMINAL_LENGTH = take from tsv file by Olivier
+# - LIBRARY_SELECTION = not applicable ?
+# - LIBRARY_LAYOUT = PAIRED?? (they recommend to look in drop-down menu but I cannot find it) ???
+# - NOMINAL_LENGTH = take from tsv file by Olivier
 # - NOMINAL_SDEV = not available
 # - LIBRARY_CONSTRUCTION_PROTOCOL = look in the paper we submitted
 # - PLATFORM = ILLUMINA
@@ -78,7 +79,7 @@ BEGIN{
     }
 
     # print the header of the ena file we want
-    print "SAMPLE_DESCRIPTOR", "EXPERIMENT_alias", "TITLE", "STUDY_REF", "DESIGN_DESCRIPTION",	"LIBRARY_NAME", "LIBRARY_STRATEGY", "LIBRARY_SOURCE", "LIBRARY_SELECTION", "LIBRARY_LAYOUTNOMINAL_LENGTH", "NOMINAL_SDEV", "LIBRARY_CONSTRUCTION_PROTOCOL", "PLATFORM", "INSTRUMENT_MODEL";
+    print "SAMPLE_DESCRIPTOR", "EXPERIMENT_alias", "TITLE", "STUDY_REF", "DESIGN_DESCRIPTION",	"LIBRARY_NAME", "LIBRARY_STRATEGY", "LIBRARY_SOURCE", "LIBRARY_SELECTION", "LIBRARY_LAYOUT", "NOMINAL_LENGTH", "NOMINAL_SDEV", "LIBRARY_CONSTRUCTION_PROTOCOL", "PLATFORM", "INSTRUMENT_MODEL";
 }
 
 # Read the metadata file of fastq files but just read the /1 rows since exact same info in /2 and we need it once
@@ -94,5 +95,5 @@ $9==1{
     }
     auxlib=corr[$2]"_"s"_"corr[$4];
     libid="INRA_FRAGENCODE_20170927_ATACSEQ_"auxlib;
-    print biosamp[auxlib], libid, corr2[$2]" chromatin accessibility profiling in "$4" cells by the FAANG pilot project FR-AgENCODE", "INRA_FRAGENCODE_20180228_ATACSEQ", "Paired-end ATAC-Seq of chromatin from "$4" cells on an Illumina HiSeq 3000", libid, "ATAC-Seq", "GENOMIC", "PAIRED", size[$8], "not available", "ATAC-seq from Buenrostro, 2014 protocol adapted for fresh tissue and primary cells", "ILLUMINA", "Illumina HiSeq 3000";
+    print biosamp[auxlib], libid, corr2[$2]" chromatin accessibility profiling in "$4" cells by the FAANG pilot project FR-AgENCODE", "INRA_FRAGENCODE_20180228_ATACSEQ", "Paired-end ATAC-Seq of chromatin from "$4" cells on an Illumina HiSeq 3000", libid, "ATAC-Seq", "GENOMIC", "not applicable", "PAIRED", size[$8], "not available", "ATAC-seq from Buenrostro, 2014 protocol adapted for fresh tissue and primary cells", "ILLUMINA", "Illumina HiSeq 3000";
 }
