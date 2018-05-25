@@ -53,6 +53,7 @@ $9==1{
     n=split($1,a,"/");
     split(a[n],b,"_R1.fastq.gz");
     nb[b[1]]++;
+    # the animal id
     n2=split($6,c,"");
     s="";
     for(i=n2-3; i<=n2; i++)

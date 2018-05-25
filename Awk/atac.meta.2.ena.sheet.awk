@@ -101,5 +101,5 @@ $9==1{
     }
     auxlib=corr[$2]"_"s"_"corr[$4];
     libid="INRA_FRAGENCODE_20170927_ATACSEQ_"auxlib;
-    print biosamp[auxlib], libid, corr2[$2]" chromatin accessibility profiling in "$4" cells by the FAANG pilot project FR-AgENCODE", "INRA_FRAGENCODE_20180228_ATACSEQ", "Paired-end ATAC-Seq of chromatin from "$4" cells on an Illumina HiSeq 3000", libid, "ATAC-Seq", "GENOMIC", "not applicable", "PAIRED", size[$8], "not available", "ATAC-seq from Buenrostro, 2014 protocol adapted for fresh tissue and primary cells", "ILLUMINA", "Illumina HiSeq 3000";
+    print biosamp[auxlib], libid, corr2[$2]" chromatin accessibility profiling in "$4" cells by the FAANG pilot project FR-AgENCODE", "INRA_FRAGENCODE_20180228_ATACSEQ", "Paired-end ATAC-Seq of chromatin from "$4" cells on an Illumina HiSeq 3000", libid, "ATAC-seq", "GENOMIC", "unspecified", "PAIRED", size[$8], "not available", "ATAC-seq from Buenrostro, 2014 protocol adapted for fresh tissue and primary cells", "ILLUMINA", "Illumina HiSeq 3000";
 }
