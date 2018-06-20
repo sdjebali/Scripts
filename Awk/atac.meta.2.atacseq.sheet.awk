@@ -18,11 +18,15 @@
 # 77 (10 fields)
 
 # output
+# SAMPLE_DESCRIPTOR	EXPERIMENT_alias	experiment target	transposase protocol
+# SAMEA1088339	INRA_FRAGENCODE_20170927_ATACSEQ_BOS_2130_CD4	open_chromatin_region	ftp://ftp.faang.ebi.ac.uk/ftp/protocols/assays/INRA_SOP_ATAC-seq_AG_v1_20160805.pdf
+# 38 (4 fields)
+# 1 (6 fields) *** all rows have 4 fields separated by tabs
 
 
 # - SAMPLE_DESCRIPTOR (SAMEA1088320): OK I have from run sheet and can make the same way
 # - EXPERIMENT_alias (INRA_FRAGENCODE_20170716_RNASEQ_SUS_1346_CD4): OK I have from run sheet and can make the same way
-# - experiment target = open chromatin region
+# - experiment target = open_chromatin_region
 # - transposase protocol = ftp://ftp.faang.ebi.ac.uk/ftp/protocols/assays/INRA_SOP_ATAC-seq_AG_v1_20160805.pdf
 
 
@@ -63,7 +67,7 @@ BEGIN{
 $9==1{
     n=split($1,a,"/");
     split(a[n],b,"_R1.fastq.gz");
-    # the animal id
+    # the initial animal id
     n2=split($6,c,"");
     s="";
     for(i=n2-3; i<=n2; i++)
@@ -72,5 +76,5 @@ $9==1{
     }
     auxlib=corr[$2]"_"s"_"corr[$4];
     libid="INRA_FRAGENCODE_20170927_ATACSEQ_"auxlib;
-    print biosamp[auxlib], libid, "open chromatin region", "ftp://ftp.faang.ebi.ac.uk/ftp/protocols/assays/INRA_SOP_ATAC-seq_AG_v1_20160805.pdf";
+    print biosamp[auxlib], libid, "open_chromatin_region", "ftp://ftp.faang.ebi.ac.uk/ftp/protocols/assays/INRA_SOP_ATAC-seq_AG_v1_20160805.pdf";
 }

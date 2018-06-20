@@ -7,6 +7,10 @@
 # real	0m35.087s
 # time ~/fragencode/tools/multi/Scripts/Bash/save_readmes.sh ~/dynagen/sdjebali ~/save/READMEs_dyna
 # real	0m3.145s
+# time ~/fragencode/tools/multi/Scripts/Bash/save_readmes.sh ~/fragencode/workspace/unipluri ~/save/READMEs_uni
+# real	0m7.073s
+# time ~/fragencode/tools/multi/Scripts/Bash/save_readmes.sh ~/crct/chimeras ~/save/READMEs_crct
+# real	0m0.094s
 
 # Check the inputs do exist
 ###########################

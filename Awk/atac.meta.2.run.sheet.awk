@@ -1,11 +1,20 @@
 # atac.meta.2.run.sheet.awk
 # From a metadata tsv file of atac-seq combined fastq files per biorep, make a run sheet for the faang submission
+# An improvement would be to have a single awk script for atacseq and hic but for this we would need to
+# - pass the field no for R1 and R2 or get it from metadata header (9 for atac, 7 for hic)
+# - pass the type of attribute we have for R1 and R2 (1 and 2 for atac, R1 and R2 for hic)
+# - pass the way the files are ending (_R1.fastq.gz for atac, .R1.fastq.gz for hic)
+# - pass the field no for animal init id or get it from metadata  header (6 for both here but only by chance)
+# - pass the field no for species or get it from metadata  header (2 for both but again by chance)
+# - pass the field no for tissues or get it from metadata  header (4 for atac and 3 for hic)
+# - pass the kind of info from the metadata file that has to be connected to lib insert size (atacsample ($8 in meta) for atac, animal_old ($4 in meta) for hic)
+
 
 # example
 # cd /work/project/fragencode/workspace/sdjebali/fragencode/data_submission/atacseq
-# animals=/work/project/fragencode/data/metadata/correspondance_animaux_frAGENCODE_animalshortname.tab
+# pgm=/work/project/fragencode/tools/multi/Scripts/Awk/atac.meta.2.run.sheet.awk 
 # meta=/work/project/fragencode/data/metadata/atacseq/atacseq_combinedreadfile_metadata.tsv
-# awk -v fileRef=atacseq.fastq.md5sum.tsv -f atac.meta.2.run.sheet.awk $meta > atacseq.run.sheet.tsv
+# awk -v fileRef=atacseq.fastq.md5sum.tsv -f $pgm $meta > atacseq.run.sheet.tsv
 
 # atacseq.fastq.md5sum.tsv
 # 2667d5177aba5dc9952253f2e4769a96  /work/project/fragencode/data/reads/atacseq/bos_taurus/cd4/cattle3/ATAC36_atacseq_combined_R1.fastq.gz
@@ -53,7 +62,7 @@ $9==1{
     n=split($1,a,"/");
     split(a[n],b,"_R1.fastq.gz");
     nb[b[1]]++;
-    # the animal id
+    # the initial animal id
     n2=split($6,c,"");
     s="";
     for(i=n2-3; i<=n2; i++)

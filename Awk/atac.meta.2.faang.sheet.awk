@@ -29,8 +29,8 @@
 # - assay type (transcription profiling by high throughput sequencing): chromatin accessibility profiling by high throughput sequencing
 # - sample storage (frozen, -70 freezer): fresh for liver, 'not provided' for cd4 and cd8
 # - sample storage processing (cryopreservation, other): fresh for liver and cryopreservation, other for cd4 and cd8
-# - sampling to preparation interval (13): 10 for liver and 6 for tcells
-# - Units (weeks): minutes for liver and months for tcells
+# - sampling to preparation interval (13): 10 for liver and 27 for tcells
+# - Units (weeks): minutes for liver and weeks for tcells
 # - experimental protocol (ftp://ftp.faang.ebi.ac.uk/ftp/protocols/assays/INRA_SOP_mRNA-seq_long_protocol_20160908.pdf): ftp://ftp.faang.ebi.ac.uk/ftp/protocols/assays/INRA_SOP_ATAC-seq_AG_v1_20160805.pdf
 # - extraction protocol	(ftp://ftp.faang.ebi.ac.uk/ftp/protocols/assays/INRA_SOP_RNA_extraction_20160504.pdf): ftp://ftp.faang.ebi.ac.uk/ftp/protocols/assays/INRA_SOP_ATAC-seq_AG_v1_20160805.pdf
 # - library preparation location (Plateforme Genomique de Toulouse, INRA Castanet-Tolosan, France): Centre INRA Ile-de-France-Jouy-en-Josas, France
@@ -85,7 +85,7 @@ BEGIN{
 $9==1{
     n=split($1,a,"/");
     split(a[n],b,"_R1.fastq.gz");
-    # the animal id
+    # the initial animal id
     n2=split($6,c,"");
     s="";
     for(i=n2-3; i<=n2; i++)
@@ -94,5 +94,5 @@ $9==1{
     }
     auxlib=corr[$2]"_"s"_"corr[$4];
     libid="INRA_FRAGENCODE_20170927_ATACSEQ_"auxlib;
-    print biosamp[auxlib], libid, "ATAC-seq", ($4=="liver" ? "fresh" : "frozen, liquid nitrogen"), ($4=="liver" ? "fresh" : "cryopreservation, other"), ($4=="liver" ? 10 : 6), ($4=="liver" ? "minutes" : "months"), "ftp://ftp.faang.ebi.ac.uk/ftp/protocols/assays/INRA_SOP_ATAC-seq_AG_v1_20160805.pdf", "ftp://ftp.faang.ebi.ac.uk/ftp/protocols/assays/INRA_SOP_ATAC-seq_AG_v1_20160805.pdf", "Centre INRA Ile-de-France-Jouy-en-Josas, France", "2.173629", "decimal degrees", "48.764252", "decimal degrees", "2016-04-20T00:00:00", "YYYY-MM-DD", "Plateforme Genomique de Toulouse, INRA Castanet-Tolosan, France", "1.499654", "decimal degrees", "43.527571", "decimal degrees", "2017-09-27T00:00:00", "YYYY-MM-DD";
+    print biosamp[auxlib], libid, "ATAC-seq", ($4=="liver" ? "fresh" : "frozen, liquid nitrogen"), ($4=="liver" ? "fresh" : "cryopreservation, other"), ($4=="liver" ? 10 : 27), ($4=="liver" ? "minutes" : "weeks"), "ftp://ftp.faang.ebi.ac.uk/ftp/protocols/assays/INRA_SOP_ATAC-seq_AG_v1_20160805.pdf", "ftp://ftp.faang.ebi.ac.uk/ftp/protocols/assays/INRA_SOP_ATAC-seq_AG_v1_20160805.pdf", "Centre INRA Ile-de-France-Jouy-en-Josas, France", "2.173629", "decimal degrees", "48.764252", "decimal degrees", "2016-04-20T00:00:00", "YYYY-MM-DD", "Plateforme Genomique de Toulouse, INRA Castanet-Tolosan, France", "1.499654", "decimal degrees", "43.527571", "decimal degrees", "2017-09-27T00:00:00", "YYYY-MM-DD";
 }
