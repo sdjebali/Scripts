@@ -6,7 +6,7 @@
 
 # example
 # cd /work/project/fragencode/data/ebi_submission/hic
-# rna=/work/project/fragencode/workspace/sdjebali/fragencode/data_submission/rnaseq/rnaseq.experiment_ena.tsv
+# rna=/work/project/fragencode/data/ebi_submission/rnaseq/by.SF/experiment_ena.tsv
 # pgm=/work/project/fragencode/tools/multi/Scripts/Awk/hic.meta.2.hic.sheet.awk
 # meta=/work/project/fragencode/data/metadata/atacseq/atacseq_combinedreadfile_metadata.tsv
 # awk -v fileRef=$rna -f $pgm $meta > hic.hic.tsv

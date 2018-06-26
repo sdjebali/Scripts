@@ -16,7 +16,7 @@
 
 # example
 # cd /work/project/fragencode/data/ebi_submission/hic
-# rna=/work/project/fragencode/workspace/sdjebali/fragencode/data_submission/rnaseq/rnaseq.experiment_ena.tsv
+# rna=/work/project/fragencode/data/ebi_submission/rnaseq/by.SF/experiment_ena.tsv
 # insert=/work/project/fragencode/data/metadata/hic/animal_old.lib_insert_size.tsv
 # pgm=/work/project/fragencode/tools/multi/Scripts/Awk/hic.meta.2.ena.sheet.awk 
 # meta=/work/project/fragencode/data/ebi_submission/hic/sequences/hic_fastq_biorep_metadata.tsv

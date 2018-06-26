@@ -15,7 +15,7 @@
 
 # example
 # cd /work/project/fragencode/workspace/sdjebali/fragencode/data_submission/atacseq
-# rna=/work/project/fragencode/workspace/sdjebali/fragencode/data_submission/rnaseq/rnaseq.experiment_ena.tsv
+# rna=/work/project/fragencode/data/ebi_submission/rnaseq/by.SF/experiment_ena.tsv
 # insert=/work/project/fragencode/data/metadata/atacseq/atacseq_insert.tsv
 # meta=/work/project/fragencode/data/metadata/atacseq/atacseq_combinedreadfile_metadata.tsv
 # awk -v fileRef1=$rna -v fileRef2=$insert -f atac.meta.2.ena.sheet.awk $meta > atacseq.experiment_ena.tsv

@@ -13,7 +13,7 @@
 
 # example
 # cd /work/project/fragencode/data/ebi_submission/hic
-# rna=/work/project/fragencode/workspace/sdjebali/fragencode/data_submission/rnaseq/rnaseq.experiment_ena.tsv
+# rna=/work/project/fragencode/data/ebi_submission/rnaseq/by.SF/experiment_ena.tsv
 # pgm=/work/project/fragencode/tools/multi/Scripts/Awk/hic.meta.2.faang.sheet.awk
 # meta=/work/project/fragencode/data/ebi_submission/hic/sequences/hic_fastq_biorep_metadata.tsv
 # awk -v fileRef=$rna -f $pgm $meta > hic.experiment_faang.tsv
@@ -87,7 +87,7 @@ BEGIN{
     biosamp["BOS_0986_CD8"]="SAMEA1088340";
     biosamp["SUS_1203_CD4"]="SAMEA1088372";
     
-    # read the rnaseq ena file in order to associate a sample to 
+    # read the old rnaseq ena file in order to associate a sample to its biosample id
     while (getline < fileRef >0)
     {
 	split($2,a,"_");

@@ -2,7 +2,7 @@
 
 # example
 # cd /work/project/fragencode/workspace/sdjebali/fragencode/data_submission/atacseq
-# rna=/work/project/fragencode/workspace/sdjebali/fragencode/data_submission/rnaseq/rnaseq.experiment_ena.tsv
+# rna=/work/project/fragencode/data/ebi_submission/rnaseq/by.SF/experiment_ena.tsv
 # meta=/work/project/fragencode/data/metadata/atacseq/atacseq_combinedreadfile_metadata.tsv
 # awk -v fileRef=$rna -f atac.meta.2.faang.sheet.awk $meta > atacseq.experiment_faang.tsv
 
