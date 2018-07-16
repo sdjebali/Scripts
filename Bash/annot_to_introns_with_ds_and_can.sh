@@ -2,6 +2,9 @@
 # annot_to_introns_with_ds_and_can.sh
 ######################################
 # !!! can be generalized easily to any kind of junction since duplseq_gal exists !!!
+# !!! needs fastalength to be installed !!!
+# !!! should not be run twice in the same directory since uses files with fixed names !!!
+# !!! TODO: do not crash even if a sequence to extract goes beyond the boundaries of a chromosome !!!
 
 # From an annotation makes its introns with information about duplicated sequence (as computed by duplseq) and canonicity
 
@@ -22,7 +25,9 @@
 # (the DS is computed with duplseq)
 # - on the standard output some statistics
 
-# Dependencies
+# Dependencies:
+###############
+# - fastalength from exonerate
 # - fastaFromBed from bedtools
 # - duplseq from Sarah Djebali
 # - 5 awk scripts (see below)
@@ -68,6 +73,7 @@ then
     echo "- genome.fa is a fasta file containing the chromosome sequences for this annotation" >&2
     echo "will provide as output an intron file made from the annotation with both duplicated sequence (DS, computed by duplseq) and canonicity information" >&2
     echo "as well as some DS statistics depending on the canonicity on the standard output" >&2
+    echo "!!! should not be run twice in the same directory since uses files with fixed names !!!" >&2
     echo "" >&2
     exit 1
 fi
@@ -92,21 +98,30 @@ DUPLSEQ=$rootDir/../bin/duplseq
 CANONICAL=$rootDir/../Awk/intron_is_canonical_gal.awk
 PROP=$rootDir/../Awk/compute_prop.awk
 
-# Makes the introns from the annotation
-#######################################
+# Makes the introns from the annotation gtf file
+################################################
 # !!! the exons have to be sorted according to tr id and then coord !!!
-echo I am making the introns from the annotation >&2
+echo I am making the introns from the annotation gtf file >&2
 awk '$3=="exon"' $annot | sort -k12,12 -k4,4n -k5,5n | awk -v fldgn=10 -v fldtr=12 -f $MAKEINTRONS | awk -v to=12 -f $CUTGFF > $base\_introns.gff
 # chr1  HAVANA  intron  12058   12178   .       +       .       gene_id "ENSG00000223972.5"; transcript_id "ENST00000450305.2";
 # 962475 (12 fields) *** real    1m4.374s
+echo done >&2
+
+# Makes the chromosome length file from the genome fasta file
+#############################################################
+echo I am making the chromosome length file from the genome fasta file >&2
+fastalength $genome > genome.len
+# 196202544 1
+# 23475 (2 fields)
 echo done >&2
 
 # Make a file of 24 mers for the donor and acceptor sites of each intron
 ########################################################################
 # the 24don seq at 5' end of the intron is composed of 12 nt exon and then 12 nt introns which start with the GT
 # the 24acc seq at 3' end of the intron is composed of 12 nt intron which end with the AG and then 12 nt exon
+# !!! here I should check that each feature does not go beyond the boundaries of a chromosome otherwise fastaFromBed fails !!!
 echo I am making a file of coordinates for the 24mers around donor and acceptor >&2
-awk '{intrbeg=$4; intrend=$5; if($7=="+"){donbeg=intrbeg-12; donend=intrbeg+12-1; accbeg=intrend-12+1; accend=intrend+12} else{if($7=="-"){donbeg=intrend-12+1; donend=intrend+12; accbeg=intrbeg-12; accend=intrbeg+12-1}} print $0, "24merdonbed", "\""$1":"(donbeg-1)":"donend":"$7"\"\;", "24meraccbeg", "\""$1":"(accbeg-1)":"accend":"$7"\"\;"}' $base\_introns.gff | awk -f $GFF2GFF > $base\_introns_24mer_don_acc.gff
+awk -v fileRef=genome.len 'BEGIN{while (getline < fileRef >0){size[$2]=$1}} {intrbeg=$4; intrend=$5; if($7=="+"){donbeg=intrbeg-12; donend=intrbeg+12-1; accbeg=intrend-12+1; accend=intrend+12;} else{if($7=="-"){donbeg=intrend-12+1; donend=intrend+12; accbeg=intrbeg-12; accend=intrbeg+12-1;}} if((donbeg>=1)&&(donend<=size[$1])&&(accbeg>=1)&&(accend<=size[$1])){print $0, "24merdonbed", "\""$1":"(donbeg-1)":"donend":"$7"\"\;", "24meraccbeg", "\""$1":"(accbeg-1)":"accend":"$7"\"\;"}}' $base\_introns.gff | awk -f $GFF2GFF > $base\_introns_24mer_don_acc.gff
 # chr1  HAVANA  intron  12058   12178   .       +       .       gene_id "ENSG00000223972.5"; transcript_id "ENST00000450305.2"; 24merdonbed "chr1_12045_12069_+"; 24meraccbed "chr1_12166_12190_+";
 # 962475 (16 fields)
 awk '{split($(NF-2),a,"\""); split(a[2],a1,":"); split($NF,b,"\""); split(b[2],b1,":"); print a1[1], a1[2], a1[3], ".", ".", a1[4]; print b1[1], b1[2], b1[3], ".", ".", b1[4]}' $base\_introns_24mer_don_acc.gff | sort | uniq | awk '{print $1"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6}' > $base\_introns_24mers_don_acc_nr.bed
@@ -220,10 +235,11 @@ echo done >&2
 
 # Cleaning
 ##########
-rm $base\_introns.gff
-rm $base\_introns_24mer_don_acc.gff
-rm $base\_introns_24mers_don_acc_nr.bed 
-rm $base\_introns_24mer_don_acc_nr.tsv
-rm $base\_introns_24mer_don_acc_seq.gff
-rm $base\_introns_24mer_don_acc_seq_ds.gff
-rm $base.ds.lg.tmp 
+# rm genome.len
+# rm $base\_introns.gff
+# rm $base\_introns_24mer_don_acc.gff
+# rm $base\_introns_24mers_don_acc_nr.bed 
+# rm $base\_introns_24mer_don_acc_nr.tsv
+# rm $base\_introns_24mer_don_acc_seq.gff
+# rm $base\_introns_24mer_don_acc_seq_ds.gff
+# rm $base.ds.lg.tmp 
