@@ -3,16 +3,20 @@
 # find_orf_preservation_for_chimeras.sh
 # takes as input 4 mandatory arguments:
 # - a chimeric junction file made from stranded data with a header and with junction id in col no 1, and external beg and end in col 2 and 3
-# - a CDS gtf file for the underlying annotation
+# - an annotation gtf file including at least CDS rows
 # - two integers indicating the positions of the gene biotype lists for gene 1 and for gene 2
 # and returns several intermediate files as well as a report containing the number of chimeric junctions
 # of different categories. Note that now the nb for encompassing and overlapping is the same since only
 # the internal junction coord are taken into account (due to gtex)
 # IMPROVEMENTS: be able to use any position for juncid and for external beg and end
 
+# changed on July 30th 2018:
+# - ask for annot.gtf file with at least CDS rows instead of CDS file
+# - can deal with any kind of gtf file with gene_id and transcript_id at any place
+
 # usage
 #######
-# find_orf_preservation_for_chimeras.sh chimeric_junction_file.txt cdsfile.gtf fldgnbt1 fldgnbt2
+# find_orf_preservation_for_chimeras.sh chimeric_junction_file.txt annot.gtf fldgnbt1 fldgnbt2
 
 # example
 #########
@@ -24,8 +28,8 @@
 # junc_id beg end ERR180942 ERR180943 ERR180944 ERR180945 ERR180948 ERR180950 ERR180951 ERR186015 ERR230581 ERR232403 ERR232404 ERR244135  gnlist1 gnlist2 gnnamelist1 gnnamelist2 btlist1 btlist2 maxgnsim
 # chr6_29976869_+:chr6_30460129_+ 29976847 30460203 0 0 0 0 0 3 0 7 5 6 5 7 ENSG00000204622.6, ENSG00000204592.5, HLA-J, HLA-E, pseudogene, protein_coding, 96.55
 # 11623 (22 fields)
-# and where cds gtf file looks like this
-########################################
+# and where gtf file looks like this
+####################################
 # chr7	HAVANA	CDS	127228553	127228619	.	+	0	gene_id "ENSG00000004059.5"; transcript_id "ENST00000000233.5"; gene_type "protein_coding"; gene_status "KNOWN"; gene_name "ARF5"; transcript_type "protein_coding"; transcript_status "KNOWN"; transcript_name "ARF5-001"; exon_number 1;  level 2; tag "basic"; tag "CCDS"; ccdsid "CCDS34745.1"; havana_gene "OTTHUMG00000023246.5"; havana_transcript "OTTHUMT00000059567.2";
 # 1487 (30 fields)
 # 116302 (32 fields)
@@ -41,7 +45,6 @@
 #######
 # - Made for using on a 64 bit linux architecture
 # - uses awk scripts
-# - supposes that the cds file has transcript id in field no 12 and 
 # - cannot be run several times in the same dir without erasing previous files
 
 
@@ -50,7 +53,7 @@
 if [ ! -n "$1" ] || [ ! -n "$2" ] || [ ! -n "$3" ] ||  [ ! -n "$14" ]
 then
     echo "" >&2
-    echo Usage: find_orf_preservation_for_chimeras.sh chimeric_junction_file.txt cdsfile.gtf fldgnbt1 fldgnbt2 >&2
+    echo Usage: find_orf_preservation_for_chimeras.sh chimeric_junction_file.txt annot.gtf fldgnbt1 fldgnbt2 >&2
     echo "" >&2
     echo "Example: find_orf_preservation_for_chimeras.sh \\" >&2
     echo "distinct_junctions_12runs_collapsed_withmaxbegandend_withexpr_eachrun_gnlist1_gnlist2_gnname1_gnname2_bt1_bt2_maxgnsim.txt \\" >&2
@@ -58,7 +61,7 @@ then
     echo "" >&2
     echo Takes as input:
     echo 1\) a chimeric junction file made from stranded experiments with a header and with junction id in col 1 and external beg and end in col 2 and 3 >&2
-    echo 2\) a cds gtf file of the underlying annotation >&2
+    echo 2\) an annotation gtf file including at least CDS rows >&2
     echo 3\) the column number in the junction file, for the biotypes of the genes whose exons overlap part 1 of the junction >&2
     echo 4\) the column number in the junction file, for the biotypes of the genes whose exons overlap part 2 of the junction >&2
     echo and produces several intermediate files as well as statistics in the log file >&2
@@ -66,7 +69,7 @@ then
     exit 1
 else
 juncfile=$1
-cdsfile=$2
+annot=$2
 fldgnbt1=$3
 fldgnbt2=$4
 fi
@@ -77,6 +80,8 @@ rootDir="`( cd \"$path\" && pwd )`" # absolute path
 
 # Programs
 ###########
+MAKEOK=$rootDir/../Awk/make_gff_ok.awk
+GFF2GFF=$rootDir/../Awk/gff2gff.awk
 CUTGFF=$rootDir/../Awk/cutgff.awk
 GFF2GFF=$rootDir/../Awk/gff2gff.awk
 OVERLAP=$rootDir/../bin/overlap
@@ -84,7 +89,7 @@ OVERLAP=$rootDir/../bin/overlap
 # 0) make a cds file ok for overlap and that has an additional key,value for the frame (since not possible to report it otherwise)
 ##################################################################################################################################
 echo I am making a cds file with a format that is understood by overlap >&2
-awk -v to=20 -f $CUTGFF $cdsfile | awk '{print $0, "frame:", $8}' |  awk -f $GFF2GFF > CDS_cut20_frame.gff
+awk '$3=="CDS"' $annot | awk -f $MAKEOK | awk -f $GFF2GFF | awk -v to=20 -f $CUTGFF | awk '{print $0, "frame:", $8}' |  awk -f $GFF2GFF > CDS_cut20_frame.gff
 echo done >&2
 echo Here is the distribution of the frames in this file >&2
 awk '{print $NF}' CDS_cut20_frame.gff | sort | uniq -c >&2

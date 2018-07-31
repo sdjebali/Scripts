@@ -300,5 +300,6 @@ rm antisense_500bpwaytssannot.txt
 rm annot_introns_coord_gnlist.tsv
 rm $mytrbase\_transcriptid_gnlistwithcommonintron.tsv
 rm $mytrbase\_monoextr_exons.bed annot_monoextr_exons.bed $mytrbase\_monoextr_id_class_reftrlist.tsv
+rm $mytrbase\_comp_refinedclass_nbex.tsv 
 echo done >&2
 
