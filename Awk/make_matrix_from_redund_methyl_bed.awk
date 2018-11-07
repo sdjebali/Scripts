@@ -9,13 +9,14 @@
 # input: unite.bed
 # chr	start	end	id	score	strand	coverage	numCs	numTs
 # 1	1583	1585	7127emb08	.	+	8	0	8
-# 41880700 (9 fields)
+# 41880700 (9 fields)  *** 7 rows for each cpg (since 7 embryos)
 
 # output: cpgid.methylpcent.7samples.tsv
 # 	lid.7127.F23	lid.7127.F8	lid.7127.M15	lid.7127.M20	lid.8303.F12	lid.8303.F22	lid.8303.M14
 # 1:69121798:69121800:+	100	100	72.7273	44.4444	100	84.6154	66.6667
 # 1 (7 fields)
-# 5982957 (8 fields)
+# 5982957 (8 fields) *** note that 5982957*7+1 = 41880700
+
 
 BEGIN{
     OFS="\t";

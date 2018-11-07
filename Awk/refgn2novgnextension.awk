@@ -20,7 +20,7 @@
 # pgm=/work/project/fragencode/tools/multi/Scripts/Awk/refgn2novgnextension.awk
 # sp=sus_scrofa
 # cd $resdir/$sp/assembled
-# awk -v fileRef1=$sp\_cuff_tpm0.1_2sample_comp_refinedclass_nbex_intermclass.tsv -v fileRef2=tmppred.gff -v fileRef3=tmpref.gff -f $pgm tmpref.gff | head
+# awk -v fileRef1=$sp\_cuff_tpm0.1_2sample_comp_refinedclass_nbex_intermclass.tsv -v fileRef2=tmppred.gff -v fileRef3=tmpref.gff -f $pgm tmpref.gff > anngn.fragtrlist.fraggnlist.ext5p.ext3p.ext.alt.tsv
 
 # fileRef1 = $sp\_cuff_tpm0.1_2sample_comp_refinedclass_nbex_intermclass.ts
 # trid	comptrclass	annottrlist	refinedtrclass	nbex	interm_class	interm_gnlist
