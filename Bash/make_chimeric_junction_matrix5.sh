@@ -128,8 +128,8 @@ cat $input | while read lid f
 do
 awk -v minspan=$minspan -v minpe=$minpe 'BEGIN{OFS="\t"}(($1!~/unc/)&&($6>=minspan)&&($11>=minpe)&&(($18=="na")||($18<30)||($19<80))){print $1, $22, $23, $24, $25, $26, $2, $20, $21, $27, $28, $29, $30, $31, $32}' $f > ${f%.txt}\_$minspan\spanning_$minpe\discordantpe_withmaxbegandend.tsv
 done 
-# chr10_70700950_+:chr10_70741293_+     readthrough 70700876        70741315        1       1       40343   GT      AG      ENSG00000107625.6       ENSG00000165732.7       DDX50   DDX21   protein_coding     protein_coding
-# 2194 (14 fields)
+# chr10_70700950_+:chr10_70741293_+     70700876        70741315        1       1       40343   readthrough GT      AG      ENSG00000107625.6       ENSG00000165732.7       DDX50   DDX21   protein_coding     protein_coding
+# 2194 (15 fields)
 
 # 2) Make the junctions obtained in all experiments with their most extreme beg and end across all experiments
 ##############################################################################################################

@@ -77,6 +77,8 @@ fi
 path="`dirname \"$0\"`" # relative path
 rootDir="`( cd \"$path\" && pwd )`" # absolute path
 
+basetmp=${juncfile%.tsv}
+base=${base%.txt}
 
 # Programs
 ###########
@@ -212,10 +214,19 @@ echo prop2: $proporfok2 >> orf_report.txt
 # junc_id       beg     end     samechrstr      okgxorder       dist    ss1     ss2     gnlist1 gnlist2 gnname1 gnname2 gnbt1   gnbt2   LID16627        LID16628        LID16629  LID16630 LID16631        LID16632        LID16633        LID16634        LID16635        LID16636        LID44497        LID44498        LID44499        LID44594        LID45016  LID45017 LID46598        LID46599        LID8461 LID8462 LID8463 LID8464 LID8686 LID8687 LID8692 LID8701 LID8710 LID8711 LID8963 LID8964 LID8965 LID8966 LID8967 LID8968 LID8969 LID8970 trlist_part1 trlist_part2 framelist_part1 framelist_part2
 # 78 (54 fields)
 
-# 6) clean
+# 6) Gather all the important information in a single file
+##########################################################
+echo I am gathering all important information \(pcg, cds, orf\) \in a single junction file >&2
+awk -v fileRef1=distinct_junctions_pcgpcg.txt -v fileRef2=distinct_junctions_pcgpcg_pctpct_cdsincludingpart.txt -v fileRef3=distinct_junctions_pcgpcg_pctpct_sameframebothparts.txt 'BEGIN{OFS="\t"; while (getline < fileRef1 >0){pcg[$1]=1} while (getline < fileRef2 >0){cds[$1]=1} while (getline < fileRef3 >0){orf[$1]=1}} NR==1{print $0, "pcg", "cds", "orf"} NR>=2{print $0, nn(pcg[$1]), nn(cds[$1]), nn(orf[$1])} function nn(x){return (x==1 ? 1 : 0)}' $juncfile > $base.pcg.cds.orf.tsv
+echo done >&2
+
+# 7) clean
 ##########
-echo I am cleaning unuseful files >&2
+echo I am cleaning >&2
 rm CDS_cut20_frame.gff
+rm distinct_junctions_pcgpcg.gff
+rm distinct_junctions_pcgpcg_trlistwithcdsoverpart_framelist.gff
+rm distinct_junctions_pcgpcg_trlistwithcdsincludingpart_cdslist.gff
 echo done >&2
 
 

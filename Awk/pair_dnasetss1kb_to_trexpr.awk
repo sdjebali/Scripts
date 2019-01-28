@@ -6,14 +6,14 @@
 # - an input file that is a matrix with n-1 columns in the header and n columns in the rest and with tss-1kb openness of the transcripts or genes in rows and dnase labExpIds in columns
 #   this file has in 1st column a ":" separated string with the coordinates of the tss-1kb and the corresponding transcript or gene or tss
 # and provides as output:
-# - in the standard output the list of pairs tss-1kn, transcripts for which we have tr expr more than 0.1 in at least 2 samples (and corresponding to the files in Aux)
-# - in the Aux directory that is supposed to already exist, as many files as there are rows in the input file with transcripts or genes or tss with an expression more than 0.1 in at least 2 samples
+# - in the standard output all the pairs of tr and tss-1kb windows for which a tsv file will be made in Aux
+# - in the Aux directory that is supposed to already exist, as many files as there are rows in the input file with transcripts or genes or tss in the input files,
 #   these files are named after the 1st column of the input file and with tsv extension, without headers and with sample names in rows and rnaseq and dnase-seq values in columns
+# !!! note: the input can contain less transcripts than fileRef3 !!!
 
 # cd /work/project/dynagen/sdjebali/enhancer.gene/exploratory.analysis/corr.atac.prom.rna/10remc
 # mkdir -p Aux
-# time awk -v fld1=9 -v fld2=7 -v fileRef1=rnaseq/15.remc.metadata.tsv -v fileRef2=dnaseseq/15.remc.metadata.tsv -v fileRef3=rnaseq/pcgtrid_with_TPM_10samples.tsv -f ../pair_dnasetss1kb_to_trexpr.awk dnaseseq/multiBamCov.10samp.libsizenorm.tsv > tss1kb.trpairs.tr0.1.2samples.txt
-# > tss1kb.trpairs.tr0.1.2samples.txt
+# time awk -v fld1=9 -v fld2=7 -v fileRef1=rnaseq/15.remc.metadata.tsv -v fileRef2=dnaseseq/15.remc.metadata.tsv -v fileRef3=rnaseq/pcgtrid_with_TPM_10samples.tsv -f ../pair_dnasetss1kb_to_trexpr.awk dnaseseq/multiBamCov.10samp.libsizenorm.tsv > tss1kb.trpairs.txt
 # ls Aux/ | wc -l
 # 58955
 
@@ -38,11 +38,6 @@
 # chr1:68090:69091:+:ENST00000335137.3	0	1.56937	1.28517	1.02958	1.19147	0	0	0	0	0
 # 1 (10 fields)
 # 81814 (11 fields)
-
-# tss1kb.trpairs.tr0.1.2samples.txt
-# chr1:139378:140379:-:ENST00000423372.3
-# chr1:859259:860260:+:ENST00000420190.1
-# 58955 (1 fields)
 
 # Aux/chr10:100028006:100029007:-:ENST00000260702.3.tsv
 # h64-lungR	4.34	74.5116
@@ -91,14 +86,9 @@ BEGIN{
 	{
 	    if(m>=2)
 	    {
-		nbok[$1]=0;
 		for(i=2; i<=NF; i++)
 		{
 		    rnaval[$1,rnamatsampname[i]]=$i;
-		    if($i>=0.1)
-		    {
-			nbok[$1]++;
-		    }
 		}
 	    }
 	}
@@ -119,15 +109,12 @@ NR==1{
 # and rna and dnase values as columns
 NR>=2{
     split($1,a,":");
-    if(nbok[a[5]]>=2)
+    s="";
+    for(i=2; i<=n-1; i++)
     {
-	s="";
-	for(i=2; i<=n-1; i++)
-	{
-	    s=(s)(rnasamp[i])("\t")(rnaval[a[5],rnasamp[i]])("\t")($(dnaseidx[rnasamp[i]]))("\n");
-	}
-	s=(s)(rnasamp[i])("\t")(rnaval[a[5],rnasamp[i]])("\t")($(dnaseidx[rnasamp[i]]));
-	print s > "Aux/"$1".tsv";
-	print $1;
+	s=(s)(rnasamp[i])("\t")(rnaval[a[5],rnasamp[i]])("\t")($(dnaseidx[rnasamp[i]]))("\n");
     }
+    s=(s)(rnasamp[i])("\t")(rnaval[a[5],rnasamp[i]])("\t")($(dnaseidx[rnasamp[i]]));
+    print s > "Aux/"$1".tsv";
+    print $1;
 }
