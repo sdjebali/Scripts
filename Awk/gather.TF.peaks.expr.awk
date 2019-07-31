@@ -8,8 +8,8 @@
 # degenes=/work/project/fragencode/results/rnaseq/sus_scrofa/diffcounts.cdvsliver/ReferenceModel/data/refgenes.counts.min2tpm0.1.normcounts.diff.cd.liver.bed
 # pgm=/work/project/fragencode/tools/multi/Scripts/Awk/gather.TF.peaks.expr.awk
 # peaks=/work/project/fragencode/results/atacseq/sus_scrofa/tissue.peaks.merged/tfbs/mergedpeaks.interalltf.tsv
-# time awk -v fileRef1=$orth -v fileRef2=$oktf -v fileRef3=$dapeaks -v fileRef4=$degenes -f $pgm $peaks > TFname.destatus.nb.cat.dapeakwithTF.nb.pcent.tcell.liver.tsv
-# real	0m20.055s
+# time awk -v fileRef1=$orth -v fileRef2=$oktf -v fileRef3=$dapeaks -v fileRef4=$degenes -f $pgm $peaks > TFname.destatus.nb.cat.dapeakwithTF.nb.pcent.tcell.liver.density.in.dapeaks.tcell.liver.tsv
+# real	0m49.247s
 
 # inputs
 # ENSG00000275994 ENSSSCG00000018373
@@ -26,9 +26,9 @@
 # 149333 (480 fields)  *** coord are bed like
 
 # output
-# TFname	DEstatus.nb	DEstatus.cat	nb.tcell.over.peaks.over.it	pcent.tcell.over.peaks.over.it	nb.liver.over.peaks.over.it	pcent.liver.over.peaks.over.it
-# RUNX1	1	tcell.over	112	3.04513	119	2.1767
-# 333 (7 fields) 
+# TFname	DEstatus.nb	DEstatus.cat	nb.tcell.over.peaks.over.it	pcent.tcell.over.peaks.over.it	nb.liver.over.peaks.over.it	pcent.liver.over.peaks.over.it	density.in.tcell.over.peaks	density.in.liver.over.peaks
+# RUNX1	1	tcell.over	112	3.04513	119	2.1767	0.0511147	0.0300983
+# 333 (9 fields)
 
 BEGIN{
     OFS="\t"; 
@@ -91,13 +91,17 @@ NR==1{
 } 
 
 NR>=2{
+    split($1,a,":");
     if(cat[$1]=="")
     {
 	cat[$1]=3;
     } 
     ntot[cat[$1]]++;
+    cumlg[cat[$1]]+=(a[3]-a[2]);
+
     for(k=1; k<=j; k++)
     {
+	nbtf[nameTF[k],namecat[cat[$1]]]+=$(idx[k]);
 	if($(idx[k])>0)
 	{
 	    nb[nameTF[k],namecat[cat[$1]]]++;
@@ -106,9 +110,9 @@ NR>=2{
 } 
 
 END{
-    print "TFname", "DEstatus.nb", "DEstatus.cat", "nb.tcell.over.peaks.over.it", "pcent.tcell.over.peaks.over.it", "nb.liver.over.peaks.over.it", "pcent.liver.over.peaks.over.it"; 
+    print "TFname", "DEstatus.nb", "DEstatus.cat", "nb.tcell.over.peaks.over.it", "pcent.tcell.over.peaks.over.it", "nb.liver.over.peaks.over.it", "pcent.liver.over.peaks.over.it", "density.in.tcell.over.peaks", "density.in.liver.over.peaks"; 
     for(k=1; k<=j; k++)
     {
-	print nameTF[k], cat[nameTF[k]], namecat[cat[nameTF[k]]], nb[nameTF[k],"tcell.over"], nb[nameTF[k],"tcell.over"]/ntot[1]*100, nb[nameTF[k],"liver.over"], nb[nameTF[k],"liver.over"]/ntot[2]*100;
+	print nameTF[k], cat[nameTF[k]], namecat[cat[nameTF[k]]], nb[nameTF[k],"tcell.over"], nb[nameTF[k],"tcell.over"]/ntot[1]*100, nb[nameTF[k],"liver.over"], nb[nameTF[k],"liver.over"]/ntot[2]*100, nbtf[nameTF[k],"tcell.over"]/cumlg[1]*1000, nbtf[nameTF[k],"liver.over"]/cumlg[2]*1000;
     }
 }
