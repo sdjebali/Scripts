@@ -26,9 +26,9 @@
 # 149333 (480 fields)  *** coord are bed like
 
 # output
-# TFname	DEstatus.nb	DEstatus.cat	nb.tcell.over.peaks.over.it	pcent.tcell.over.peaks.over.it	nb.liver.over.peaks.over.it	pcent.liver.over.peaks.over.it	density.in.tcell.over.peaks	density.in.liver.over.peaks
-# RUNX1	1	tcell.over	112	3.04513	119	2.1767	0.0511147	0.0300983
-# 333 (9 fields)
+# TFname	DEstatus.nb	DEstatus.cat	DE.logfc	nb.tcell.over.peaks.over.it	pcent.tcell.over.peaks.over.it	nb.liver.over.peaks.over.it	pcent.liver.over.peaks.over.itdensity.in.tcell.over.peaks	density.in.liver.over.peaks
+# RUNX1	1	tcell.over	-3.3078354180801	112	3.04513	119	2.1767	0.0511147	0.0300983
+# 333 (10 fields) 
 
 BEGIN{
     OFS="\t"; 
@@ -60,6 +60,7 @@ BEGIN{
     } 
     while (getline < fileRef4 >0)
     {
+	logfc[gnname[hsid[$4]]]=$(NF-1);
 	if($(NF-1)<0)
 	{
 	    cat[gnname[hsid[$4]]]=1;
@@ -85,6 +86,7 @@ NR==1{
 	    if(cat[$i]=="")
 	    {
 		cat[$i]=3;
+		logfc[$i]="NA";
 	    }
 	}
     }
@@ -110,9 +112,9 @@ NR>=2{
 } 
 
 END{
-    print "TFname", "DEstatus.nb", "DEstatus.cat", "nb.tcell.over.peaks.over.it", "pcent.tcell.over.peaks.over.it", "nb.liver.over.peaks.over.it", "pcent.liver.over.peaks.over.it", "density.in.tcell.over.peaks", "density.in.liver.over.peaks"; 
+    print "TFname", "DEstatus.nb", "DEstatus.cat", "DE.logfc", "nb.tcell.over.peaks.over.it", "pcent.tcell.over.peaks.over.it", "nb.liver.over.peaks.over.it", "pcent.liver.over.peaks.over.it", "density.in.tcell.over.peaks", "density.in.liver.over.peaks"; 
     for(k=1; k<=j; k++)
     {
-	print nameTF[k], cat[nameTF[k]], namecat[cat[nameTF[k]]], nb[nameTF[k],"tcell.over"], nb[nameTF[k],"tcell.over"]/ntot[1]*100, nb[nameTF[k],"liver.over"], nb[nameTF[k],"liver.over"]/ntot[2]*100, nbtf[nameTF[k],"tcell.over"]/cumlg[1]*1000, nbtf[nameTF[k],"liver.over"]/cumlg[2]*1000;
+	print nameTF[k], cat[nameTF[k]], namecat[cat[nameTF[k]]], logfc[nameTF[k]], nb[nameTF[k],"tcell.over"], nb[nameTF[k],"tcell.over"]/ntot[1]*100, nb[nameTF[k],"liver.over"], nb[nameTF[k],"liver.over"]/ntot[2]*100, nbtf[nameTF[k],"tcell.over"]/cumlg[1]*1000, nbtf[nameTF[k],"liver.over"]/cumlg[2]*1000;
     }
 }
