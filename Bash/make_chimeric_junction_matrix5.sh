@@ -107,6 +107,7 @@ BEGEND=$rootDir/../Awk/add_maxbegend_to_chimjunc2.awk
 GFF2GFF=$rootDir/../Awk/gff2gff.awk
 OVERLAP=$rootDir/../bin/overlap
 
+echo "minspan is $minspan and minpe is $minpe" >&2
 
 # 1) In each experiment, select the junctions supported by the min number of spanning reads and min number of discordant paired end reads
 ##########################################################################################################################################
@@ -119,6 +120,7 @@ OVERLAP=$rootDir/../bin/overlap
 # juncCoord     totalNbPE       nbSpanningPE    nbStag  percStag        nbMulti percMulti       nbDiscordantPE  nbInconsistentPE        percInconsistentPE      overlapA        overlapB   distExonBoundaryA       distExonBoundaryB       maxBLastAlignLen        blastAlignSim   donorSS acceptorSS      beg     end     sameChrStr      okGxOrder       dist    gnIdA       gnIdB  gnNameA gnNameB gnTypeA gnTypeB juncSpanningReadIds     supportingPairsIds      inconsistentPairsIds
 # chrX_100646810_+:chr18_13919745_-       28      28      12      42.8571 28      100     0       0       na      100     100     0       177     321     96.26   GT      AG      100646777  13919690        0       na      na      ENSG00000241343.3,ENSG00000257529.1     ENSG00000243779.1       RPL36A,RP1-164F3.9      RP11-681N23.1   protein_coding,protein_coding      pseudogene      SINATRA_0006:3:109:18510:14395#0/1,SINATRA_0006:1:95:16661:9220#0/1,SINATRA_0006:1:95:19257:7963#0/1,SINATRA_0006:1:78:8979:7945#0/1,SINATRA_0006:2:103:7300:8834#0/1,SINATRA_0006:1:95:6274:6674#0/1,SINATRA_0006:1:95:12119:12408#0/1,SINATRA_0006:1:65:19204:4609#0/1,SINATRA_0006:2:26:15962:4612#0/1,SINATRA_0006:1:78:9741:2208#0/2,SINATRA_0006:3:55:3004:18029#0/1,SINATRA_0006:2:28:17045:15305#0/1,SINATRA_0006:3:28:12150:19552#0/1,SINATRA_0006:1:57:14946:18483#0/1,SINATRA_0006:3:40:17960:10169#0/1,SINATRA_0006:2:78:4492:5160#0/1,SINATRA_0006:1:95:12206:3223#0/1,SINATRA_0006:1:87:6224:19402#0/2,SINATRA_0006:3:117:19626:18481#0/1,SINATRA_0006:2:13:1765:2306#0/1,SINATRA_0006:3:1:10757:14190#0/1,SINATRA_0006:2:69:18762:13853#0/2,SINATRA_0006:1:58:4291:4933#0/1,SINATRA_0006:1:36:4284:12343#0/2,SINATRA_0006:1:95:7884:9420#0/1,SINATRA_0006:3:20:1714:16281#0/1,SINATRA_0006:2:76:17683:16082#0/1,SINATRA_0006:2:72:15990:12773#0/1,      na      na
 # 163745 (32 fields)
+
 
 # we want to have this information in the output file
 #####################################################
@@ -159,7 +161,7 @@ done
 echo I am cleaning >&2
 cat $input | while read lid f
 do
-rm ${f%.txt}\_$minspan\spanning_$minpe\discordantpe_withmaxbegandend.tsv
+#rm ${f%.txt}\_$minspan\spanning_$minpe\discordantpe_withmaxbegandend.tsv
 done
-rm allexp_distinct_junctions_reliable_ineachexp_withmaxbegandend_allinfo.tsv
+# rm allexp_distinct_junctions_reliable_ineachexp_withmaxbegandend_allinfo.tsv
 echo I am done >&2

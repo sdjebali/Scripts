@@ -8,6 +8,7 @@
 # !!! this is a generalization of the script conncompSV2vcf_trio.awk where we only had 3 samples !!!
 # !!! only considers genotypes for which we have reads so not gt:.:. for example where gt=0/0 !!!
 # !!! if even with this rule a genotype is not found then homozygous reference !!!
+# !!! svlen and svtype are needed in the resulting file and will therefore take the average of the svlen of the individual svs from which we take the genotypes in all the samples (indiv) !!!
 
 # example
 # dir=/work/project/seqoccin/svdetection/nanopore/bos_taurus
@@ -15,7 +16,7 @@
 # pgm=/work/project/fragencode/tools/multi/Scripts/Awk/conncompSV2vcf.awk 
 # time for t in DEL INV DUP
 # do
-# awk -v t=$t -v fileRef=trio1.1run.eachindiv.$t.vcf -f $pgm trio1.1run.eachindiv.$t.connected.components.tsv > trio1.1run.eachindiv.$t.connected.components.vcf2
+# awk -v t=$t -v fileRef=trio1.1run.eachindiv.$t.vcf -f $pgm trio1.1run.eachindiv.$t.connected.components.tsv > trio1.1run.eachindiv.$t.connected.components.vcf
 # done
 # real	0m0.074s
 
@@ -67,8 +68,22 @@ BEGIN{
 	}
 	else
 	{
-	    str=$9;
-	    # for each SV of type t and each sample (indiv) remember the genotype of this SV in this sample 
+	    # remember the length of each SV
+	    split($8,a,";");
+	    m=1;
+	    fnd=0;
+	    while(fnd==0&&a[m]!="")
+	    {
+		split(a[m],b,"=");
+		if(b[1]=="SVLEN")
+		{
+		    len[$1":"$2":"t]=b[2];
+		}
+		m++;
+	    }
+	    # make the 9th field string of the final vcf file
+	    s2=$9;
+	    # for each SV of type t and each sample (indiv) remember the genotype of this SV in this sample (indiv) 
 	    for(i=10; i<=NF; i++)
 	    {
 		split($i,a,":");
@@ -83,8 +98,9 @@ BEGIN{
 }
 
 {
-    s="";
-    # for each of the samples (indiv), finds the first SV of the connected component that has reads for the ref and alt and remember it
+    s3="";
+    l=0;
+    # for each of the samples (indiv), finds the first SV of the connected component that has reads for the ref and alt alelles and remember it
     for(i=1; i<=n; i++)
     {
 	k[i]=1;
@@ -97,16 +113,21 @@ BEGIN{
 	    {
 		found[i]=1;
 		sv[i]=$(k[i]);
+		l+=len[sv[i]];
 	    }
 	    k[i]++;
 	}
     }
     split($1,a,":");
+    tot=0;
     for(i=1; i<=n-1; i++)
     {
-	s=(s)(found[i]==1 ? gt[i,sv[i]] : "0/0:.:.")("\t");
+	s3=(s3)(found[i]==1 ? gt[i,sv[i]] : "0/0:.:.")("\t");
+	tot+=(found[i]);
     }
-    s=(s)(found[i]==1 ? gt[i,sv[i]] : "0/0:.:.");
-    print a[1], a[2], "conncomp"NR, "N", "<"t">", ".", "PASS", ".", (str!="" ? str : "GT:DR:DV"), s;
+    s3=(s3)(found[i]==1 ? gt[i,sv[i]] : "0/0:.:.");
+    tot+=(found[i]);
+    s1="SVLEN="l/tot";SVTYPE="t;
+    print a[1], a[2], "conncomp"NR, "N", "<"t">", ".", "PASS", s1, (s2!="" ? s2 : "GT:DR:DV"), s3;
 }
 
