@@ -9,6 +9,7 @@
 # - the id in the header for the y value to be plotted (this column should be numeric)
 # - the id in the header for the type of element
 # - the id in the header for the factor by which to facet the plot
+# - a one word label for the title of the plot
 # - an optional parameter saying whether the y axis has to be transformed in log10 scale
 # And it produces as output in the same directory as the input file:
 # - a png file named the same way as the input file but ending in png instead of tsv, with the barplot in question
@@ -30,10 +31,10 @@
 
 # Check all the obligatory inputs are indeed provided (should also check the input file exists and is not empty and that the ids are fine, for later)
 #####################################################
-if [ ! -n "$1" ] || [ ! -n "$2" ] || [ ! -n "$3" ] || [ ! -n "$4" ] || [ ! -n "$5" ]
+if [ ! -n "$1" ] || [ ! -n "$2" ] || [ ! -n "$3" ] || [ ! -n "$4" ] || [ ! -n "$5" ] || [ ! -n "$6" ]
 then
    echo "" >&2
-    echo "Usage: barplot.specific.1.sh input.tsv xcolid ycolid elttypeid factorid <ylog10>" >&2
+    echo "Usage: barplot.specific.1.sh input.tsv xcolid ycolid elttypeid factorid title <ylog10>" >&2
     echo "" >&2
     echo "takes as input:" >&2
     echo "- a tsv file with header that contains the two columns necesary for the barplot (x and y) as well as the type of element and the factor" >&2
@@ -41,6 +42,7 @@ then
     echo "- the id in the header for the y value to be plotted (this column should be numeric) (e.g number)" >&2
     echo "- the id in the header for the type of element" >&2
     echo "- the id in the header for the factor by which to facet the plot" >&2
+    echo "- a one word label for the title of the plot" >&2
     echo "- an optional parameter saying whether the y axis has to be transformed in log10 scale" >&2
     echo "" >&2
     echo "produces as output and in the same directory as the input:" >&2
@@ -52,7 +54,7 @@ fi
 
 # Check if the optional argument about the y log scale and in this case set str to "scale_y_log10() +"
 #######################################################################################################
-if [ -n "$6" ]
+if [ -n "$7" ]
 then
     str="+ scale_y_log10()"
 fi
@@ -72,7 +74,7 @@ library(ggplot2)
 theme_set(theme_bw(base_size = 16))
 data = read.delim("'$input'",sep="\t", h=TRUE)
 gp = ggplot(data, aes(x='$2',y='$3',fill='$4')) + geom_bar(stat="identity") '$str' + facet_grid('$5' ~ '$4') 
-gp = gp + labs(title = '', x="'$2'", y="'$3'") 
+gp = gp + labs(title = "'$6'", x="'$2'", y="'$3'") + theme(plot.title = element_text(hjust = 0.5)) + theme(plot.title = element_text(size=24))
 w=7
 h=10
 ggsave(filename="'$inbase'.png", h=h, w=w)

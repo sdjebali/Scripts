@@ -7,6 +7,7 @@
 #   * the id of the column we want to plot in the header of the input file
 #   * a one word label for the x axis which is the meaning of the column in question
 #   * a string with minimum and maximum value for the column in question (min-max)
+#   * a string to put as a title of the plot
 # - produces as output and in the same directory as the input:
 #   * a png file (named after the one word label of the column), with the density plot of this column
 # Note: needs reshape2 and ggplot2 libraries to be installed
@@ -27,16 +28,17 @@
 
 # Check all the obligatory inputs are indeed provided (should also check the input file exists and is not empty and that the ids are fine, for later)
 #####################################################
-if [ ! -n "$1" ] || [ ! -n "$2" ] || [ ! -n "$3" ] || [ ! -n "$4" ]
+if [ ! -n "$1" ] || [ ! -n "$2" ] || [ ! -n "$3" ] || [ ! -n "$4" ] || [ ! -n "$5" ]
 then
    echo "" >&2
-    echo Usage: geom_density_simple.sh input.tsv colidtoplot xaxislabel min-max >&2
+    echo "Usage: geom_density_simple.sh input.tsv colidtoplot xaxislabel min-max title" >&2
     echo "" >&2
     echo "takes as input:" >&2
     echo "- the input tsv file with header, from which the numeric column will be taken" >&2
     echo "- the id of the column we want to plot in the header of the input file" >&2
     echo "- a one word label for the x axis which is the meaning of the column in question" >&2
     echo "- a string with <min>-<max> values for the column to be plotted" >&2
+    echo "- a string that will be the title for the plot" >&2
     echo "" >&2
     echo "produces as output and in the same directory as the input:" >&2
     echo "- a png file (named after the one word label of the column), with the density plot of this column" >&2
@@ -72,7 +74,7 @@ library(ggplot2)
 theme_set(theme_bw(base_size = 16))
 data = read.delim("'$1'", sep="\t", h=TRUE)
 gp = ggplot(data, aes(x='$2')) + geom_density(alpha=.2, fill="#FF6666", size=1) + geom_vline(aes(xintercept=mean('$2')),color="blue", linetype="dashed", size=1) + coord_cartesian(xlim = c('$m', '$M'))
-gp = gp + labs(title = '', x="'$3'", y="Density") 
+gp = gp + labs(title = "'$5'", x="'$3'", y="Density") + theme(plot.title = element_text(hjust = 0.5)) + theme(plot.title = element_text(size=24))
 w=5
 h=5
 ggsave(filename="'$3'.png", h=h, w=w)

@@ -8,6 +8,7 @@
 #   * the column id in the header for the 1st factor (for example refelt)
 #   * the column id in the header for the 2nd factor (for example score.quantile)
 #   * a string with <min>-<max> values for the column to be plotted
+#   * a one word label for the title of the plot
 # - produces as output in the same directory as the input:
 #   * a png file named the same way as the input tsv file but ending in png instead of tsv with the density plot in question but faceted by the two factors
 #     (number of rows given by the 2nd factor and number of columns given by the 1st factor)
@@ -28,10 +29,10 @@
 
 # Check all the obligatory inputs are indeed provided (should also check the input file exists and is not empty and that the ids are fine, for later)
 #####################################################
-if [ ! -n "$1" ] || [ ! -n "$2" ] || [ ! -n "$3" ] || [ ! -n "$4" ] || [ ! -n "$5" ]
+if [ ! -n "$1" ] || [ ! -n "$2" ] || [ ! -n "$3" ] || [ ! -n "$4" ] || [ ! -n "$5" ] || [ ! -n "$6" ]
 then
    echo "" >&2
-    echo "Usage: geom_density_by_two_factors.sh input.tsv colidtoplot factor1id factor2id min-max" >&2
+    echo "Usage: geom_density_by_two_factors.sh input.tsv colidtoplot factor1id factor2id min-max title" >&2
     echo "" >&2
     echo "takes as input:" >&2
     echo "- the input tsv file with header, from which the numeric column will be taken" >&2
@@ -39,6 +40,7 @@ then
     echo "- the id of the column for the 1st factor in the header of the input file" >&2
     echo "- the id of the column for the 2nd factor in the header of the input file" >&2
     echo "- a string with <min>-<max> values for the column to be plotted" >&2
+    echo "- a string for the title of the plot" >&2
     echo "" >&2
     echo "produces as output and in the same directory as the input:" >&2
     echo "- a png file named the same way as the input tsv file but ending in png, with the density plot of the column to be plotted" >&2
@@ -79,7 +81,7 @@ library(ggplot2)
 theme_set(theme_bw(base_size = 16))
 data = read.delim("'$input'",sep="\t", h=TRUE)
 gp = ggplot(data, aes('$2',fill='$3')) + geom_density(alpha=.5, size=1) + facet_grid('$4' ~ '$3') + coord_cartesian(xlim = c('$m', '$M'))
-gp = gp + labs(title = '', x="'$2'", y="Density") 
+gp = gp + labs(title = "'$6'", x="'$2'", y="Density") + theme(plot.title = element_text(hjust = 0.5)) + theme(plot.title = element_text(size=24))
 w=7
 h=10
 ggsave(filename="'$inbase'.png", h=h, w=w)

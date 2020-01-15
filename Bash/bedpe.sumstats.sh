@@ -4,21 +4,21 @@
 ###################
 # This script takes as input:
 #############################
-# - the absolute path of a bedpe file of interactions (either predicted from 3D data in a cell type or from 1D data across cell lines) where the 1st element has a special meaning (for example promoter)
+# - the absolute path of a bedpe.gz file of interactions (either predicted from 3D data in a cell type or from 1D data across cell lines) where the 1st element has a special meaning (for example promoter)
 # - a min-max thresholds for the score plot
 # - a min-max threshold for the fragment length plot
 # and that produces as output in a sumstats directory that it creates where the bedpe file is:
 ##############################################################################################
-# - the same bedpe file but with score quantiles
-# - several png plot files with their associated input tsv files
-# - several tsv files that represent summary statistics tables and that are supposed to complete the messages from the plots
+# - the same bedpe.gz file but with score quantiles
+# - several (5) png plot files with their associated input tsv files and as a title the basename of the bedpe.gz file
+# - several tsv or tsv.gz files that represent summary statistics tables and that are supposed to complete the messages from the plots
 
 # Example (on genologin toulouse)
 #########
 # cd ~/fragencode/workspace/sdjebali/irsd/egprediction/from3D/predictions/capturehic/jung.ren.2019
 # module load system/R-3.6.1
 # pgm=~/fragencode/tools/multi/Scripts/Bash/bedpe.sumstats.sh
-# input=~/fragencode/workspace/sdjebali/irsd/egprediction/from3D/predictions/capturehic/jung.ren.2019/GM.pall.bedpe
+# input=~/fragencode/workspace/sdjebali/irsd/egprediction/from3D/predictions/capturehic/jung.ren.2019/GM/pall/GM.pall.bedpe.gz
 # time $pgm $input 0-5 0-20000 2> bedpe.sumstats.err
 # real	12m39.221s
 
@@ -38,39 +38,37 @@
 
 # Produces all these output files
 #################################
-# - Distance_by_score.quantile.png
-# - dist.score.quantiles.tsv
-# - GM.pall.scorequantile.bedpe
-# - refelt.scorequantile.fraglength.tsv
-# - refelt.scorequantile.nbconn.nbtimes.tsv
+# - GM.pall.scorequantile.bedpe.gz
 # - Score.png
 # - Distance.png
-# - GM.pall.nbconn.acc.to.score.tsv
-# - refelt.scorequantile.fraglength.png
+# - Distance_by_score.quantile.png
 # - refelt.scorequantile.nbconn.nbtimes.png
+# - refelt.scorequantile.fraglength.png
+# - dist.score.quantiles.tsv.gz
+# - GM.pall.nbconn.acc.to.score.tsv
+# - refelt.scorequantile.fraglength.tsv.gz
+# - refelt.scorequantile.nbconn.nbtimes.tsv
 
 
-# Check obligatory inputs are indeed provided otherwise exit with error (should also check the input file exists , for later)
+# Check obligatory inputs are indeed provided otherwise exit with error (should also check the input file exists, for later)
 #######################################################################
-if [ ! -n "$1" ]
+if [ ! -n "$1" ] || [ ! -n "$2" ] || [ ! -n "$3" ]
 then
     echo "" >&2
-    echo "Usage: bedpe.sumstats.sh file.bedpe scoremin-scoremax lengthmin-lengthmax" >&2
-    echo "" >&2
-    echo "takes as input:" >&2
-    echo "- the absolute path to a bedpe file of interactions (either predicted from 3D data in a cell type or from 1D data across cell lines)" >&2
-    echo "  but where the 1st element has a special meaning (example: promoter)" >&2
-    echo "- a min-max thresholds for the score plot" >&2
-    echo "- a min-max threshold for the fragment length plot" >&2
+    echo "Usage: bedpe.sumstats.sh file.bedpe.gz scoremin-scoremax lengthmin-lengthmax" >&2
     echo "" >&2
     echo "produces as output:" >&2
-    echo "- the same bedpe file but with score quantiles" >&2
-    echo "- several png plot files with their associated input tsv files" >&2
-    echo "- several tsv files that represent summary statistics tables and that are supposed to complete the messages from the plots" >&2
+    echo "- the same bedpe.gz file but with score quantiles" >&2
+    echo "- several (5) png plot files with their associated input tsv files" >&2
+    echo "- several tsv or tsv.gz files that represent summary statistics tables and that are supposed to complete the messages from the plots" >&2
     echo "" >&2
-    echo "note:" >&2 
-    echo "quality controls to check the input file is indeed in bedpe format and in particular checking that" >&2
-    echo "gend is bigger than gbeg for both all first and all second elements need to be done beforehand" >&2
+    echo "Note1:" >&2 
+    echo "- This script writes files with fixed names and therefore should not be run twice in the same directory for different inputs" >&2
+    echo "Note2:" >&2 
+    echo "- Quality controls to check the input file is indeed in bedpe format and in particular checking that" >&2
+    echo "  gend is bigger than gbeg for both all first and all second elements need to be done beforehand" >&2
+    echo "Note3:" >&2 
+    echo "- Plots will get as title the basename of the input bedpe.gz file" >&2
     exit 1
 fi
 
@@ -79,7 +77,7 @@ fi
 path="`dirname \"$0\"`" # relative path
 rootDir="`( cd \"$path\" && pwd )`" # absolute path
 input=$1
-inbase=`basename ${input%.bedpe}`
+inbase=`basename ${input%.bedpe.gz}`
 outbase=`dirname $input`
 outdir=$outbase/sumstats
 
@@ -98,14 +96,14 @@ cd $outdir
 
 # 1. Add score quantile to bedpe file, keep only compulsory columns, add a header and place in sumstat dir
 ##########################################################################################################
-awk 'BEGIN{OFS="\t"} {print $1, $2, $3, $4, $5, $6, $7, $8, $9, $10}' $input | Rscript $ADDQUANT -i stdin -c 8 -q 4 -m quantiles -s -o stdout | awk 'BEGIN{OFS="\t"; print "chrom1", "start1", "end1", "chrom2", "start2", "end2", "name", "score", "strand1", "strand2", "quantile_score", "quant_index_score", "score.quantile"} {print $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $12"_"$11}' > $inbase.scorequantile.bedpe
+zcat $input | awk 'BEGIN{OFS="\t"} {print $1, $2, $3, $4, $5, $6, $7, $8, $9, $10}' | Rscript $ADDQUANT -i stdin -c 8 -q 4 -m quantiles -s -o stdout | awk 'BEGIN{OFS="\t"; print "chrom1", "start1", "end1", "chrom2", "start2", "end2", "name", "score", "strand1", "strand2", "quantile_score", "quant_index_score", "score.quantile"} {print $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $12"_"$11}' > $inbase.scorequantile.bedpe
 # chrom1	start1	end1	chrom2	start2	end2	name	score	strand1	strand2	quantile_score	quant_index_score	score.quantile
 # chr1	915520	932176	chr1	1041678	1048651	chr1:915520-932176,chr1:1041678-1048651	1.65928294258351	.	.	(0.557,79.7]	4	4_(0.557,79.7]
 # 6074050 (13 fields)
 
 # 2. Score distribution
 ########################
-$DENSITY1 $inbase.scorequantile.bedpe score Score 0-5
+$DENSITY1 $inbase.scorequantile.bedpe score Score $2 $inbase
 # produces the file Score.png with the density plot for the score
 
 # 3. Total number of connections, of intra and of inter and up and down if the first segment has a meaning (here prom)
@@ -127,11 +125,11 @@ awk 'BEGIN{OFS="\t"} NR==1{print "distance", $8, $11, $12, $13} $1==$4{mid1=($2+
 # 6074050 (5 fields)  *** exact same file as when done step by step
 # b. plot the distance of all interactions with ggplot
 ######################################################
-$DENSITY1 dist.score.quantiles.tsv distance Distance 0-2000000
+$DENSITY1 dist.score.quantiles.tsv distance Distance 0-2000000 $inbase
 # exact same plot as when done step by step
 # c. plot the distance of the interactions belonging to each quantile of score
 ##############################################################################
-$DENSITY2 dist.score.quantiles.tsv distance score.quantile Distance
+$DENSITY2 dist.score.quantiles.tsv distance score.quantile Distance $inbase
 # exact same plot as when done step by step
 
 # 5. Degree of first and second elements (vertex degree), according to score
@@ -144,7 +142,7 @@ for i in $(seq 1 4); do awk -v i=$i 'NR>=2&&$NF>=i' $inbase.scorequantile.bedpe 
 # 2791 (4 fields)  *** exact same file as when doing step by step
 # b. plot
 ##########
-$BARPLOT refelt.scorequantile.nbconn.nbtimes.tsv degree number vertex.type score.quantile ylog
+$BARPLOT refelt.scorequantile.nbconn.nbtimes.tsv degree number vertex.type score.quantile $inbase ylog
 # exact same plot as when done step by step
 
 # 6. Fragment length distribution and distinguishing the first and the second elt, for interactions with a score higher than a quantile
@@ -157,7 +155,7 @@ for i in $(seq 1 4); do awk -v i=$i 'BEGIN{OFS="\t"} NR>=2&&$NF>=i{print "elt1",
 # 30367151 (3 fields)  *** exact same file as when doing step by step
 # b. plot with ggplot2
 ######################
-$DENSITY3 refelt.scorequantile.fraglength.tsv frag.length refelt score.quantile 0-20000
+$DENSITY3 refelt.scorequantile.fraglength.tsv frag.length refelt score.quantile $3 $inbase
 # real	1m7.598s  *** exact same plot as when done step by step
 
 # c. make a tsv file to see the complete distrib (not truncated like here)
@@ -167,6 +165,10 @@ for i in $(seq 1 4); do for e in elt1 elt2; do awk -v i=$i -v e=$e '$1==e&&$2==i
 # 1	elt2	6074049	321	3968	5150	6340	7125	1664250
 # 8 (9 fields)  *** exact same file as when doing step by step
 
-# 7. remove temporary files
-###########################
+# 7. remove temporary files and gzip big files
+##############################################
 rm tmp
+gzip $inbase.scorequantile.bedpe
+gzip dist.score.quantiles.tsv
+gzip refelt.scorequantile.fraglength.tsv
+
