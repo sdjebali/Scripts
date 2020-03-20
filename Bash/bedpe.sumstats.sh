@@ -55,7 +55,7 @@
 if [ ! -n "$1" ] || [ ! -n "$2" ] || [ ! -n "$3" ]
 then
     echo "" >&2
-    echo "Usage: bedpe.sumstats.sh file.bedpe.gz scoremin-scoremax lengthmin-lengthmax" >&2
+    echo "Usage: bedpe.sumstats.sh abs.path.to.file.bedpe.gz scoremin-scoremax lengthmin-lengthmax" >&2
     echo "" >&2
     echo "produces as output:" >&2
     echo "- the same bedpe.gz file but with score quantiles" >&2
@@ -64,11 +64,14 @@ then
     echo "" >&2
     echo "Note1:" >&2 
     echo "- This script writes files with fixed names and therefore should not be run twice in the same directory for different inputs" >&2
+    echo "- It will also not work if some gzipped files from a previous run were made so erase the sumstats dir before running it" >&2
     echo "Note2:" >&2 
     echo "- Quality controls to check the input file is indeed in bedpe format and in particular checking that" >&2
     echo "  gend is bigger than gbeg for both all first and all second elements need to be done beforehand" >&2
     echo "Note3:" >&2 
     echo "- Plots will get as title the basename of the input bedpe.gz file" >&2
+    echo "Note4:" >&2 
+    echo "- For intra-chromosomal connections there is a hard-coded limit of 2 Mb for the plots" >&2
     exit 1
 fi
 
@@ -129,7 +132,7 @@ $DENSITY1 dist.score.quantiles.tsv distance Distance 0-2000000 $inbase
 # exact same plot as when done step by step
 # c. plot the distance of the interactions belonging to each quantile of score
 ##############################################################################
-$DENSITY2 dist.score.quantiles.tsv distance score.quantile Distance $inbase
+$DENSITY2 dist.score.quantiles.tsv distance score.quantile Distance $inbase 0-2000000
 # exact same plot as when done step by step
 
 # 5. Degree of first and second elements (vertex degree), according to score
