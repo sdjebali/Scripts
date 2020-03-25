@@ -20,7 +20,7 @@ BEGIN{OFS="\t"}
     {
 	if($0!~/^#/)
 	{
-	    if(ucsc=1)
+	    if(ucsc==1)
 	    {
 		print "chr"$1, $2, $3, $4, $5, $6, $7, $8, $9;
 	    }
@@ -33,7 +33,7 @@ BEGIN{OFS="\t"}
 	{
 	    if(match($0,/(##contig=<ID=)(.*)/,m))
 	    {
-		if(ucsc=1)
+		if(ucsc==1)
 		{
 		    print m[1]"chr"m[2];
 		}
