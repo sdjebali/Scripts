@@ -9,6 +9,7 @@
 # so it is better to launch it on a cluster
 
 # on Dec 15th 2016 changed the _ delimitor by _ in order to accept ncbi annotation
+# on March 27th 2020 changed the file _nbex.tsv into _nbex_intermclass.tsv due to change in refine_comptr script
 
 # takes as input
 ################
@@ -123,29 +124,29 @@ awk '$3=="exon"{print $5-$4+1}' $pred > exon_length_$base.txt
 # distinct exon length
 awk '$3=="exon"{print $1":"$4":"$5":"$7}' $pred | sort | uniq | awk '{split($1,a,":"); print a[3]-a[2]+1}' > distinct_exon_length_$base.txt
 # spliced and stranded transcript 5' exon length 
-awk -v fileRef=$base\_complete_comp_refinedclass_nbex.tsv 'BEGIN{while(getline < fileRef >0){if($2=="Monoexonic"){ko["\""substr($1,2)"\";"]=1}}} (($3=="exon")&&(ko[$12]!=1))' $pred | awk -v fldno=12 -f $EXTRACT5P > tr_5p_exon_$base.gff 
+awk -v fileRef=$base\_complete_comp_refinedclass_nbex_intermclass.tsv 'BEGIN{while(getline < fileRef >0){if($2=="Monoexonic"){ko["\""substr($1,2)"\";"]=1}}} (($3=="exon")&&(ko[$12]!=1))' $pred | awk -v fldno=12 -f $EXTRACT5P > tr_5p_exon_$base.gff 
 awk '{print $5-$4+1}' tr_5p_exon_$base.gff > tr_5p_exon_$base\_length.txt
 # spliced and stranded tr gene 5' exon length 
-awk -v fileRef=$base\_complete_comp_refinedclass_nbex.tsv 'BEGIN{while(getline < fileRef >0){if($2=="Monoexonic"){ko["\""substr($1,2)"\";"]=1}}} (($3=="exon")&&(ko[$12]!=1))' $pred | awk -v fldno=10 -f $EXTRACT5P  > gn_5p_exon_$base.gff 
+awk -v fileRef=$base\_complete_comp_refinedclass_nbex_intermclass.tsv 'BEGIN{while(getline < fileRef >0){if($2=="Monoexonic"){ko["\""substr($1,2)"\";"]=1}}} (($3=="exon")&&(ko[$12]!=1))' $pred | awk -v fldno=10 -f $EXTRACT5P  > gn_5p_exon_$base.gff 
 awk '{print $5-$4+1}' gn_5p_exon_$base.gff > gn_5p_exon_$base\_length.txt
 # spliced and stranded transcript 3' exon length
-awk -v fileRef=$base\_complete_comp_refinedclass_nbex.tsv 'BEGIN{while(getline < fileRef >0){if($2=="Monoexonic"){ko["\""substr($1,2)"\";"]=1}}} (($3=="exon")&&(ko[$12]!=1))' $pred | awk -v fldno=12 -f $EXTRACT3P > tr_3p_exon_$base.gff 
+awk -v fileRef=$base\_complete_comp_refinedclass_nbex_intermclass.tsv 'BEGIN{while(getline < fileRef >0){if($2=="Monoexonic"){ko["\""substr($1,2)"\";"]=1}}} (($3=="exon")&&(ko[$12]!=1))' $pred | awk -v fldno=12 -f $EXTRACT3P > tr_3p_exon_$base.gff 
 awk '{print $5-$4+1}' tr_3p_exon_$base.gff > tr_3p_exon_$base\_length.txt
 # spliced and stranded transcript 3' exon length
-awk -v fileRef=$base\_complete_comp_refinedclass_nbex.tsv 'BEGIN{while(getline < fileRef >0){if($2=="Monoexonic"){ko["\""substr($1,2)"\";"]=1}}} (($3=="exon")&&(ko[$12]!=1))' $pred | awk -v fldno=10 -f $EXTRACT3P > gn_3p_exon_$base.gff 
+awk -v fileRef=$base\_complete_comp_refinedclass_nbex_intermclass.tsv 'BEGIN{while(getline < fileRef >0){if($2=="Monoexonic"){ko["\""substr($1,2)"\";"]=1}}} (($3=="exon")&&(ko[$12]!=1))' $pred | awk -v fldno=10 -f $EXTRACT3P > gn_3p_exon_$base.gff 
 awk '{print $5-$4+1}' gn_3p_exon_$base.gff > gn_3p_exon_$base\_length.txt
 # spliced and stranded tr internal exon length
-awk -v fileRef=$base\_complete_comp_refinedclass_nbex.tsv 'BEGIN{while(getline < fileRef >0){if($2=="Monoexonic"){ko["\""substr($1,2)"\";"]=1}}} ($3=="exon")&&(ko[$12]!=1)&&(($7=="+")||($7=="-"))' $pred | awk -v fileRef1=tr_5p_exon_$base.gff -v fileRef2=tr_3p_exon_$base.gff 'BEGIN{while(getline < fileRef1 >0){ko[$1":"$4":"$5":"$7":"$12]=1} while(getline < fileRef2 >0){ko[$1":"$4":"$5":"$7":"$12]=1}} ko[$1":"$4":"$5":"$7":"$12]!=1{print}' | awk -f $GFF2GFF > internal_exons_$base.gff
+awk -v fileRef=$base\_complete_comp_refinedclass_nbex_intermclass_intermclass.tsv 'BEGIN{while(getline < fileRef >0){if($2=="Monoexonic"){ko["\""substr($1,2)"\";"]=1}}} ($3=="exon")&&(ko[$12]!=1)&&(($7=="+")||($7=="-"))' $pred | awk -v fileRef1=tr_5p_exon_$base.gff -v fileRef2=tr_3p_exon_$base.gff 'BEGIN{while(getline < fileRef1 >0){ko[$1":"$4":"$5":"$7":"$12]=1} while(getline < fileRef2 >0){ko[$1":"$4":"$5":"$7":"$12]=1}} ko[$1":"$4":"$5":"$7":"$12]!=1{print}' | awk -f $GFF2GFF > internal_exons_$base.gff
 awk '{print $5-$4+1}' internal_exons_$base.gff > internal_exons_$base\_length.txt
 # spliced and stranded transcript 3' exon length
 awk '{print $1":"$4":"$5":"$7}' internal_exons_$base.gff | sort | uniq | awk '{split($1,a,":"); print a[3]-a[2]+1}' > distinct_internal_exon_length_$base.txt
 # spliced and stranded transcript 3' exon length
-awk -v fileRef=$base\_complete_comp_refinedclass_nbex.tsv 'BEGIN{while(getline < fileRef >0){if($2=="Monoexonic"){ok["\""substr($1,2)"\";"]=1}}} ($3=="exon")&&(ok[$12]==1){print}' $pred | awk -f $GFF2GFF > monoextr_exons_$base.gff
+awk -v fileRef=$base\_complete_comp_refinedclass_nbex_intermclass.tsv 'BEGIN{while(getline < fileRef >0){if($2=="Monoexonic"){ok["\""substr($1,2)"\";"]=1}}} ($3=="exon")&&(ok[$12]==1){print}' $pred | awk -f $GFF2GFF > monoextr_exons_$base.gff
 awk '{print $5-$4+1}' monoextr_exons_$base.gff > monoextr_exons_$base\_length.txt
 # spliced and stranded transcript 3' exon length
-awk -v fileRef=$base\_complete_comp_refinedclass_nbex.tsv 'BEGIN{while(getline < fileRef >0){if($2=="Monoexonic"){ko["\""substr($1,2)"\";"]=1}}} (($3=="exon")&&(ko[$12]!=1))' $pred | sort -k12,12 -k4,4n -k5,5n | awk '{nbex[$12]++; ex[$12,nbex[$12]]=$4"_"$5;} END{for(t in nbex){split(ex[t,1],a,"_"); split(ex[t,nbex[t]],b,"_"); print t, b[2]-a[1];}}' > tr_lgwithexintr_$base.txt
+awk -v fileRef=$base\_complete_comp_refinedclass_nbex_intermclass.tsv 'BEGIN{while(getline < fileRef >0){if($2=="Monoexonic"){ko["\""substr($1,2)"\";"]=1}}} (($3=="exon")&&(ko[$12]!=1))' $pred | sort -k12,12 -k4,4n -k5,5n | awk '{nbex[$12]++; ex[$12,nbex[$12]]=$4"_"$5;} END{for(t in nbex){split(ex[t,1],a,"_"); split(ex[t,nbex[t]],b,"_"); print t, b[2]-a[1];}}' > tr_lgwithexintr_$base.txt
 # spliced tr cDNA length (only exons) - here tr can be unstranded
-awk -v fileRef=$base\_complete_comp_refinedclass_nbex.tsv 'BEGIN{while(getline < fileRef >0){if($2=="Monoexonic"){ko["\""substr($1,2)"\";"]=1}}} ($3=="exon")&&(ko[$12]!=1){lg[$12]+=($5-$4+1)}END{for(t in lg){print t, lg[t]}}' $pred > tr_cumulexlg_$base.txt
+awk -v fileRef=$base\_complete_comp_refinedclass_nbex_intermclass.tsv 'BEGIN{while(getline < fileRef >0){if($2=="Monoexonic"){ko["\""substr($1,2)"\";"]=1}}} ($3=="exon")&&(ko[$12]!=1){lg[$12]+=($5-$4+1)}END{for(t in lg){print t, lg[t]}}' $pred > tr_cumulexlg_$base.txt
 echo "done" >&2
 
 # Make TSS and TTS from the predicted transcripts
@@ -164,7 +165,7 @@ echo "done" >&2
 # - the coord of the tts of the precicted tr
 # - the list of coord of tts of the corresponding annotated tr
 echo "To each exact predicted transcript I am adding the coord of the tss/tts of the predicted tr as well as the list of coord of tss/tts of the corresponding annotated tr" >&2
-awk -v fileRef1=$base\_capped_sites.gff -v fileRef2=$anntss -v fileRef3=$base\_tts_sites.gff -v fileRef4=$anntts 'BEGIN{while(getline < fileRef1 >0){split($12,a,"\""); tss1[a[2]]=$1"_"$4"_"$7} while(getline < fileRef2 >0){split($12,a,"\""); tss2[a[2]]=$1"_"$4"_"$7} while(getline < fileRef3 >0){split($12,a,"\""); tts1[a[2]]=$1"_"$4"_"$7} while(getline < fileRef4 >0){split($12,a,"\""); tts2[a[2]]=$1"_"$4"_"$7}} {if($2=="Exact"){s1=""; s2=""; t=substr($1,2); gsub(/\"/,"",$3); gsub(/\;/,"",$3); split($3,b,","); k=1; while(b[k]!=""){s1=(s1)(tss2[b[k]])(","); s2=(s2)(tts2[b[k]])(","); k++} print t, $3, tss1[t], s1, tts1[t], s2}}' $base\_complete_comp_refinedclass_nbex.tsv > $base\_predtr_spliced_stranded_exact_$annotbase\_correstrlist_TSS_AnnotTSSlist_TTS_AnnotTTSlist.txt
+awk -v fileRef1=$base\_capped_sites.gff -v fileRef2=$anntss -v fileRef3=$base\_tts_sites.gff -v fileRef4=$anntts 'BEGIN{while(getline < fileRef1 >0){split($12,a,"\""); tss1[a[2]]=$1"_"$4"_"$7} while(getline < fileRef2 >0){split($12,a,"\""); tss2[a[2]]=$1"_"$4"_"$7} while(getline < fileRef3 >0){split($12,a,"\""); tts1[a[2]]=$1"_"$4"_"$7} while(getline < fileRef4 >0){split($12,a,"\""); tts2[a[2]]=$1"_"$4"_"$7}} {if($2=="Exact"){s1=""; s2=""; t=substr($1,2); gsub(/\"/,"",$3); gsub(/\;/,"",$3); split($3,b,","); k=1; while(b[k]!=""){s1=(s1)(tss2[b[k]])(","); s2=(s2)(tts2[b[k]])(","); k++} print t, $3, tss1[t], s1, tts1[t], s2}}' $base\_complete_comp_refinedclass_nbex_intermclass.tsv > $base\_predtr_spliced_stranded_exact_$annotbase\_correstrlist_TSS_AnnotTSSlist_TTS_AnnotTTSlist.txt
 echo "done" >&2
 
 # Add the smaller distance to a matching annotated tr for tss and for tts

@@ -6,6 +6,9 @@
 # predicted transcripts from a givem rnaseq sample) to a reference set of transcripts (typically the 
 # transcripts that we expect to be present in this rnaseq sample)
 
+# On March 27th 2020, all calls to _nbex.tsv file replaced by _nbex_intermclass.tsv file
+# because of a change in refine_comptr script
+
 # takes as input
 ################
 # - a gtf or gff version 2 file containing the reference set of transcripts (typically the transcripts
@@ -123,7 +126,7 @@ cd $WORKDIR
 basetmp=`basename ${pred%.gtf}`
 base=${basetmp%.gff}
 echo $src
-awk 'NR>=2{print $2}' $base\_complete_comp_refinedclass_nbex.tsv | sort | uniq -c | sort -k1,1nr
+awk 'NR>=2{print $2}' $base\_complete_comp_refinedclass_nbex_intermclass.tsv | sort | uniq -c | sort -k1,1nr
 done > basic_sumstats_from_comptr.txt
 cat basic_sumstats_from_comptr.txt >&2
 echo "done" >&2
@@ -147,7 +150,7 @@ WORKDIR=`dirname $pred`
 cd $WORKDIR
 basetmp=`basename ${pred%.gtf}`
 base=${basetmp%.gff}
-awk -v lid=$src -f $REFINEOUTPUT $base\_complete_comp_refinedclass_nbex.tsv
+awk -v lid=$src -f $REFINEOUTPUT $base\_complete_comp_refinedclass_nbex_intermclass.tsv
 done | awk 'BEGIN{OFS="\t"} NR==1||NR%2==0' > refine_comptr_prediction_sets_for_table.txt
 cat refine_comptr_prediction_sets_for_table.txt >&2
 echo "done" >&2
@@ -340,10 +343,10 @@ cd $WORKDIR
 basetmp=`basename ${pred%.gtf}`
 base=${basetmp%.gff}
 tot_ref=`wc -l $refdir/ref_spliced_tr.txt | awk '{print $1}'`
-tp1_ref=`awk '$2=="Exact"{split($3,a,","); k=1; while(a[k]!=""){print a[k]; k++}}' $base\_complete_comp_refinedclass_nbex.tsv | sort | uniq | wc -l | awk '{print $1}'`
-tp2_ref=`awk -v fileRef=$refdir/ref_spliced_tr.txt 'BEGIN{while (getline < fileRef >0){ok[$1]=1}} $2=="Exact"||$2=="Extension"{split($3,a,","); k=1; while(a[k]!=""){if(ok[a[k]]==1){print a[k]} k++}}' $base\_complete_comp_refinedclass_nbex.tsv | sort | uniq | wc -l | awk '{print $1}'`
-tp3_ref=`awk -v fileRef=$refdir/ref_spliced_tr.txt 'BEGIN{while (getline < fileRef >0){ok[$1]=1}} $2=="Exact"||$2=="Extension"||$2=="Inclusion"{split($3,a,","); k=1; while(a[k]!=""){if(ok[a[k]]==1){print a[k]} k++}}' $base\_complete_comp_refinedclass_nbex.tsv | sort | uniq | wc -l | awk '{print $1}'`
-awk -v lid=$src -v tp1_ref=$tp1_ref -v tp2_ref=$tp2_ref -v tp3_ref=$tp3_ref -v tot_ref=$tot_ref 'BEGIN{OFS="\t"}{split($0,a,"\t"); tot++; if(a[2]=="Monoexonic"){mono++}else{if(a[2]=="Unstranded"){unstr++}else{if(a[2]=="Exact"){exact++}else{if(a[2]=="Extension"){ext++}else{if(a[2]=="Inclusion"){incl++}}}}}}END{splstr=tot-(mono+unstr); tp1_pred=exact; tp2_pred=exact+ext; tp3_pred=exact+ext+incl; sn1=tp1_ref/tot_ref*100; sp1=tp1_pred/splstr*100; sn2=tp2_ref/tot_ref*100; sp2=tp2_pred/splstr*100; sn3=tp3_ref/tot_ref*100; sp3=tp3_pred/splstr*100; print lid, tot, splstr, tp1_ref, sn1, tp1_pred, sp1, (sn1+sp1)/2, tp2_ref, sn2, tp2_pred, sp2, (sn2+sp2)/2, tp3_ref, sn3, tp3_pred, sp3, (sn3+sp3)/2}' $base\_complete_comp_refinedclass_nbex.tsv
+tp1_ref=`awk '$2=="Exact"{split($3,a,","); k=1; while(a[k]!=""){print a[k]; k++}}' $base\_complete_comp_refinedclass_nbex_intermclass.tsv | sort | uniq | wc -l | awk '{print $1}'`
+tp2_ref=`awk -v fileRef=$refdir/ref_spliced_tr.txt 'BEGIN{while (getline < fileRef >0){ok[$1]=1}} $2=="Exact"||$2=="Extension"{split($3,a,","); k=1; while(a[k]!=""){if(ok[a[k]]==1){print a[k]} k++}}' $base\_complete_comp_refinedclass_nbex_intermclass.tsv | sort | uniq | wc -l | awk '{print $1}'`
+tp3_ref=`awk -v fileRef=$refdir/ref_spliced_tr.txt 'BEGIN{while (getline < fileRef >0){ok[$1]=1}} $2=="Exact"||$2=="Extension"||$2=="Inclusion"{split($3,a,","); k=1; while(a[k]!=""){if(ok[a[k]]==1){print a[k]} k++}}' $base\_complete_comp_refinedclass_nbex_intermclass.tsv | sort | uniq | wc -l | awk '{print $1}'`
+awk -v lid=$src -v tp1_ref=$tp1_ref -v tp2_ref=$tp2_ref -v tp3_ref=$tp3_ref -v tot_ref=$tot_ref 'BEGIN{OFS="\t"}{split($0,a,"\t"); tot++; if(a[2]=="Monoexonic"){mono++}else{if(a[2]=="Unstranded"){unstr++}else{if(a[2]=="Exact"){exact++}else{if(a[2]=="Extension"){ext++}else{if(a[2]=="Inclusion"){incl++}}}}}}END{splstr=tot-(mono+unstr); tp1_pred=exact; tp2_pred=exact+ext; tp3_pred=exact+ext+incl; sn1=tp1_ref/tot_ref*100; sp1=tp1_pred/splstr*100; sn2=tp2_ref/tot_ref*100; sp2=tp2_pred/splstr*100; sn3=tp3_ref/tot_ref*100; sp3=tp3_pred/splstr*100; print lid, tot, splstr, tp1_ref, sn1, tp1_pred, sp1, (sn1+sp1)/2, tp2_ref, sn2, tp2_pred, sp2, (sn2+sp2)/2, tp3_ref, sn3, tp3_pred, sp3, (sn3+sp3)/2}' $base\_complete_comp_refinedclass_nbex_intermclass.tsv
 done | awk 'BEGIN{OFS="\t"; print "lid", "tot_tr", "str_spl_tr", "tp1_exact_ref", "sn1_over_ref", "tp1_exact_pred", "sp1_over_pred", "avg1_sn1_sp1", "tp2_exact_ext_ref", "sn2_over_ref", "tp2_exact_ext_pred", "sp2_over_pred", "avg2_sn2_sp2", "tp3_exact_ext_incl_ref", "sn3_over_ref", "tp3_exact_ext_incl_pred", "sp3_over_pred", "avg3_sn3_sp3"}{print}' > Tables/prediction_sets_eval_wrt_ref_for_table.txt
 cat Tables/prediction_sets_eval_wrt_ref_for_table.txt >&2
 echo "done" >&2
