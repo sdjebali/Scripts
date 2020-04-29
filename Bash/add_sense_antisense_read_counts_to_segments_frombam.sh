@@ -8,7 +8,7 @@
 # and was mainly used for gene elements. 
 
 # on 12/03/2013 I added the -f 1 option to only have features that are totally included
-# in our features, and on 03/17/2014 I added as an argument the output dir and indexed
+# in our features and removed it on April28th 2020, and on 03/17/2014 I added as an argument the output dir and indexed
 # the annotation file by the bam file name in order to avoid conflicts.
 
 # This script takes as input:
@@ -31,6 +31,7 @@
 # 2. weight the multimaps to reflect the uncertainty of mapping (but again the the quantity will not 
 #    be an integer).
 # 3. have an awk script that can work for all possible configurations of the reads, in order to have a single command here
+# 4. make as an option to have -f 1 or not in the intersectBed
 
 # usage
 ########
@@ -44,6 +45,7 @@ then
     echo Usage: add_sense_antisense_read_counts_to_segments_frombam.sh annot.gff mappings.bam mate_strand nb_bp_to_extend_annot [outputdir] >&2
     echo "      - the id of the element has to be in column no 10 of annot.gff" >&2
     echo "      - mate_strand should be one of the following values: MATE1_SENSE, MATE2_SENSE or MATE_SENSE_CSHL (for old star v1 cshl files)" >&2
+    echo "!!! Note: requires bedtools !!!"  >&2
     echo "" >&2
     exit -1
 fi
@@ -65,6 +67,7 @@ then
     echo Usage: add_sense_antisense_read_counts_to_segments_frombam.sh annot.gff mappings.bam mate_strand nb_bp_to_extend_annot [outputdir] >&2
     echo Wrong value for mate_strand: it can only be MATE1_SENSE, MATE2_SENSE, or MATE_STRAND_CSHL, and not anything else >&2
     echo the id of the element has to be in column no 10 of annot.gff >&2
+    echo "!!! Note: requires bedtools !!!"  >&2
     echo "" >&2
     exit 1
 else
@@ -95,9 +98,11 @@ echo done >&2
 
 # Compute the overlap between this annotation and the reads and divide the overlapping reads into sense and antisense
 #####################################################################################################################
-echo I am computing the number of reads totally included \in the extended annotation and dividing the included reads into sense and antisense >&2
-intersectBed -abam $mappings -b $outdir/$b12.ext$toextend.$b22.gff -bed -f 1 -wo | awk -v fileRef=$outdir/$b12.ext$toextend.$b22.gff -v mate_strand=$mate_strand -f $INTER2GFF | awk -f $GFF2GFF > $outdir/$b12.ext$toextend.withreadcount.of.$b22.gff
+echo I am computing the number of reads overlapping the extended annotation and dividing the reads into sense and antisense >&2
+intersectBed -abam $mappings -b $outdir/$b12.ext$toextend.$b22.gff -bed -wo | awk -v fileRef=$outdir/$b12.ext$toextend.$b22.gff -v mate_strand=$mate_strand -f $INTER2GFF | awk -f $GFF2GFF > $outdir/$b12.ext$toextend.withreadcount.of.$b22.gff
 echo done >&2
+# totally included \in
+# -f 1
 
 # Remove intermediate files
 ###########################

@@ -25,7 +25,7 @@
 # pig=/work/project/fragencode/results/atacseq/sus_scrofa/indiv.peaks.merged/mergedpeaks.peaknb.readcov.bed
 # annot=/work/project/fragencode/data/species/sus_scrofa/Sscrofa10.2.84/sus_scrofa.gtf
 # time peak_distrib_matrix.sh $pig $annot 0 gene > mergedpeaks_allinfo.tsv 2> peak_distrib_matrix.err
-# real	0m26.723s  
+# real	0m26.723s    *** for about 50 000 peaks
 
 # More precisely the body of the matrix will contain the following:
 ###################################################################
