@@ -1,5 +1,6 @@
 # vcf_filterinfo_2_snpok.awk
-# from a vcf file and a comma separated list of 8th field subfield attributes corresponding to booleanvalues for different filters (0 not ok snp, 1 ok snp)
+# from a vcf file with no header (snp file in tsv format)
+# and a comma separated list of 8th field subfield attributes corresponding to boolean values for different filters (0 not ok snp, 1 ok snp)
 # make a txt file of chrom:pos:ref:alt of the snps to keep after those filters
 
 # example
@@ -8,6 +9,7 @@
 # pgm=~/fragencode/tools/multi/Scripts/Awk/vcf_filterinfo_2_snpok.awk
 # module load bioinfo/bcftools-1.9
 # time bcftools view -H 22.basic.INFOin0.5-1.ACin60-5086.notstrambig.vcf.gz | awk -v fldlist=INFOin0.5-1,ACin60-5086,notstrambig -f $pgm | awk '{gsub(/chr/,"",$1); print $1}' > 22.snp.3filters.ok.txt
+# *** real	8m57.927s
 
 # input
 # bcftools view -H 22.basic.INFOin0.5-1.ACin60-5086.notstrambig.vcf.gz
@@ -29,7 +31,7 @@ BEGIN{
     }
 }
 
-{
+($1!~/^#/){
     s=0;
     for(i=1; i<=n; i++)
     {
@@ -50,7 +52,7 @@ BEGIN{
     {
 	s+=ok[i];
     }
-    if(s==n)
+    if(s==n)   # in case the snp passed all filters then we put it in the output file
     {
 	print $1":"$2":"$4":"$5;
     }
