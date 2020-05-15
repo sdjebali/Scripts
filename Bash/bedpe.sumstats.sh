@@ -13,6 +13,10 @@
 # - several (5) png plot files with their associated input tsv files and as a title the basename of the bedpe.gz file
 # - several tsv or tsv.gz files that represent summary statistics tables and that are supposed to complete the messages from the plots
 
+# TODO:
+# - change the inter fragment distance from middle to middle to 3' end of most 5' to 5' end of most 3'
+
+
 # Example (on genologin toulouse)
 #########
 # cd ~/fragencode/workspace/sdjebali/irsd/egprediction/from3D/predictions/capturehic/jung.ren.2019

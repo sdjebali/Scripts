@@ -95,7 +95,7 @@ then
 fi
 
 ## Set awk scripts directory
-awkDir=$rootDir/../awk
+awkDir=$rootDir/../Awk
 
 # PROGRAMS
 ##########
