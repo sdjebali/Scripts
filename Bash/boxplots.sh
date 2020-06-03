@@ -49,14 +49,14 @@ then
 fi
 
 echo '
-library(reshape2)
 library(ggplot2)
 theme_set(theme_bw(base_size = 16))
 data = read.delim("'$1'", sep="\t", h=TRUE)
-gp = ggplot(data) + geom_boxplot(aes(y='$3',x=factor('$2')))  
-gp = gp + scale_x_discrete(labels=gsub("[0-9]+_","",levels(as.factor(data$'$2'))))
-gp = gp + theme(axis.text.x=element_text(angle=60, hjust=1, vjust=1))
+gp = ggplot(data) + geom_boxplot(aes(y='$3',x=factor('$2'),fill=factor('$2')), varwidth = TRUE, notch=T) + scale_fill_brewer(palette="Set1") 
+gp = gp + scale_x_discrete(labels=gsub("[0-9][0-9]_","",levels(as.factor(data$'$2'))))
+gp = gp + theme(axis.text.x=element_text(angle=35, hjust=1, vjust=1))
 gp = gp + labs(y='\'$4\'') 
 gp = gp + ylim(c('$5','$6'))   
 ggsave(filename="'$7'")
 ' | R --vanilla
+

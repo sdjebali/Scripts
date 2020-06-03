@@ -83,7 +83,8 @@ refnrtts=$refdir/$refbase\_tts_sites_nr.gff
 
 # Programs
 ##########
-REFINEOUTPUT=$rootDir/../Awk/refine_comptr_to_table_stats.awk 
+GFFOK=$rootDir/../Awk/make_gff_ok.awk
+REFINEOUTPUT=$rootDir/../Awk/refine_comptr_to_table_stats.awk
 BOXPLOT=$rootDir/boxplots.sh
 
 # Start of the script
@@ -108,10 +109,11 @@ mkdir -p Plots/cDNALength
 mkdir -p Plots/Exact_tr_dist_to_Genc_TSS
 echo "done" >&2
 
-# List the ids of the spliced transcripts in the reference
-##########################################################
+
+# List the ids of the spliced transcripts in the reference, making sure the transcript_id is in the 12th field by applying $GFFOK before
+########################################################################################################################################
 echo "I am listing the ids of the spliced transcripts in the reference" >&2
-awk '$3=="exon"{split($12,a,"\""); nbex[a[2]]++}END{for(t in nbex){if(nbex[t]>=2){print t}}}' $ref > $refdir/ref_spliced_tr.txt
+awk -f $GFFOK $ref | awk '$3=="exon"{split($12,a,"\""); nbex[a[2]]++}END{for(t in nbex){if(nbex[t]>=2){print t}}}' > $refdir/ref_spliced_tr.txt
 echo "done" >&2
 # ENST00000000233.5
 # 171656 (1 fields)
@@ -127,8 +129,8 @@ basetmp=`basename ${pred%.gtf}`
 base=${basetmp%.gff}
 echo $src
 awk 'NR>=2{print $2}' $base\_complete_comp_refinedclass_nbex_intermclass.tsv | sort | uniq -c | sort -k1,1nr
-done > basic_sumstats_from_comptr.txt
-cat basic_sumstats_from_comptr.txt >&2
+done > Tables/basic_sumstats_from_comptr.txt
+cat Tables/basic_sumstats_from_comptr.txt >&2
 echo "done" >&2
 # Cuff_annot_all
 #  171130 Exact
@@ -151,8 +153,8 @@ cd $WORKDIR
 basetmp=`basename ${pred%.gtf}`
 base=${basetmp%.gff}
 awk -v lid=$src -f $REFINEOUTPUT $base\_complete_comp_refinedclass_nbex_intermclass.tsv
-done | awk 'BEGIN{OFS="\t"} NR==1||NR%2==0' > refine_comptr_prediction_sets_for_table.txt
-cat refine_comptr_prediction_sets_for_table.txt >&2
+done | awk 'BEGIN{OFS="\t"} NR==1||NR%2==0' > Tables/refine_comptr_prediction_sets_for_table.txt
+cat Tables/refine_comptr_prediction_sets_for_table.txt >&2
 echo "done" >&2
 # Cuff_annot_all  261824  232400  88.7619 171130  65.3607 771     0.294473        423     0.161559        60076   22.9452 3802    1.45212 3056    1.1672  623     0.237946        123 0.0469781       19686   7.51879 689     0.263154        18997   7.25564 1862    0.711165        295     0.112671        1567    0.598494                1.55563
 
@@ -167,165 +169,179 @@ cd $WORKDIR
 basetmp=`basename ${pred%.gtf}`
 base=${basetmp%.gff}
 awk 'NR==2' make_summary_stat_from_annot_$base.out | awk -v set=$src '{OFS="\t"; print set, $0, $1/$3, $1/$4, $2/$4, $3/$4, $5/$3, $5/$4, $6/$4}' 
-done | awk 'BEGIN{print "prediction\tnbex\tnnbdistinctex\tnbtr\tnbgn\tnbintrons\tnbdistinctintrons\tnbexpertr\tnbexpergn\tnbdistinctexpergn\tnbtrpergn\tnbintronpertr\tnbintronpergn\tnbdistinctintronpergn"}{print}' > predtrsets_basic_sumstats.tsv
-cat predtrsets_basic_sumstats.tsv >&2
+done | awk 'BEGIN{print "prediction\tnbex\tnnbdistinctex\tnbtr\tnbgn\tnbintrons\tnbdistinctintrons\tnbexpertr\tnbexpergn\tnbdistinctexpergn\tnbtrpergn\tnbintronpertr\tnbintronpergn\tnbdistinctintronpergn"}{print}' > Tables/predtrsets_basic_sumstats.tsv
+cat Tables/predtrsets_basic_sumstats.tsv >&2
 echo "done" >&2
 # predotation      nbex    nnbdistinctex   nbtr    nbgn    nbintrons       nbdistinctintrons       nbexpertr       nbexpergn       nbdistinctexpergn       nbtrpergn       nbintronpertr      nbintronpergn   nbdistinctintronpergn
 # Gencv19_all     1196293 562680 196520 57820 999773 344651       6.08739 20.69   9.73158 3.39882 5.08739 17.2911 5.96076
 
 # Gather across all prediction sets the lengths of several objects in order to have one plot per object type
 ############################################################################################################
+# making sure transcript_id is in the 12th field by applying $GFFOK before
+##########################################################################
 echo "I am gathering across all prediction sets the lengths of several objects in order to have one plot per object type" >&2
+
+echo "  0. I am making an ok gff file for the prediction once for all" >&2
+awk 'NR>=2{print $2}' $predtrsets | while read pred
+do
+    WORKDIR=`dirname $pred`
+    cd $WORKDIR
+    basetmp=`basename ${pred%.gtf}`
+    base=${basetmp%.gff}
+    awk -f $GFFOK $pred > $base.ok.gff
+done
 
 echo "  1. number of exons per transcript" >&2
 awk 'NR>=2{print $1, $2, ((NR-2)<=9 ? "0"(NR-2) : (NR-2))}' $predtrsets | while read src pred no
 do
-WORKDIR=`dirname $pred` 
-cd $WORKDIR
-lid=$no\_$src
-awk -v lid=$lid 'BEGIN{OFS="\t"} $3=="exon"{nbex[$12]++}END{for(t in nbex){print lid, nbex[t]}}' $pred
+    WORKDIR=`dirname $pred`
+    cd $WORKDIR
+    basetmp=`basename ${pred%.gtf}`
+    base=${basetmp%.gff}
+    lid=$no\_$src
+    awk -v lid=$lid 'BEGIN{OFS="\t"} $3=="exon"{nbex[$12]++}END{for(t in nbex){print lid, nbex[t]}}' $base.ok.gff
 done | awk 'BEGIN{OFS="\t"; print "prediction", "nb_ex_in_transcript"}{print}' > Plots/ExonPerTranscript/prediction_nbexintr_forggplot.tsv
 echo "  done" >&2
 
 echo "  2. number of transcripts per gene" >&2
 awk 'NR>=2{print $1, $2, ((NR-2)<=9 ? "0"(NR-2) : (NR-2))}' $predtrsets | while read src pred no
 do
-WORKDIR=`dirname $pred` 
-cd $WORKDIR
-lid=$no\_$src
-awk -v lid=$lid 'BEGIN{OFS="\t"} $3=="exon"{seen[$12]++; if(seen[$12]==1){nbtr[$10]++}}END{for(g in nbtr){print lid, nbtr[g]}}' $pred
+    WORKDIR=`dirname $pred` 
+    cd $WORKDIR
+    basetmp=`basename ${pred%.gtf}`
+    base=${basetmp%.gff}
+    lid=$no\_$src
+    awk -v lid=$lid 'BEGIN{OFS="\t"} $3=="exon"{seen[$12]++; if(seen[$12]==1){nbtr[$10]++}}END{for(g in nbtr){print lid, nbtr[g]}}' $base.ok.gff
 done | awk 'BEGIN{OFS="\t"; print "prediction", "nb_tr_in_gene"}NF==2{print}' > Plots/TranscriptPerGene/prediction_nbtringn_forggplot.tsv
 echo "  done" >&2
 
 echo "  3. exon length" >&2
 awk 'NR>=2{print $1, $2, ((NR-2)<=9 ? "0"(NR-2) : (NR-2))}' $predtrsets | while read src pred no
 do
-WORKDIR=`dirname $pred` 
-cd $WORKDIR
-basetmp=`basename ${pred%.gtf}`
-base=${basetmp%.gff}
-lid=$no\_$src
-awk -v lid=$lid 'BEGIN{OFS="\t"}{print lid, $1}' exon_length_$base.txt
+    WORKDIR=`dirname $pred` 
+    cd $WORKDIR
+    lid=$no\_$src
+    awk -v lid=$lid 'BEGIN{OFS="\t"}{print lid, $1}' exon_length_$base.txt
 done | awk 'BEGIN{OFS="\t"; print "prediction", "exon_length"}{print}' > Plots/ExonLength/prediction_exlg_forggplot.tsv
 echo "  done" >&2
 
 echo "  4. distinct exon length" >&2
 awk 'NR>=2{print $1, $2, ((NR-2)<=9 ? "0"(NR-2) : (NR-2))}' $predtrsets | while read src pred no
 do
-WORKDIR=`dirname $pred` 
-cd $WORKDIR
-basetmp=`basename ${pred%.gtf}`
-base=${basetmp%.gff}
-lid=$no\_$src
-awk -v lid=$lid 'BEGIN{OFS="\t"}{print lid, $1}' distinct_exon_length_$base.txt
+    WORKDIR=`dirname $pred` 
+    cd $WORKDIR
+    basetmp=`basename ${pred%.gtf}`
+    base=${basetmp%.gff}
+    lid=$no\_$src
+    awk -v lid=$lid 'BEGIN{OFS="\t"}{print lid, $1}' distinct_exon_length_$base.txt
 done | awk 'BEGIN{OFS="\t"; print "prediction", "distinct_exon_length"}{print}' > Plots/DistinctExonLength/prediction_distexlg_forggplot.tsv
 echo "  done" >&2
 
 echo "  5. transcript 5' exon length (for spliced and stranded tr)" >&2
 awk 'NR>=2{print $1, $2, ((NR-2)<=9 ? "0"(NR-2) : (NR-2))}' $predtrsets | while read src pred no
 do
-WORKDIR=`dirname $pred` 
-cd $WORKDIR
-basetmp=`basename ${pred%.gtf}`
-base=${basetmp%.gff}
-lid=$no\_$src
-awk -v lid=$lid 'BEGIN{OFS="\t"}{print lid, $1}' tr_5p_exon_$base\_length.txt
+    WORKDIR=`dirname $pred` 
+    cd $WORKDIR
+    basetmp=`basename ${pred%.gtf}`
+    base=${basetmp%.gff}
+    lid=$no\_$src
+    awk -v lid=$lid 'BEGIN{OFS="\t"}{print lid, $1}' tr_5p_exon_$base\_length.txt
 done | awk 'BEGIN{OFS="\t"; print "prediction", "fivep_exon_length_tr"}{print}' > Plots/5pExonLength_Tr/prediction_5pexlgtr_forggplot.tsv
 echo "  done" >&2
 
 echo "  6. gene 5' exon length (for genes with spliced and stranded tr)" >&2
 awk 'NR>=2{print $1, $2, ((NR-2)<=9 ? "0"(NR-2) : (NR-2))}' $predtrsets | while read src pred no
 do
-WORKDIR=`dirname $pred` 
-cd $WORKDIR
-basetmp=`basename ${pred%.gtf}`
-base=${basetmp%.gff}
-lid=$no\_$src
-awk -v lid=$lid 'BEGIN{OFS="\t"}{print lid, $1}' gn_5p_exon_$base\_length.txt
+    WORKDIR=`dirname $pred` 
+    cd $WORKDIR
+    basetmp=`basename ${pred%.gtf}`
+    base=${basetmp%.gff}
+    lid=$no\_$src
+    awk -v lid=$lid 'BEGIN{OFS="\t"}{print lid, $1}' gn_5p_exon_$base\_length.txt
 done | awk 'BEGIN{OFS="\t"; print "prediction", "fivep_exon_length_gn"}{print}' > Plots/5pExonLength_Gn/prediction_5pexlggn_forggplot.tsv
 echo "  done" >&2
 
 echo "  7. transcript 3' exon length (for spliced and stranded tr)" >&2
 awk 'NR>=2{print $1, $2, ((NR-2)<=9 ? "0"(NR-2) : (NR-2))}' $predtrsets | while read src pred no
 do
-WORKDIR=`dirname $pred` 
-cd $WORKDIR
-basetmp=`basename ${pred%.gtf}`
-base=${basetmp%.gff}
-lid=$no\_$src
-awk -v lid=$lid 'BEGIN{OFS="\t"}{print lid, $1}' tr_3p_exon_$base\_length.txt
+    WORKDIR=`dirname $pred` 
+    cd $WORKDIR
+    basetmp=`basename ${pred%.gtf}`
+    base=${basetmp%.gff}
+    lid=$no\_$src
+    awk -v lid=$lid 'BEGIN{OFS="\t"}{print lid, $1}' tr_3p_exon_$base\_length.txt
 done | awk 'BEGIN{OFS="\t"; print "prediction", "threep_exon_length_tr"}{print}' > Plots/3pExonLength_Tr/prediction_3pexlgtr_forggplot.tsv
 echo "  done" >&2
 
 echo "  8. gene 3' exon length (for genes with spliced and stranded tr)" >&2
 awk 'NR>=2{print $1, $2, ((NR-2)<=9 ? "0"(NR-2) : (NR-2))}' $predtrsets | while read src pred no
 do
-WORKDIR=`dirname $pred` 
-cd $WORKDIR
-basetmp=`basename ${pred%.gtf}`
-base=${basetmp%.gff}
-lid=$no\_$src
-awk -v lid=$lid 'BEGIN{OFS="\t"}{print lid, $1}' gn_3p_exon_$base\_length.txt
+    WORKDIR=`dirname $pred` 
+    cd $WORKDIR
+    basetmp=`basename ${pred%.gtf}`
+    base=${basetmp%.gff}
+    lid=$no\_$src
+    awk -v lid=$lid 'BEGIN{OFS="\t"}{print lid, $1}' gn_3p_exon_$base\_length.txt
 done | awk 'BEGIN{OFS="\t"; print "prediction", "threep_exon_length_gn"}{print}' > Plots/3pExonLength_Gn/prediction_3pexlggn_forggplot.tsv
 echo "  done" >&2
 
 echo "  9. internal exon length (for spliced and stranded tr)" >&2
 awk 'NR>=2{print $1, $2, ((NR-2)<=9 ? "0"(NR-2) : (NR-2))}' $predtrsets | while read src pred no
 do
-WORKDIR=`dirname $pred` 
-cd $WORKDIR
-lid=$no\_$src
-basetmp=`basename ${pred%.gtf}`
-base=${basetmp%.gff}
-awk -v lid=$lid 'BEGIN{OFS="\t"}{print lid, $1}' internal_exons_$base\_length.txt
+    WORKDIR=`dirname $pred` 
+    cd $WORKDIR
+    lid=$no\_$src
+    basetmp=`basename ${pred%.gtf}`
+    base=${basetmp%.gff}
+    awk -v lid=$lid 'BEGIN{OFS="\t"}{print lid, $1}' internal_exons_$base\_length.txt
 done | awk 'BEGIN{OFS="\t"; print "prediction", "internal_exon_length"}{print}' > Plots/InternalExonLength/prediction_internexlg_forggplot.tsv
 echo "  done" >&2
 
 echo "  10. distinct internal exon length (for spliced and stranded tr)" >&2
 awk 'NR>=2{print $1, $2, ((NR-2)<=9 ? "0"(NR-2) : (NR-2))}' $predtrsets | while read src pred no
 do
-WORKDIR=`dirname $pred` 
-cd $WORKDIR
-basetmp=`basename ${pred%.gtf}`
-base=${basetmp%.gff}
-lid=$no\_$src
-awk -v lid=$lid 'BEGIN{OFS="\t"}{print lid, $1}' distinct_internal_exon_length_$base.txt
+    WORKDIR=`dirname $pred` 
+    cd $WORKDIR
+    basetmp=`basename ${pred%.gtf}`
+    base=${basetmp%.gff}
+    lid=$no\_$src
+    awk -v lid=$lid 'BEGIN{OFS="\t"}{print lid, $1}' distinct_internal_exon_length_$base.txt
 done | awk 'BEGIN{OFS="\t"; print "prediction", "distinct_internal_exon_length"}{print}' > Plots/DistinctInternalExonLength/prediction_distinternexlg_forggplot.tsv
 echo "  done" >&2
 
 echo "  11. monoexonic transcript exon length" >&2
 awk 'NR>=2{print $1, $2, ((NR-2)<=9 ? "0"(NR-2) : (NR-2))}' $predtrsets | while read src pred no
 do
-WORKDIR=`dirname $pred` 
-cd $WORKDIR
-basetmp=`basename ${pred%.gtf}`
-base=${basetmp%.gff}
-lid=$no\_$src
-awk -v lid=$lid 'BEGIN{OFS="\t"}{print lid, $1}' monoextr_exons_$base\_length.txt
+    WORKDIR=`dirname $pred` 
+    cd $WORKDIR
+    basetmp=`basename ${pred%.gtf}`
+    base=${basetmp%.gff}
+    lid=$no\_$src
+    awk -v lid=$lid 'BEGIN{OFS="\t"}{print lid, $1}' monoextr_exons_$base\_length.txt
 done | awk 'BEGIN{OFS="\t"; print "prediction", "monoextr_exon_length"}{print}' > Plots/MonoExTrExLength/prediction_monoextrexlg_forggplot.tsv
 echo "  done" >&2
 
 echo "  12. transcript length (exons + introns) (for spliced transcripts)" >&2
 awk 'NR>=2{print $1, $2, ((NR-2)<=9 ? "0"(NR-2) : (NR-2))}' $predtrsets | while read src pred no
 do
-WORKDIR=`dirname $pred` 
-cd $WORKDIR
-basetmp=`basename ${pred%.gtf}`
-base=${basetmp%.gff}
-lid=$no\_$src
-awk -v lid=$lid 'BEGIN{OFS="\t"}{print lid, $2}' tr_lgwithexintr_$base.txt
+    WORKDIR=`dirname $pred` 
+    cd $WORKDIR
+    basetmp=`basename ${pred%.gtf}`
+    base=${basetmp%.gff}
+    lid=$no\_$src
+    awk -v lid=$lid 'BEGIN{OFS="\t"}{print lid, $2}' tr_lgwithexintr_$base.txt
 done | awk 'BEGIN{OFS="\t"; print "prediction", "transcript_length"}{print}' > Plots/TrLength/prediction_trlg_forggplot.tsv
 echo "  done" >&2
 
 echo "  13. cDNA length (exons only) (for spliced tr)" >&2
 awk 'NR>=2{print $1, $2, ((NR-2)<=9 ? "0"(NR-2) : (NR-2))}' $predtrsets | while read src pred no
 do
-WORKDIR=`dirname $pred` 
-cd $WORKDIR
-basetmp=`basename ${pred%.gtf}`
-base=${basetmp%.gff}
-lid=$no\_$src
-awk -v lid=$lid 'BEGIN{OFS="\t"}{print lid, $2}' tr_cumulexlg_$base.txt
+    WORKDIR=`dirname $pred` 
+    cd $WORKDIR
+    basetmp=`basename ${pred%.gtf}`
+    base=${basetmp%.gff}
+    lid=$no\_$src
+    awk -v lid=$lid 'BEGIN{OFS="\t"}{print lid, $2}' tr_cumulexlg_$base.txt
 done | awk 'BEGIN{OFS="\t"; print "prediction", "cDNA_length"}{print}' > Plots/cDNALength/prediction_cdnalg_forggplot.tsv
 echo "  done" >&2
 
@@ -530,22 +546,18 @@ echo "  12. transcript length (exons + introns) (for spliced transcripts)" >&2
 $BOXPLOT Plots/TrLength/prediction_trlg_forggplot.tsv prediction transcript_length "Transcript length (exons + introns) (spliced tr)" 0 50000 Plots/TrLength/prediction_trlg_forggplot.png
 echo "  done" >&2
 echo "  13. cDNA length (exons only) (for spliced tr)" >&2
-$BOXPLOT Plots/cDNALength/prediction_cdnalg_forggplot.tsv prediction cDNA_length "cDNA length (only exons) (for spliced tr)" 0 4000 Plots/cDNALength/prediction_trlg_forggplot.png
+$BOXPLOT Plots/cDNALength/prediction_cdnalg_forggplot.tsv prediction cDNA_length "cDNA length (only exons) (for spliced tr)" 0 4000 Plots/cDNALength/prediction_cdnalg_forggplot.png
 echo "  done" >&2
 echo "done" >&2
-
-# Make the distribution of each object that is plotted across all the predictions, to be more complete
-######################################################################################################
 
 
 # Make the plot for distance between predicted and reference TSS for exact transcripts
 ######################################################################################
 echo "I am making the plot for distance between predicted and reference TSS for exact transcripts" >&2
-$BOXPLOT Plots/Exact_tr_dist_to_Genc_TSS/prediction_tssdist_forggplot.tsv prediction dist_to_tss "Distance to Gencode TSS (exact tr)" 10 Plots/Exact_tr_dist_to_Genc_TSS/prediction_tssdist_forggplot.png
+$BOXPLOT Plots/Exact_tr_dist_to_Genc_TSS/prediction_tssdist_forggplot.tsv prediction dist_to_tss "Distance to Gencode TSS (exact tr)" 0 10 Plots/Exact_tr_dist_to_Genc_TSS/prediction_tssdist_forggplot.png
 echo "done" >&2
 
 # Clean
 ########
 echo "I am cleaning" >&2
-rm Rplots.pdf
 echo "done" >&2
