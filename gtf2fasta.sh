@@ -45,7 +45,7 @@ b2=${b2tmp%.gff}
 
 # Programs
 ##########
-RETRIEVER=$rootDir/../bin/gem-retriever 
+RETRIEVER=$rootDir/gem-retriever 
 # for example in /users/rg/brodriguez/Chimeras_project/Chimeras_detection_pipeline/ChimPipe/bin/gemtools-1.7.1-i3/
 
 

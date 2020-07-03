@@ -91,12 +91,12 @@ base=${basetmp2%.gff}
 
 # Programs
 ##########
-MAKEINTRONS=$rootDir/../Awk/make_introns.awk
-CUTGFF=$rootDir/../Awk/cutgff.awk
-GFF2GFF=$rootDir/../Awk/gff2gff.awk
-DUPLSEQ=$rootDir/../bin/duplseq
-CANONICAL=$rootDir/../Awk/intron_is_canonical_gal.awk
-PROP=$rootDir/../Awk/compute_prop.awk
+MAKEINTRONS=$rootDir/make_introns.awk
+CUTGFF=$rootDir/cutgff.awk
+GFF2GFF=$rootDir/gff2gff.awk
+DUPLSEQ=$rootDir/duplseq
+CANONICAL=$rootDir/intron_is_canonical_gal.awk
+PROP=$rootDir/compute_prop.awk
 
 # Makes the introns from the annotation gtf file
 ################################################

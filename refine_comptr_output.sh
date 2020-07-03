@@ -85,16 +85,16 @@ annbase=${annbasetmp%.gff}
 
 # Programs
 ##########
-MAKEOK=$rootDir/../Awk/make_gff_ok.awk
-BOUNDARIES=$rootDir/../Awk/compute_boundaries.awk
+MAKEOK=$rootDir/make_gff_ok.awk
+BOUNDARIES=$rootDir/compute_boundaries.awk
 MAKETSS=$rootDir/make_TSS_file_from_annotation_simple.sh
 MAKESUM=$rootDir/make_summary_stat_from_annot.sh
-COMPTR=$rootDir/../bin/comptr
-OVERLAP=$rootDir/../bin/overlap
-GFF2GFF=$rootDir/../Awk/gff2gff.awk
-MAKEINTRONS=$rootDir/../Awk/make_introns.awk
-GTF2BED=$rootDir/../Awk/gtf2bed.awk
-ADDCLASS=$rootDir/../Awk/add_intermclass_andgnlist.awk
+COMPTR=$rootDir/comptr
+OVERLAP=$rootDir/overlap
+GFF2GFF=$rootDir/gff2gff.awk
+MAKEINTRONS=$rootDir/make_introns.awk
+GTF2BED=$rootDir/gtf2bed.awk
+ADDCLASS=$rootDir/add_intermclass_andgnlist.awk
 INTER=intersectBed 
 
 # 1. Make gff files of annotated exons, genes and TSS respectively

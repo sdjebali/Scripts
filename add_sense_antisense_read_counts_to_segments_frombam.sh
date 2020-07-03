@@ -87,8 +87,8 @@ set -e -o pipefail
 
 # Programs
 ##########
-GFF2GFF=$rootDir/../Awk/gff2gff.awk
-INTER2GFF=$rootDir/../Awk/intersectBed_pestrandedbam_with_eltgff_to_gff_with_s_as_mappings.awk
+GFF2GFF=$rootDir/gff2gff.awk
+INTER2GFF=$rootDir/intersectBed_pestrandedbam_with_eltgff_to_gff_with_s_as_mappings.awk
 
 # Extend the annotation by the number of bp required
 ####################################################

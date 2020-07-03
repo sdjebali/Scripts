@@ -82,11 +82,11 @@ base=${base%.txt}
 
 # Programs
 ###########
-MAKEOK=$rootDir/../Awk/make_gff_ok.awk
-GFF2GFF=$rootDir/../Awk/gff2gff.awk
-CUTGFF=$rootDir/../Awk/cutgff.awk
-GFF2GFF=$rootDir/../Awk/gff2gff.awk
-OVERLAP=$rootDir/../bin/overlap
+MAKEOK=$rootDir/make_gff_ok.awk
+GFF2GFF=$rootDir/gff2gff.awk
+CUTGFF=$rootDir/cutgff.awk
+GFF2GFF=$rootDir/gff2gff.awk
+OVERLAP=$rootDir/overlap
 
 # 0) make a cds file ok for overlap and that has an additional key,value for the frame (since not possible to report it otherwise)
 ##################################################################################################################################

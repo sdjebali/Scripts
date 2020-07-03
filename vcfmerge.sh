@@ -80,7 +80,7 @@ fi
 # Variable assignment
 #####################
 path="`dirname \"$0\"`" # relative path
-rootDir="`( cd \"$path\" && pwd )`" # absolute path
+rootdir="`( cd \"$path\" && pwd )`" # absolute path
 input=$1
 st=$2
 outid=$3
@@ -88,8 +88,8 @@ outid=$3
 
 # Programs
 ##########
-CONVERT=$rootDir/../Awk/conncompSV2vcf_better.awk
-CC=$rootDir/../Python/connected_components.py
+CONVERT=$rootdir/conncompSV2vcf_better.awk
+CC=$rootdir/connected_components.py
 
 
 

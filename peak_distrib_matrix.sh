@@ -135,15 +135,15 @@ b2=${b%.gtf}
 
 # Programs
 ##########
-BED2GFF=$rootDir/../Awk/bed2gff2.awk
-MAKEOK=$rootDir/../Awk/make_gff_ok.awk
-CUTGFF=$rootDir/../Awk/cutgff.awk
-INTRONS=$rootDir/../Awk/make_introns.awk
+BED2GFF=$rootDir/bed2gff2.awk
+MAKEOK=$rootDir/make_gff_ok.awk
+CUTGFF=$rootDir/cutgff.awk
+INTRONS=$rootDir/make_introns.awk
 MAKETSS=$rootDir/make_TSS_file_from_annotation_simple.sh
 MAKETTS=$rootDir/make_TTS_file_from_annotation_simple.sh
-GFF2GFF=$rootDir/../Awk/gff2gff.awk
-OVERLAP=$rootDir/../bin/overlap
-CLASSIF=$rootDir/../Awk/peakoverlap2classif.awk
+GFF2GFF=$rootDir/gff2gff.awk
+OVERLAP=$rootDir/overlap
+CLASSIF=$rootDir/peakoverlap2classif.awk
 
 
 #######################################################

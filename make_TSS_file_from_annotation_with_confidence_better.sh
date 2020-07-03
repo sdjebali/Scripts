@@ -45,9 +45,9 @@ fi
     
 # Programs
 ##########
-EXTRACT5p=$rootDir/../Awk/extract_most_5p.awk
-CUTGFF=$rootDir/../Awk/cutgff.awk
-GFF2GFF=$rootDir/../Awk/gff2gff.awk
+EXTRACT5p=$rootDir/extract_most_5p.awk
+CUTGFF=$rootDir/cutgff.awk
+GFF2GFF=$rootDir/gff2gff.awk
 
 
 ##########################################################

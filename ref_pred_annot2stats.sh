@@ -74,8 +74,8 @@ basestr=${basestrtmp2%.gff}
 
 # Set variables of programs
 ###########################
-gffok=$rootdir/../Awk/make_gff_ok.awk
-exprfilter=$rootdir/../Awk/exprfilter_annot.awk
+gffok=$rootdir/make_gff_ok.awk
+exprfilter=$rootdir/exprfilter_annot.awk
 makesum=$rootdir/make_summary_stat_from_annot.sh
 
 # 1. Make the exon gff file of reference transcripts with tpm 0.1 in 2 samples

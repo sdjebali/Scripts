@@ -83,8 +83,8 @@ refnrtts=$refdir/$refbase\_tts_sites_nr.gff
 
 # Programs
 ##########
-GFFOK=$rootDir/../Awk/make_gff_ok.awk
-REFINEOUTPUT=$rootDir/../Awk/refine_comptr_to_table_stats.awk
+GFFOK=$rootDir/make_gff_ok.awk
+REFINEOUTPUT=$rootDir/refine_comptr_to_table_stats.awk
 BOXPLOT=$rootDir/boxplots.sh
 
 # Start of the script

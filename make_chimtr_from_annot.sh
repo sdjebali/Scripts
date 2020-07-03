@@ -17,7 +17,7 @@
 # - a single fasta file with n1+n2+n3+n4 chimeric transcripts randomly selected from the gene pairs of the 4 classes
 # - an Aux directory with some intermediate files
 # !!! be careful: the names of the 4 classes is hard-coded here and has to match what is produced by the script !!!
-# !!! ../Awk/make_gene_pairs_from_annot_better.awk !!!
+# !!! make_gene_pairs_from_annot_better.awk !!!
 # !!! be careful: cannot be run twice in the same directory without loosing previous outputs since uses fixed names for outputs !!!
 
 # example
@@ -71,11 +71,11 @@ n4=$6
 
 # Programs
 ##########
-GFF2GFF=$rootDir/../Awk/gff2gff.awk
-MAKEGNPAIRS=$rootDir/../Awk/make_gene_pairs_from_annot_better.awk
-MAKEINTRONS=$rootDir/../Awk/make_introns.awk
-RECONSTRUCT=$rootDir/../Awk/reconstruct_chimtr.awk
-RETRIEVER=$rootDir/../bin/gem-retriever 
+GFF2GFF=$rootDir/gff2gff.awk
+MAKEGNPAIRS=$rootDir/make_gene_pairs_from_annot_better.awk
+MAKEINTRONS=$rootDir/make_introns.awk
+RECONSTRUCT=$rootDir/reconstruct_chimtr.awk
+RETRIEVER=$rootDir/gem-retriever 
 
 
 # Make a file with the name of the 4 categories and the numbers of chimeric transcripts wanted (useful for the loops)

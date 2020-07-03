@@ -54,8 +54,8 @@ i=$key\_from_$feat
 
 # Programs
 ###########
-GFF2GFF=$rootDir/../Awk/gff2gff.awk
-OVERLAP=$rootDir/../bin/overlap
+GFF2GFF=$rootDir/gff2gff.awk
+OVERLAP=$rootDir/overlap
 
 # Make a gff file for the junctions
 ###################################

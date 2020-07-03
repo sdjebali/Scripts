@@ -112,11 +112,11 @@ set -e -o pipefail
 
 # Programs
 ##########
-CUTGFF=$rootDir/../Awk/cutgff.awk
-INTER=$rootDir/../bin/intersectBed
-INTER2GNLIST=$rootDir/../Awk/intersectBed_pebam_with_elt_to_mateid_with_geneidlist_okorientation.awk
-REMOVEREDUND=$rootDir/../Awk/remove_redund_better.awk
-GFF2GFF=$rootDir/../Awk/gff2gff.awk
+CUTGFF=$rootDir/cutgff.awk
+INTER=$rootDir/intersectBed
+INTER2GNLIST=$rootDir/intersectBed_pebam_with_elt_to_mateid_with_geneidlist_okorientation.awk
+REMOVEREDUND=$rootDir/remove_redund_better.awk
+GFF2GFF=$rootDir/gff2gff.awk
 
 # Intersect the bam file with the exons of the annotation (longest step)
 ########################################################################

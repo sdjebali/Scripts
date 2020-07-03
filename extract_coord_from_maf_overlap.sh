@@ -63,10 +63,10 @@ base=${basetmp%.gtf}
 
 # Programs
 ##########
-GFF2GFF=$rootDir/../Awk/gff2gff.awk
-OVERLAP=$rootDir/../bin/overlap
-MAKEMULTIPLEMAF=$rootDir/../Awk/make_multiple_maf_out_of_one_maf.awk
-EXTRACTCOORD=$rootDir/../Awk/extract_coord_from_maf_general.awk 
+GFF2GFF=$rootDir/gff2gff.awk
+OVERLAP=$rootDir/overlap
+MAKEMULTIPLEMAF=$rootDir/make_multiple_maf_out_of_one_maf.awk
+EXTRACTCOORD=$rootDir/extract_coord_from_maf_general.awk 
 
 # Data
 #######

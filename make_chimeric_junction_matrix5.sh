@@ -102,10 +102,10 @@ rootDir="`( cd \"$path\" && pwd )`" # absolute path
 
 # Scripts/programs used by this script
 ######################################
-CUTGFF=$rootDir/../Awk/cutgff.awk
-BEGEND=$rootDir/../Awk/add_maxbegend_to_chimjunc2.awk
-GFF2GFF=$rootDir/../Awk/gff2gff.awk
-OVERLAP=$rootDir/../bin/overlap
+CUTGFF=$rootDir/cutgff.awk
+BEGEND=$rootDir/add_maxbegend_to_chimjunc2.awk
+GFF2GFF=$rootDir/gff2gff.awk
+OVERLAP=$rootDir/overlap
 
 echo "minspan is $minspan and minpe is $minpe" >&2
 

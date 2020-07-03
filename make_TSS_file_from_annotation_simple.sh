@@ -45,10 +45,10 @@ annotbase=${annotbasetmp%.gff}
 
 # Programs
 ###########
-MAKEOK=$rootDir/../Awk/make_gff_ok.awk
-EXTRACT5p=$rootDir/../Awk/extract_most_5p.awk
-CUTGFF=$rootDir/../Awk/cutgff.awk
-GFF2GFF=$rootDir/../Awk/gff2gff.awk
+MAKEOK=$rootDir/make_gff_ok.awk
+EXTRACT5p=$rootDir/extract_most_5p.awk
+CUTGFF=$rootDir/cutgff.awk
+GFF2GFF=$rootDir/gff2gff.awk
 
 
 ##########################################################

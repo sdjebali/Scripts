@@ -45,9 +45,9 @@ fi
  
 # Programs
 ###########
-EXTRACT3p=$rootDir/../Awk/extract_most_3p.awk
-CUTGFF==$rootDir/../Awk/cutgff.awk
-GFF2GFF==$rootDir/../Awk/gff2gff.awk
+EXTRACT3p=$rootDir/extract_most_3p.awk
+CUTGFF==$rootDir/cutgff.awk
+GFF2GFF==$rootDir/gff2gff.awk
 
 
 ##########################################################

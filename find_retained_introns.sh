@@ -39,12 +39,12 @@ rootDir="`( cd \"$path\" && pwd )`" # absolute path
 
 # Programs
 ##########
-MAKEOK=$rootDir/../Awk/make_gff_ok.awk
-INTRONS=$rootDir/../Awk/make_introns.awk
-MOST3P=$rootDir/../Awk/extract_most_3p.awk
-OVER=$rootDir/../bin/overlap
-REDUND=$rootDir/../Awk/remove_redund_better.awk
-GFF2GFF=$rootDir/../Awk/gff2gff.awk
+MAKEOK=$rootDir/make_gff_ok.awk
+INTRONS=$rootDir/make_introns.awk
+MOST3P=$rootDir/extract_most_3p.awk
+OVER=$rootDir/overlap
+REDUND=$rootDir/remove_redund_better.awk
+GFF2GFF=$rootDir/gff2gff.awk
 
 # Make an exon gff file with gene id and transcript id as the first two key,value pairs
 #######################################################################################

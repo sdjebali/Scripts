@@ -44,7 +44,7 @@
 # Programs
 ###########
 OVERLAP=../bin/overlap
-GFF2GFF=../Awk/gff2gff.awk
+GFF2GFF=gff2gff.awk
 
 # If the user does not provide any reference segment file or any nr/distinct RNA element file or any strandedness boolean
 #################################################################################################################

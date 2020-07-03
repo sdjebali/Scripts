@@ -43,7 +43,7 @@ trbase=`basename $tr`
 
 # Programs
 ##########
-GFF2GFF=$rootDir/../Awk/gff2gff.awk
+GFF2GFF=$rootDir/gff2gff.awk
 
 echo "I am making the file of exons with associated transcripts from the annotation" >&2
 awk '$3=="exon"{split($10,a,"\""); split($12,b,"\""); gnlist[$1"?"$4"?"$5"?"$7]=(gnlist[$1"?"$4"?"$5"?"$7])(a[2])(","); trlist[$1"?"$4"?"$5"?"$7]=(trlist[$1"?"$4"?"$5"?"$7])(b[2])(",");}END{for(e in gnlist){split(e,a,"?"); print a[1], "annot", "exon", a[2], a[3], ".", a[4], ".", "gene_ids", "\""gnlist[e]"\"\;", "transcript_ids", "\""trlist[e]"\"\;"}}' $annot | awk -f $GFF2GFF > ${annotbase%.gtf}.distinct.exon.withtrlist.gff 

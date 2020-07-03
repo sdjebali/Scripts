@@ -56,6 +56,8 @@ authors
 # - Made for using on a 64 bit linux architecture
 # - uses awk scripts
 # - uses bedtools
+# - changed a bit on July 3rd 2020 to call awk script at the same level as the bash script
+# - could be made faster by parallelizing the samtools part
 
 # will exit if there is an error or in a pipe
 set -e -o pipefail
@@ -84,9 +86,9 @@ annot=$2
 #############
 ## Set root directory
 path="`dirname \"$0\"`"              # relative path
-rootDir="`( cd \"$path\" && pwd )`"  # absolute path
+rootdir="`( cd \"$path\" && pwd )`"  # absolute path
 
-if [ -z "$rootDir" ] ; 
+if [ -z "$rootdir" ] ; 
 then
   # error; for some reason, the path is not accessible
   # to the script
@@ -94,12 +96,9 @@ then
   exit 1  # fail
 fi
 
-## Set awk scripts directory
-awkDir=$rootDir/../Awk
-
 # PROGRAMS
 ##########
-cutgff=$awkDir/cutgff.awk
+cutgff=$rootdir/cutgff.awk
 
 # START
 ########

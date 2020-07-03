@@ -90,7 +90,7 @@ outdir=$outbase/sumstats
 
 # Programs
 ##########
-ADDQUANT=$rootDir/../R/add_quantile.R
+ADDQUANT=$rootDir/add_quantile.R
 DENSITY1=$rootDir/geom_density_simple.sh
 DENSITY2=$rootDir/geom_density_by_factor.sh
 BARPLOT=$rootDir/barplot.specific.1.sh

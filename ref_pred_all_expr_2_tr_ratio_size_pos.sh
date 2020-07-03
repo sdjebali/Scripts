@@ -76,8 +76,8 @@ fi
 
 # Set variables of programs
 ###########################
-EXPRFILTER=$rootdir/../Awk/exprfilter_annot.awk
-GFFOK=$rootdir/../Awk/make_gff_ok.awk
+EXPRFILTER=$rootdir/exprfilter_annot.awk
+GFFOK=$rootdir/make_gff_ok.awk
 ANALYSE=$rootdir/analyse_transcript_models.sh
 COMPARE=$rootdir/compare_multiple_trsets_wrt_reftrset.sh
 

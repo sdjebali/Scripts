@@ -30,9 +30,9 @@ outdir=$2
 
 # Programs
 ##########
-CUTGFF=$rootDir/../Awk/cutgff.awk 
-GFF2GFF=$rootDir/../Awk/gff2gff.awk
-MAKESP=$rootDir/../bin/makeSP
+CUTGFF=$rootDir/cutgff.awk 
+GFF2GFF=$rootDir/gff2gff.awk
+MAKESP=$rootDir/makeSP
 
 # Call the projected exons of each gene 
 #######################################

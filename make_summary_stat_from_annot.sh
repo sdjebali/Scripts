@@ -59,10 +59,10 @@ b2=${b%.gtf}
 
 # Programs
 ##########
-MAKEOK=$rootDir/../Awk/make_gff_ok.awk
-INTRONS=$rootDir/../Awk/make_introns.awk
-GFF2GFF=$rootDir/../Awk/gff2gff.awk
-BOUNDARIES=$rootDir/../Awk/compute_boundaries.awk
+MAKEOK=$rootDir/make_gff_ok.awk
+INTRONS=$rootDir/make_introns.awk
+GFF2GFF=$rootDir/gff2gff.awk
+BOUNDARIES=$rootDir/compute_boundaries.awk
 STATS=$rootDir/stats.sh
 
 # Make necesary gff files for the stats

@@ -73,9 +73,9 @@ MAKETSS=$rootDir/make_TSS_file_from_annotation_simple.sh
 MAKETTS=$rootDir/make_TTS_file_from_annotation_simple.sh
 MAKESUMMARY=$rootDir/make_summary_stat_from_annot.sh
 REFINECOMPTR=$rootDir/refine_comptr_output.sh
-EXTRACT5P=$rootDir/../Awk/extract_most_5p.awk 
-EXTRACT3P=$rootDir/../Awk/extract_most_3p.awk
-GFF2GFF=$rootDir/../Awk/gff2gff.awk
+EXTRACT5P=$rootDir/extract_most_5p.awk 
+EXTRACT3P=$rootDir/extract_most_3p.awk
+GFF2GFF=$rootDir/gff2gff.awk
 
 
 # Start of the script
