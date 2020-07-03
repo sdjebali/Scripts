@@ -1,30 +1,5 @@
 #!/bin/bash
 
-<<authors
-*****************************************************************************
-	
-	infer_library_type.sh
-	
-	This file is part of the ChimPipe pipeline 
-
-	Copyright (c) 2014 Bernardo Rodríguez-Martín 
-					   Emilio Palumbo 
-					   Sarah djebali 
-	
-	Computational Biology of RNA Processing group
-	Department of Bioinformatics and Genomics
-	Centre for Genomic Regulation (CRG)
-					   
-	Github repository - https://github.com/Chimera-tools/ChimPipe
-	
-	Documentation - https://chimpipe.readthedocs.org/
-
-	Contact - chimpipe.pipeline@gmail.com
-	
-	Licenced under the GNU General Public License 3.0 license.
-******************************************************************************
-authors
-
 # Description
 ##############
 # Takes as input a bam file with a set of mapped reads, a reference gene annotation and infers the sequencing library protocol (Unstranded, Mate2_sense & Mate1_sense) used to generate the rna-seq data. It does it by comparing the mapping strand in 1% of the aligments with the strand of the gene the read maps. Finally it produces three numbers: 
@@ -56,7 +31,7 @@ authors
 # - Made for using on a 64 bit linux architecture
 # - uses awk scripts
 # - uses bedtools
-# - changed a bit on July 3rd 2020 to call awk script at the same level as the bash script
+# - comes from chimpipe but changed a bit on July 3rd 2020 to call awk script at the same level as the bash script
 # - could be made faster by parallelizing the samtools part
 
 # will exit if there is an error or in a pipe
