@@ -1,5 +1,8 @@
 #!/usr/bin/env Rscript
 
+# This script was initially written by Alessandra Breschi at the CRG, Barcelona, Spain
+# Its initial version is at https://github.com/abreschi/Rscripts
+
 options(stringsAsFactors=F)
 
 ##################

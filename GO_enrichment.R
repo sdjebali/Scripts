@@ -1,5 +1,9 @@
 #!/usr/bin/env Rscript
-# used in the senescence project and with R 3.6 on genologin installing in /work2/project/fragencode/.local/R/3.6
+
+# This script was initially written by Alessandra Breschi at the CRG, Barcelona, Spain
+# Its initial version is at https://github.com/abreschi/Rscripts
+
+# Note for self: used in the senescence project and with R 3.6 on genologin installing in /work2/project/fragencode/.local/R/3.6
 
 # -- Variables --
 
@@ -17,7 +21,7 @@ suppressPackageStartupMessages(library("optparse"))
 option_list <- list(
 make_option(c("-u", "--universe"), help="a list of gene identifiers (entrez gene ids), NO header"),
 make_option(c("-G", "--genes"), default="stdin",
-	help="a list of gene identifiers for the foreground (ensEMBL ids), WITHOUT header [default=%default]"),
+	help="a list of gene identifiers for the foreground (entrez gene ids), WITHOUT header [default=%default]"),
 make_option(c("-c", "--categ"), help="choose the GO category < BP | MF | CC > [default=%default]", default="BP"),
 make_option(c("-o", "--output"), help="additional tags for otuput [default=%default]", default="out"),
 make_option(c("-d", "--output_dir"), default="./", help="directory for the output [default=%default]"),
