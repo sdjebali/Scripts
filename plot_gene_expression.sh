@@ -7,7 +7,7 @@
 # - a gene TPM expression tsv file output by the gene-switch rnaseq pipeline (as many columns in header and in body)
 # - a gene read count expression tsv file output by the gene-switch rnaseq pipeline (as many columns in header and in body)
 # - a metadata tsv file with labExpId as a minimum
-# - a factor for colouring the histograms (the palettes are available in Scripts/R/palettes)
+# - a factor for colouring the histograms (the palettes are available in palettes)
 # - an output directory where the plots will be put
 # outputs:
 ##########
@@ -22,10 +22,10 @@
 #########
 # module load system/R-3.6.2
 # tpm=/work/project/fragencode/workspace/geneswitch/results/counts/genes_TPM.tsv
-# cov=/work/project/fragencode/workspace/geneswitch/results/counts/genes_coverage.tsv
+# count=/work/project/fragencode/workspace/geneswitch/results/counts/genes_count.tsv
 # meta=/work/project/fragencode/workspace/geneswitch/analyses/qc_and_first_results/rnaseq.fastq.R1.metadata.tsv
 # outdir=/work/project/fragencode/workspace/geneswitch/analyses/qc_and_first_results/gnexpr/ref
-# time plot_gene_expression.sh $tpm $cov $meta labExpId $outdir 
+# time plot_gene_expression.sh $tpm $count $meta labExpId $outdir 
 # real	0m32.161s
 
 
@@ -50,8 +50,9 @@
 if [ ! -n "$1" ] || [ ! -n "$2" ] || [ ! -n "$3" ] || [ ! -n "$4" ] || [ ! -n "$5" ] 
 then
     echo "" >&2
-    echo Usage: plot_gene_expression.sh genes_TPM.tsv genes_coverage.tsv metadata.tsv labExpId outdir >&2
+    echo Usage: plot_gene_expression.sh genes_TPM.tsv genes_count.tsv metadata.tsv colorfactor outdir >&2
     echo "" >&2
+    echo "where colorfactor is a factor from metadata.tsv which is used for colouring the plot. You can use labExpId" >&2
     echo "Needs R to be installed (tested with version 3.6.2)" >&2
     exit 1
 fi

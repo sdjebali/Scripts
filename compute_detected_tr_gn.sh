@@ -7,8 +7,8 @@
 # - a reference gene annotation file in gtf format (such as the ones provided by ensembl)
 # - a matrix of transcript TPM values in a set of samples (tsv file with header whose columns are transcript_id, gene_id and TPM values in a set of samples)
 # - a matrix of gene TPM values in a set of samples (tsv file with header whose columns are gene_id and TPM values in a set of samples)
-# outputs:
-##########
+# outputs in the current working directory:
+###########################################
 # - a tsv file with header that has:
 ####################################
 #   * 3 rows: one for the header, one for transcripts and one for genes

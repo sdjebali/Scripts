@@ -11,8 +11,8 @@
 # - an optional output directory (otherwise will write in $PWD)
 # outputs:
 ##########
-# - the reference and predicted transcript gff file filtered for TPM above 0.1 in at least 2 samples"
-# - a Plots and a Tables directory with plots and tables about ratios, sizes and positions of transcripts from 4 different sets"
+# - the reference and predicted transcript gff file filtered for TPM above 0.1 in at least 2 samples
+# - a Plots and a Tables directory with plots and tables about ratios, sizes and positions of transcripts from 4 different sets
 #   (ref, ref_expr, string, string_expr) with respect to the reference annotation"
 # - some .err files about the different processing steps"
 
@@ -44,13 +44,15 @@
 if [ ! -n "$1" ] || [ ! -n "$2" ] || [ ! -n "$3" ]
 then
     echo "" >&2
-    echo "Usage: ref_pred_annot2stats_number_size_position.sh ref_annot.gtf pred_annot.gff tr_TPM.tsv <outdir>" &2
+    echo "Usage: ref_pred_all_expr_2_tr_ratio_size_pos.sh ref_annot.gtf pred_annot.gff tr_TPM.tsv outdir" >&2
     echo "" >&2
-    echo where >&2
+    echo "where" >&2
     echo "- ref_annot.gtf and pred_annot.gff are two gtf or gff2 files with at least exons rows and with gene_id and transcript_id in the 9th field" >&2
     echo "- tr_TPM.tsv is a tsv file with header that has transcript id, gene id and then TPM expression in a set of samples" >&2
     echo "- outdir is the optional output directory (default current working directory)" >&2
-    echo "and will write to output directory" >&2
+    echo "and will write in the current working directory" >&2
+    echo "- a tsv file with header that has the number of initial reference transcripts and genes" >&2
+    echo "  as well as those in the expression matrices and those with expression above 0.1 in at least 2 samples" >&2
     echo "- the reference and predicted transcript gff file filtered for TPM above 0.1 in at least 2 samples" >&2
     echo "- a Plots and a Tables directory with plots and tables about ratios, sizes and positions of transcripts from 4 different sets" >&2
     echo "  (ref, ref_expr, string, string_expr) with respect to the reference annotation" >&2
