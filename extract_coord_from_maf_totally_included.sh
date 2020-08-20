@@ -41,27 +41,6 @@
 # - the assembly should be provided below in the assembly variable
 
 
-# Input files
-#############
-# we suppose that there is no strand in the input file and that we do not want to look at the strand
-input=$1
-basetmp=${input%.gff}
-base=${basetmp%.gtf}
-
-# Programs
-##########
-GFF2GFF=~sdjebali/Awk/gff2gff.awk
-OVERLAP=~sdjebali/bin/overlap
-MAKEMULTIPLEMAF=~sdjebali/Awk/make_multiple_maf_out_of_one_maf.awk
-EXTRACTCOORD=~sdjebali/Awk/extract_coord_from_maf.awk 
-
-# Data
-#######
-MAFDIR=/seq/genomes/H.sapiens/golden_path_200902/multiz46way/maf
-assembly=hg19
-# Directory of per chromosome gff files of coordinates of alignments of human present in maf files
-dirmareg=/users/rg/projects/encode/scaling_up/whole_genome/HumanRegWhereMA46species
-
 
 # In case the user does not provide any input file
 ###################################################
@@ -77,6 +56,33 @@ then
     echo "" >&2
     exit 0
 fi
+
+# Set general variables
+#######################
+path="`dirname \"$0\"`" # relative path
+rootdir="`( cd \"$path\" && pwd )`" # absolute path
+
+# Input files
+#############
+# we suppose that there is no strand in the input file and that we do not want to look at the strand
+input=$1
+basetmp=${input%.gff}
+base=${basetmp%.gtf}
+
+# Programs
+##########
+GFF2GFF=$rootdir/gff2gff.awk
+OVERLAP=$rootdir/overlap
+MAKEMULTIPLEMAF=$rootdir/make_multiple_maf_out_of_one_maf.awk
+EXTRACTCOORD=$rootdir/xtract_coord_from_maf.awk 
+
+# Data
+#######
+MAFDIR=/seq/genomes/H.sapiens/golden_path_200902/multiz46way/maf
+assembly=hg19
+# Directory of per chromosome gff files of coordinates of alignments of human present in maf files
+dirmareg=/users/rg/projects/encode/scaling_up/whole_genome/HumanRegWhereMA46species
+
 
 # Creates the MafPrecise and MaReg directories where the script is launched
 ############################################################################

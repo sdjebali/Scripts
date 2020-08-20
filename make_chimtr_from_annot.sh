@@ -48,7 +48,7 @@ then
     echo "Will produce in the working directory:" >&2
     echo "- a single fasta file with n1+n2+n3+n4 chimeric transcripts randomly selected from the gene pairs of the 4 classes" >&2 
     echo "- an Aux directory with some intermediate files" >&2
-    echo "NOTE1: the names of the 4 classes is hard-coded here and has to match what is produced by the script ~sdjebali/Awk/make_gene_pairs_from_annot_better.awk" >&2 
+    echo "NOTE1: the names of the 4 classes is hard-coded here and has to match what is produced by the script make_gene_pairs_from_annot_better.awk" >&2 
     echo "NOTE2: cannot be run twice in the same directory without loosing previous outputs since uses fixed names for outputs" >&2 
     echo "NOTE3: needs gem-retriever to be installed !!!" >&2 
     echo "" >&2
@@ -80,7 +80,7 @@ RETRIEVER=$rootDir/gem-retriever
 
 # Make a file with the name of the 4 categories and the numbers of chimeric transcripts wanted (useful for the loops)
 #####################################################################################################################
-# !!! be careful: the names of the 4 classes have to match what is produced by the script ~sdjebali/Awk/make_gene_pairs_from_annot_better.awk !!!
+# !!! be careful: the names of the 4 classes have to match what is produced by the script make_gene_pairs_from_annot_better.awk !!!
 printf nonoverlap_samechr_samestr_okgxorder"\t"$n1"\n" > gnpaircategory_nbwanted.tsv
 printf nonoverlap_samechr_samestr_kogxorder"\t"$n2"\n" >> gnpaircategory_nbwanted.tsv
 printf nonoverlap_samechr_diffstr"\t"$n3"\n" >> gnpaircategory_nbwanted.tsv
