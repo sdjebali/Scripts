@@ -113,12 +113,18 @@ ELTNB=$rootdir/ref_pred_annot2stats.sh
 
 # 1. Call compute_detected_tr_gn.sh and redirect main output tsv file in a file called detected_transcripts_genes_numbers.tsv
 ##############################################################################################################################
+echo "I am calling compute_detected_tr_gn.sh" >&2
 $TRGNNB $ref $trexpr $gnexpr > detected_transcripts_genes_numbers.tsv
+echo "done" >&2
 
 # 2. Call ref_pred_all_expr_2_tr_ratio_size_pos.sh
 ##################################################
+echo "I am calling ref_pred_all_expr_2_tr_ratio_size_pos.sh" >&2
 $TRPOS $ref $str $trexpr $PWD
+echo "done" >&2
 
 # 3. Call ref_pred_annot2stats.sh and redirect main output tsv file in a file called detected_elements_numbers.tsv
 ###################################################################################################################
+echo "I am calling ref_pred_annot2stats.sh" >&2
 $ELTNB $ref $str $trexpr > detected_elements_numbers.tsv
+echo "done" >&2

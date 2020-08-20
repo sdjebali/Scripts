@@ -220,6 +220,8 @@ awk 'NR>=2{print $1, $2, ((NR-2)<=9 ? "0"(NR-2) : (NR-2))}' $predtrsets | while 
 do
     WORKDIR=`dirname $pred` 
     cd $WORKDIR
+    basetmp=`basename ${pred%.gtf}`
+    base=${basetmp%.gff}
     lid=$no\_$src
     awk -v lid=$lid 'BEGIN{OFS="\t"}{print lid, $1}' exon_length_$base.txt
 done | awk 'BEGIN{OFS="\t"; print "prediction", "exon_length"}{print}' > Plots/ExonLength/prediction_exlg_forggplot.tsv
@@ -354,9 +356,7 @@ echo "I am computing the sensitivity and precision of each prediction set with r
 echo "using three definitions of true positives (Exact, Exact+Extension, Exact+Extension+Inclusion)" >&2
 awk 'NR>=2{print $1, $2}' $predtrsets | while read src pred
 do
-WORKDIR=`dirname $pred` 
-cd $WORKDIR
-basetmp=`basename ${pred%.gtf}`
+basetmp=${pred%.gtf}
 base=${basetmp%.gff}
 tot_ref=`wc -l $refdir/ref_spliced_tr.txt | awk '{print $1}'`
 tp1_ref=`awk '$2=="Exact"{split($3,a,","); k=1; while(a[k]!=""){print a[k]; k++}}' $base\_complete_comp_refinedclass_nbex_intermclass.tsv | sort | uniq | wc -l | awk '{print $1}'`

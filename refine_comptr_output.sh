@@ -98,7 +98,7 @@ ADDCLASS=$rootDir/add_intermclass_andgnlist.awk
 INTER=intersectBed 
 
 # 1. Make gff files of annotated exons, genes and TSS respectively
-###################################################################
+##################################################################
 echo I am making gff files of annotated exons, genes and TSS respectively >&2
 awk '$3=="exon"' $annot | awk -f $MAKEOK | awk -f $GFF2GFF | sort -k12,12 -k4,4n -k5,5n > annot_exons.gff
 awk '$3=="gene"' $annot | awk -f $MAKEOK > annot_genes.gff
@@ -281,8 +281,6 @@ echo done >&2
 echo I am deleting intermediate files >&2
 rm annot_exons.gff annot_genes.gff annot_tr.gff 
 rm $mytrbase\_exons.gff $mytrbase\_introns.gff
-rm $annbase\_capped_sites_nr.gff
-rm $annbase\_capped_sites.gff
 rm trid_nbex.txt
 rm $mytrbase\_vs_annot.tsv
 rm monoex_overlap_igas_trids.txt 
