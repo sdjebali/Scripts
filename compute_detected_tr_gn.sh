@@ -65,17 +65,17 @@ gn=$3
 
 # Set variables of programs and of palettes
 ###########################################
-extract=$rootdir/extract.gtf.tags.sh
+extract=$rootdir/extract.gtf.tags.awk
 
 # Extract the transcript ids from the reference gtf file
 ########################################################
-awk '$3=="exon"' $ref | $extract - transcript_id | sort | uniq > ref_tr_id.txt
+awk '$3=="exon"' $ref | awk -v fld=transcript_id -f $extract | sort | uniq > ref_tr_id.txt
 # ENSSSCT00000000003
 # 49448 (1 fields)
 
 # Extract the gene ids from the reference gtf file
 ##################################################
-awk '$3=="exon"' $ref | $extract - gene_id | sort | uniq > ref_gn_id.txt
+awk '$3=="exon"' $ref | awk -v fld=gene_id -f $extract | sort | uniq > ref_gn_id.txt
 # ENSSSCG00000000002
 # 25880 (1 fields) 
 
