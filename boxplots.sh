@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Eeuxo pipefail
 
 # boxplots.sh
 # make boxplots for values (y) belonging to several categories (x) from an input tsv file with ggplot2 
@@ -50,6 +51,7 @@ fi
 
 echo '
 library(ggplot2)
+sessionInfo()
 theme_set(theme_bw(base_size = 16))
 data = read.delim("'$1'", sep="\t", h=TRUE)
 gp = ggplot(data) + geom_boxplot(aes(y='$3',x=factor('$2'),fill=factor('$2')), varwidth = TRUE, notch=T) + scale_fill_brewer(palette="Set1") 

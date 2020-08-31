@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Eeuxo pipefail
 
 # ref_pred_all_expr_2_tr_ratio_size_pos.sh
 ##########################################

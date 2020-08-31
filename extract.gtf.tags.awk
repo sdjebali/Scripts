@@ -30,9 +30,9 @@
 
 
 $1!~/#/{
-    split($0,a,"\t")
-    split(a[9],b,"; "); 
-    for(i=1;i<=length(b);i++) 
+    split($0,a,"\t");
+    n=split(a[9],b,"; "); 
+    for(i=1;i<=n;i++) 
     {
         split(b[i],c," "); 
         if(c[1]==fld) 

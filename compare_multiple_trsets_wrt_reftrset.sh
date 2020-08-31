@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Eeuxo pipefail
 
 # compare_multiple_trsets_wrt_reftrset.sh
 # script to gather the analysis results of the script analyse_transcript_models.sh in order to generate
@@ -419,7 +420,7 @@ tss=`wc -l $base\_capped_sites.gff | awk '{print $1}'`
 tssnr=`wc -l $base\_capped_sites_nr.gff | awk '{print $1}'`
 tts=`wc -l $base\_tts_sites.gff | awk '{print $1}'`
 ttsnr=`wc -l $base\_tts_sites_nr.gff | awk '{print $1}'`
-echo $b $ntng $tss $tssnr $tts $ttsnr
+echo $src $ntng $tss $tssnr $tts $ttsnr
 done | awk 'BEGIN{OFS="\t"; print "pred_set", "nbtr", "nbgn", "ntss", "ntssnr", "ntts", "nttsnr"}{print $1, $2, $3, $4, $5, $6, $7}' > Tables/prediction_sets_nbstrtr_gn_nbtss_nbtssnr_nbtts_nbttsnr.tsv
 cat Tables/prediction_sets_nbstrtr_gn_nbtss_nbtssnr_nbtts_nbttsnr.tsv >&2
 echo "done" >&2

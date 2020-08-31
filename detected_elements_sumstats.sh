@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Eeuxo pipefail
 
 # detected_elements_sumstats.sh
 ###############################
@@ -28,41 +29,7 @@
 #     where only transcripts with tpm above 0.1 in at least 2 samples were retained
 #   * 14 columns with number and ratios of elements in each of the 4 gene prediction sets
 
-# example
-#########
-# with R 4.0.2 installed and on local machine
-# cd ~/SIB_august2020/analysis/visualisation/detected.elements
-# export PATH=~/SIB_august2020/code/analysis.scripts/:$PATH
-# pgm=~/SIB_august2020/code/analysis.scripts/detected_elements_sumstats.sh 
-# time $pgm ../../../data/references/gencode.v34.annotation.gtf ../../../pipeline/wg.100pcent/assembly/assembly.gff ../../../pipeline/wg.100pcent/quantification/assembly_transcripts_TPM.tsv  ../../../pipeline/wg.100pcent/quantification/assembly_genes_TPM.tsv 2> detected_elements_sumstats.err
-# does not work
-# so put readlink -f $0 and then dirname to find the asbolute path to the script
-# whether it is in the path or not
-# but still does not work
 
-# ../../../data/references/gencode.v34.annotation.gtf
-# ##description: evidence-based annotation of the human genome (GRCh38), version 34 (Ensembl 100)
-# ##provider: GENCODE
-# 4 (2 fields)
-# ...
-# 281 (54 fields)
-
-# ../../../pipeline/wg.100pcent/assembly/assembly.gff
-# # stringtie --merge ctGM12878_bn1.gff ctfibroblastoflung_bn2.gff ctfibroblastoflung_bn1.gff ctGM12878_bn2.gff -G gencode.v34.annotation.gtf -o assembly.gff
-# # StringTie version 2.1.1
-# 1 (4 fields)
-# ...
-# 1078342 (18 fields)
-
-# ../../../pipeline/wg.100pcent/quantification/assembly_transcripts_TPM.tsv
-# transcript	gene	ctfibroblastoflung_bn1	ctfibroblastoflung_bn2	ctGM12878_bn1	ctGM12878_bn2
-# ENST00000000233.10	MSTRG.28133	55.505059619098446	83.61401483223474	50.19195235742341	56.910876733509234
-# 243847 (6 fields)
-
-# ../../../pipeline/wg.100pcent/quantification/reference_genes_TPM.tsv 
-# gene	ctfibroblastoflung_bn1	ctfibroblastoflung_bn2	ctGM12878_bn1	ctGM12878_bn2
-# ENSG00000000005.6	0.0	0.0	0.0	0.0
-# 58598 (5 fields)
 
 
 # check all the inputs are there
