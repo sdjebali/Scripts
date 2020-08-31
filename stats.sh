@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Eeuxo pipefail
 
 awk -v no=$2 '{if(no==""&&$1!="."){print $1} else {if($no!="."){print $no}}}' $1 > /tmp/coucoufromsarah.$$.txt
 echo "l<-scan(\"/tmp/coucoufromsarah."$$".txt\");summary(l); which.max(l);" | R --vanilla  > /tmp/coucoufromsarahout.$$.txt 2> /tmp/coucoufromsaraherr.$$.txt

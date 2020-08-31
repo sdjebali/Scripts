@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Eeuxo pipefail
 
 # make_chimeric_junction_matrix5.sh
 ###################################

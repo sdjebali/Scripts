@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Eeuxo pipefail
 
 # make_chimtr_from_annot.sh
 ###########################

@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Eeuxo pipefail
 
 # ref_pred_annot2stats.sh
 #########################

@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Eeuxo pipefail
 
 # junc_txt_to_canonical.sh
 # Take as input:

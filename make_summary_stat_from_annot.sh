@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Eeuxo pipefail
 
 # make_summary_stat_from_annot.sh
 #################################

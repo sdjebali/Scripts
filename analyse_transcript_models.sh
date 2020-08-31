@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Eeuxo pipefail
 
 # analyse_transcript_models.sh
 # script to make several analyses on a set of transcripts models predicted (usually from rnaseq)

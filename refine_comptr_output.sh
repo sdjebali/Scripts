@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Eeuxo pipefail
 # refine_comptr_output.sh
 # on sept 22nd 2015 make it possible to pass input file with comment
 # on dec 15th 2015 make it possible to have annot and transcript file with gene_id and transcript_id anywhere and to have only exons in predictions

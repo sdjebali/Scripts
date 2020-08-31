@@ -1,4 +1,5 @@
 
+set -Eeuxo pipefail
 # benchmark_chimeric_junction.sh
 # Script that provides several numbers to assess sensitivitu (sn) and precision (pr) of a program that 
 # produces chimeric junctions from rnaseq of a sample with respect to a list of reference junctions known 

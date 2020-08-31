@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Eeuxo pipefail
 
 # add_sense_antisense_read_counts_to_segments_frombam.sh
 # Works for stranded pe rnaseq data.
@@ -81,9 +82,6 @@ else
     outdir=.
 fi
 
-# Will exit if there is an error or in a pipe
-#############################################
-set -e -o pipefail
 
 # Programs
 ##########

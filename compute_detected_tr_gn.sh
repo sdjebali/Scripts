@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Eeuxo pipefail
 
 # compute_detected_tr_gn.sh
 ############################

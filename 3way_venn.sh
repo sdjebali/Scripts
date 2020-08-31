@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Eeuxo pipefail
 
 # 3way_venn.sh accepts 5 inputs
 # - file for 1st set of the venn (string)

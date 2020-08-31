@@ -1,4 +1,5 @@
 
+set -Eeuxo pipefail
 # TrtoGn_RPKM.sh
 # takes as input a gtf file of transcripts produced by the flux capacitor
 # and makes as output a gene gff file with an rpkm value associated to each gene

@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Eeuxo pipefail
 
 
 # compute_gene_rpkm_from_simple_counts.sh

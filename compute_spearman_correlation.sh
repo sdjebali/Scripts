@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Eeuxo pipefail
 
 # compute_spearman_correlation.sh file fld1 fld2
 

@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Eeuxo pipefail
 
 input=$1 
 base=${input%.tex}

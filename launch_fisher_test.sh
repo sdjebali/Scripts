@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Eeuxo pipefail
 # note: when one has a contigency table he should use chi2 test for independence unless
 # the table of expected values contains numbers smaller than 5; in the latter case the test
 # to be used is Fisher exact test. Fisher exact test computes the probability of observing

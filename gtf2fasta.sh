@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Eeuxo pipefail
 
 # gtf2fasta.sh
 # Takes as input an annotation file in gtf format with gene id followed by transcript id in the 9th field

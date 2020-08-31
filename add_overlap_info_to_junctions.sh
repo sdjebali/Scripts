@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Eeuxo pipefail
 
 # add_overlap_info_to_junctions.sh
 # Takes as input

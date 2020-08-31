@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Eeuxo pipefail
 
 
 # make sam file of the reads that map

@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Eeuxo pipefail
 
 # make_TTS_file_from_annotation_simple.sh
 # same as make_TTS_file_from_annotation_with_confidence_better.sh

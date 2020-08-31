@@ -1,4 +1,5 @@
 
+set -Eeuxo pipefail
 # usage
 # save_readme.sh sourcedir savedir
 

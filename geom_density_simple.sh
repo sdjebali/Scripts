@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Eeuxo pipefail
 
 # geom_density_simple.sh (following model of boxplots.sh)
 # Make a simple density plot for a numeric column of a tsv file with a shade inside and a vertical dash line for the mean

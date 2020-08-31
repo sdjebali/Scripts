@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Eeuxo pipefail
 myname=`basename $0`
 usage() { echo "###########################################################################################################
                    $myname: trim fastq paired reads

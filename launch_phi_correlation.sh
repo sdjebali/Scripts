@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Eeuxo pipefail
 
 # usage:
 # launch_phi_correlation.sh na nb nc nd

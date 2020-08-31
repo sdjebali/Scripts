@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Eeuxo pipefail
 
 # Description
 ##############
@@ -33,9 +34,6 @@
 # - uses bedtools
 # - comes from chimpipe but changed a bit on July 3rd 2020 to call awk script at the same level as the bash script
 # - could be made faster by parallelizing the samtools part
-
-# will exit if there is an error or in a pipe
-set -e -o pipefail
 
 # In case the user does not provide any input file, an error message is raised
 ##############################################################################

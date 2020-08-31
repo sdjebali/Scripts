@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Eeuxo pipefail
 
 # find_gene_to_gene_connections_from_pe_rnaseq_fast2.sh
 # Works for pe data, stranded or not.
@@ -105,10 +106,6 @@ fi
 
 path="`dirname \"$0\"`" # relative path
 rootDir="`( cd \"$path\" && pwd )`" # absolute path
-
-# Will exit if there is an error in a pipe
-###########################################
-set -e -o pipefail
 
 # Programs
 ##########

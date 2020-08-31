@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Eeuxo pipefail
 
 # compute_pearson_correlation_inlog_better.sh file fld1 fld2
 
