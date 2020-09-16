@@ -1,4 +1,5 @@
 # add_gninfo_to_promtopromoverlap.awk
+# on Sept 2nd 2020 adding the size of the promoter at the end of the row
 
 # example
 # cd ~/fragencode/workspace/sdjebali/irsd/egprediction/from3D/predictions/capturehic/song.shen.2019/GSM3598048_motor
@@ -67,6 +68,7 @@ END{
     for(j=1; j<=i; j++)
     {
 	p=prom[j];
-	print p, nbgn[p], gnlist[p];
+    split(p,a,":");
+	print p, nbgn[p], gnlist[p], a[3]-a[2];
     }
 }

@@ -18,7 +18,7 @@ set -Eeuxo pipefail
 #########
 # cd ~/fragencode/workspace/sdjebali/irsd/egprediction/from3D/predictions/capturehic/jung.ren.2019/sumstats
 # module load system/R-3.6.1
-# pgm=~/fragencode/tools/multi/Scripts/Bash/geom_density_by_factor.sh
+# pgm=~/fragencode/tools/multi/Scripts/geom_density_by_factor.sh
 # time $pgm dist.score.quantiles.tsv distance score.quantile Distance 0-2000000
 # real	0m39.706s
 

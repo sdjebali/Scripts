@@ -16,7 +16,8 @@ set -Eeuxo pipefail
 
 # TODO:
 # - change the inter fragment distance from middle to middle to 3' end of most 5' to 5' end of most 3'
-
+# - for elt1 and elt2 fragment length (tsv and plot), only take distinct elements, not all, otherwise the same elt is counted several times
+# - make it possible to have plots that are independent of the score (more readable)
 
 # Example (on genologin toulouse)
 #########

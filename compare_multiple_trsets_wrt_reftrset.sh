@@ -555,7 +555,7 @@ echo "done" >&2
 # Make the plot for distance between predicted and reference TSS for exact transcripts
 ######################################################################################
 echo "I am making the plot for distance between predicted and reference TSS for exact transcripts" >&2
-$BOXPLOT Plots/Exact_tr_dist_to_Genc_TSS/prediction_tssdist_forggplot.tsv prediction dist_to_tss "Distance to Gencode TSS (exact tr)" 0 10 Plots/Exact_tr_dist_to_Genc_TSS/prediction_tssdist_forggplot.png
+$BOXPLOT Plots/Exact_tr_dist_to_Genc_TSS/prediction_tssdist_forggplot.tsv prediction dist_to_tss "Distance to reference TSS (exact tr)" 0 10 Plots/Exact_tr_dist_to_Genc_TSS/prediction_tssdist_forggplot.png
 echo "done" >&2
 
 # Clean
