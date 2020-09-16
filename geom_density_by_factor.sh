@@ -16,17 +16,20 @@ set -Eeuxo pipefail
 
 # example
 #########
-# cd ~/fragencode/workspace/sdjebali/irsd/egprediction/from3D/predictions/capturehic/jung.ren.2019/sumstats
-# module load system/R-3.6.1
+# dir=~/regenet/workspace/sdjebali/egprediction/from3D/predictions/capturehic/jung.ren.2019
 # pgm=~/fragencode/tools/multi/Scripts/geom_density_by_factor.sh
-# time $pgm dist.score.quantiles.tsv distance score.quantile Distance 0-2000000
-# real	0m39.706s
+# module load system/R-4.0.2_gcc-7.2.0
+# ct=HCmerge
+# e=elt2A
+# cd $dir/$ct/score2/pall
+# time $pgm $ct.pall.score2.elt2.$e.uniq.lg.nbgn.elt2type.tsv elt2.lg nbgn $e.frag.length "$ct."$e".frag.length" 500-130000
+# real	0m2.151s
 
 # input is like this
 ####################
-# distance	score	quantile_score	quant_index_score	score.quantile
-# 121316	1.65928294258351	(0.557,79.7]	4	4_(0.557,79.7]
-# 6074050 (5 fields)
+# elt2.lg	nbgn
+# 22752	2_morethan2gn
+# 5087 (2 fields)
 
 
 # Check all the obligatory inputs are indeed provided (should also check the input file exists and is not empty and that the ids are fine, for later)
@@ -45,7 +48,7 @@ then
     echo "- the x axis min and max to zoom in" >&2
     echo "" >&2
     echo "produces as output and in the same directory as the input:" >&2
-    echo "- a png file (named after the one word label of the column and to the factor name), with the density plot of this column split according to the factor" >&2
+    echo "- a png file (named after the one word label of the column and the factor name), with the density plot of this column split according to the factor" >&2
     echo "" >&2
     echo "Note: needs reshape2 and ggplot2 libraries to be installed" >&2
     exit 1
@@ -81,6 +84,6 @@ gp = ggplot(data, aes(x='$2', colour='$3')) + geom_density(size=1) + coord_carte
 gp = gp + labs(title = "'$5'", x="'$4'", y="Density") + theme(plot.title = element_text(hjust = 0.5)) + theme(plot.title = element_text(size=24))
 w=8
 h=5
-ggsave(filename="'$4'_by_'$3'.png", h=h, w=w)
+ggsave(filename="'$4'_by_'$3'.density.png", h=h, w=w)
 ' | R --vanilla
 

@@ -2,7 +2,7 @@
 set -Eeuxo pipefail
 
 # geom_histogram_simple.sh (following model of geom_density_simple.sh)
-# Make a simple histogram plot for a numeric column of a tsv file with a shade inside and a vertical dash line for the mean
+# Make a simple histogram plot for a numeric column of a tsv file 
 # - takes as input
 #   * the input tsv file with header, from which the column will be taken, column that must be numeric
 #   * the id of the column we want to plot in the header of the input file
@@ -88,7 +88,7 @@ data = read.delim("'$1'", sep="\t", h=TRUE)
 summary(data$'$2')
 gp = ggplot(data=data, aes(x=data$'$2')) + geom_histogram(breaks=seq('$m', '$M', by='$nbbins'), col="red", fill="green", alpha = .2)
 gp = gp + labs(title="'$5'", x="'$3'", y="Count")
-gp = gp +  xlim(c('$m','$M')) + theme(plot.title = element_text(hjust = 0.5)) + theme(plot.title = element_text(size=24))
+gp = gp +  xlim(c('$m','$M')) + theme(plot.title = element_text(hjust = 0.5, size=24))
 w=5
 h=5
 ggsave(filename="'$3'.png", h=h, w=w)
