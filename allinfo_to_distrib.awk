@@ -131,13 +131,18 @@ NR>=2{
 }
 
 END{
-    print info1, info2, nex, nex/n*100, "1_exonic";
-    print info1, info2, nintr, nintr/n*100, "2_intronic";
-    print info1, info2, ntss, ntss/n*100, "3_tss";
-    print info1, info2, ntss1, ntss1/n*100, "4_tss1kb";
-    print info1, info2, ntss5, ntss5/n*100, "5_tss5kb";
-    print info1, info2, ntts, ntts/n*100, "6_tts";
-    print info1, info2, ntts1, ntts1/n*100, "7_tts1kb";
-    print info1, info2, ntts5, ntts5/n*100, "8_tts5kb";
-    print info1, info2, nig, nig/n*100, "9_intergenic";
+    print info1, info2, nn(nex), nex/n*100, "1_exonic";
+    print info1, info2, nn(nintr), nintr/n*100, "2_intronic";
+    print info1, info2, nn(ntss), ntss/n*100, "3_tss";
+    print info1, info2, nn(ntss1), ntss1/n*100, "4_tss1kb";
+    print info1, info2, nn(ntss5), ntss5/n*100, "5_tss5kb";
+    print info1, info2, nn(ntts), ntts/n*100, "6_tts";
+    print info1, info2, nn(ntts1), ntts1/n*100, "7_tts1kb";
+    print info1, info2, nn(ntts5), ntts5/n*100, "8_tts5kb";
+    print info1, info2, nn(nig), nig/n*100, "9_intergenic";
+}
+
+function nn(x)
+{
+    return ((x=="") ? 0 : x)	
 }
