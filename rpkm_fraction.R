@@ -181,6 +181,6 @@ gp = gp + geom_point(data=prop_df, aes(x,y), shape=18, size=2)
 gp = gp + geom_point(data=prop_df, aes(x,y), shape=18, size=1.7, color='yellow')
 }
 
-ggsave(sprintf("%s.pdf",output), h=5, w=6+add_w, title=output)
+ggsave(sprintf("%s.png",output), h=5, w=6+add_w, title=output)
 
 q(save='no')

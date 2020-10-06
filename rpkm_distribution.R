@@ -221,7 +221,9 @@ gp = gp + theme(axis.text=element_text(size=40/log10(length(df$labels))))
 
 if (opt$no_guide) {gp = gp + theme(legend.position="none")}
 
+gp
 
-pdf(sprintf("%s.pdf", output), w=width, h=height); gp; dev.off()
+ggsave(sprintf("%s.png",output), h=height, w=width, title=output)
+# pdf(sprintf("%s.pdf", output), w=width, h=height); gp; dev.off()
 
 q(save='no')

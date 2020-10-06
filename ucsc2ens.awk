@@ -1,5 +1,6 @@
 # ~/Awk/ucsc2ens.awk
 # works for bed, gff and psl files (and possibly others provided there is no space in a field)
+# !!! but better to always pipe to gff2gff.awk for a gff file !!!
 # on dec 20th 2016 I add the fld param so that the chr name can be anywhere in the file
 # note that for psl and gff files a retabulation might be needed afterwards
 
