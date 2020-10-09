@@ -1,11 +1,12 @@
 # conn2samegnpromelt2.awk
 # Given a bedpe file of prom to elt2 connections, with indication of list of genes of prom in field fld as comma separated list of
-# chr:gbeg:gend:str:geneid:genename, and indication in the last 8 fields of 8 comma separated lists of gene ids (the ones whose exons
-# are overlapped by the elt2, the ones whose introns encompass the elt2, the ones whose tss are overlapped by the elt2, same for tss+-1kb,
-# same for tss+-5kb, and then same for tts), and provides the following summary stats in a single row and separated by tabs
+# chr:gbeg:gend:str:geneid:genename, and indication of several comma separated lists of gene ids in fields provided in fldlist
+# (for example the ones whose exons are overlapped by the elt2, the ones whose introns encompass the elt2, the ones whose tss are
+# overlapped by the elt2, same for tss+-1kb, same for tss+-5kb, and then same for tts), and provides the following summary stats
+# in a single row and separated by tabs
 # - total number of connections in the bedpe file
 # - the number and % of total connections for which at least one gene of the prom gene list is identical to one of the genes where the elt2 lies
-#   (therefore at most 5kb from a gene)
+#   (therefore at most 5kb from a gene if we consider the 8 traditional gx categories provided by gx distribution script)
 
 # example
 # dir=~/regenet/workspace/sdjebali/egprediction/from3D/predictions/capturehic/jung.ren.2019
@@ -27,7 +28,9 @@
 
 
 BEGIN{
-    OFS="\t"
+    OFS="\t";
+    # get the fields of the input file where the gene lists associated to the elt2 are located
+    n=split(fldlist,f,",");
 }
 
 {
@@ -39,11 +42,11 @@ BEGIN{
     {
 	split(a[k],a1,":");   # a1[5] should be the current gene id of the prom
 	i=1;
-	while(ok==0&&i<=8)   # going over each type of gx overlap between the elt2 and the genome (exon, intron, ..., tts+-5kb), located in field $(NF-8+i)
+	while(ok==0&&i<=n)   # going over each type of gx overlap between the elt2 and the genome (exon, intron, ..., tts+-5kb or fewer), located in field f[i]
 	{
-	    split($(NF-8+i),b,",");
+	    split($(f[i]),b,",");
 	    j=1;
-	    while(ok==0&&b[j]!="")   # going over the list of genes of the field $(NF-8+i), the current gene id being in b[j]
+	    while(ok==0&&b[j]!="")   # going over the list of genes of the field f[i], the current gene id being in b[j]
 	    {
 		if(a1[5]==b[j])
 		{
