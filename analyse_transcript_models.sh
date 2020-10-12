@@ -85,17 +85,17 @@ GFF2GFF=$rootDir/gff2gff.awk
 # Make the TSS, nrTSS, TTS, nrTTS files for the annotation where the annotation is if they are not already present there
 ########################################################################################################################
 echo "Making TSS from annotated transcripts if not already present where the annotation is" >&2
-if [ ! -f $anntss ] || [ ! -f $annrtss ] 
+if [ ! -e $anntss ] || [ ! -e $annrtss ] 
 then  
 $MAKETSS $annot
-mv $annotbase\_capped_sites.gff $annotbase\_capped_sites_nr.gff $annotdir
+# mv $annotbase\_capped_sites.gff $annotbase\_capped_sites_nr.gff $annotdir
 fi
 echo "done" >&2
 echo "Making TTS from annotated transcripts if not already present where the annotation is" >&2
-if [ ! -f $anntts ] || [ ! -f $annrtts ]
+if [ ! -e $anntts ] || [ ! -e $annrtts ]
 then 
 $MAKETTS $annot
-mv $annotbase\_tts_sites.gff $annotbase\_tts_sites_nr.gff $annotdir
+# mv $annotbase\_tts_sites.gff $annotbase\_tts_sites_nr.gff $annotdir
 fi
 echo "done" >&2
 
