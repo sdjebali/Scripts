@@ -49,7 +49,7 @@ set -Eeuxo pipefail
 # it uses several programs that need to be present on the system
 # - comptr
 # - overlap
-# - make_tss...
+# - bedtools
 
 # Be careful: 
 #############
@@ -90,8 +90,8 @@ MAKEOK=$rootDir/make_gff_ok.awk
 BOUNDARIES=$rootDir/compute_boundaries.awk
 MAKETSS=$rootDir/make_TSS_file_from_annotation_simple.sh
 MAKESUM=$rootDir/make_summary_stat_from_annot.sh
-COMPTR=$rootDir/comptr
-OVERLAP=$rootDir/overlap
+COMPTR=comptr
+OVERLAP=overlap
 GFF2GFF=$rootDir/gff2gff.awk
 MAKEINTRONS=$rootDir/make_introns.awk
 GTF2BED=$rootDir/gtf2bed.awk
