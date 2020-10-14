@@ -2,12 +2,11 @@
 set -Eexo pipefail
 
 # analyse_transcript_models.sh
-# script to make several analyses on a set of transcripts models predicted (usually from rnaseq)
+# script to make several analyses on a set of predicted transcripts models (usually from rnaseq)
 # and produce several files that can then be used by the script compare_multiple_trsets_wrt_reftrset.sh
 # to generate a comparison of several sets of predicted transcript models with respect to a given reference
 # (or set of transcripts that we expect to find (usually in the rnaseq sample in question))
-# this script is expected to use a lot of resources such as many tens of G of ram and also time
-# so it is better to launch it on a cluster
+# this script is expected to use a lot of resources so it is better to launch it on a cluster
 
 # on Dec 15th 2016 changed the _ delimitor by _ in order to accept ncbi annotation
 # on March 27th 2020 changed the file _nbex.tsv into _nbex_intermclass.tsv due to change in refine_comptr script
@@ -47,8 +46,8 @@ then
     echo "- a set of intermediate files to be used by another script that will gather info from many predictions" >&2
     echo "  and then make plots and tables to be used in a presentation (odp, ppt or latex)" >&2
     echo "" >&2
-    echo "Note: since this script needs many tens of Gigabytes of ram and also some time (not parallelized though), it is better to use a cluster to run it" >&2
-    echo "Note: Needs bedtools, comptr and overlap to be installed" >&2
+    echo "Note: since this script needs quite some time (not parallelized though), so it is better to use a cluster to run it" >&2
+    echo "Note: Requires bedtools" >&2
     exit 1
 fi
 
