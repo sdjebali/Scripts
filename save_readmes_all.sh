@@ -1,4 +1,4 @@
-set -Eeuxo pipefail
+set -Eexo pipefail
 
 /work2/project/fragencode/tools/multi/Scripts/save_readmes.sh /work2/project/fragencode/workspace/sdjebali ~/save/READMEs/READMEs_frag
 /work2/project/fragencode/tools/multi/Scripts/save_readmes.sh /work2/project/regenet/workspace/sdjebali ~/save/READMEs/READMEs_regenet

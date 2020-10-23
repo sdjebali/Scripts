@@ -1,5 +1,5 @@
 #!/bin/bash
-set -Eeuxo pipefail
+set -Eexo pipefail
 
 # barplot.specific.1.sh
 # This is to make a barplot from two columns of a tsv file, for two types of elements (for example defined by vertex.type)

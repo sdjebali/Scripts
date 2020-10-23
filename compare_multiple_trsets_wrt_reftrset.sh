@@ -1,5 +1,5 @@
 #!/bin/bash
-set -Eeuxo pipefail
+set -Eexo pipefail
 
 # compare_multiple_trsets_wrt_reftrset.sh
 # script to gather the analysis results of the script analyse_transcript_models.sh in order to generate

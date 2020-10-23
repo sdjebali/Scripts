@@ -1,5 +1,5 @@
 #!/bin/bash
-set -Eeuxo pipefail
+set -Eexo pipefail
 
 # usage:
 # compute_wilcox_test.sh file field1 field2 

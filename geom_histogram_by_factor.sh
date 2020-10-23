@@ -1,5 +1,5 @@
 #!/bin/bash
-set -Eeuxo pipefail
+set -Eexo pipefail
 
 # geom_histogram_by_factor.sh (following model of geom_density_by_factor.sh)
 # Make histogram plot for a numeric column of a tsv file but splitting the data by a factor provided as another column in the tsv file

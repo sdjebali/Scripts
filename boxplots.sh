@@ -1,5 +1,5 @@
 #!/bin/bash
-set -Eeuxo pipefail
+set -Eexo pipefail
 
 # boxplots.sh
 # make boxplots for values (y) belonging to several categories (x) from an input tsv file with ggplot2 

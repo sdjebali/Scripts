@@ -1,5 +1,5 @@
 #!/bin/bash
-set -Eeuxo pipefail
+set -Eexo pipefail
 
 # make_projected_exons_per_gene.sh
 # this script takes as input an annotation gff file with gene_id in column no 10 and transcript_id in column no 12

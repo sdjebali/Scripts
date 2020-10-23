@@ -1,5 +1,5 @@
 #!/bin/bash
-set -Eeuxo pipefail
+set -Eexo pipefail
 
 # add_sense_antisense_read_counts_to_segments_frombam.sh
 # Works for stranded pe rnaseq data.

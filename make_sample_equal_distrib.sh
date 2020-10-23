@@ -1,5 +1,5 @@
 #!/bin/bash
-set -Eeuxo pipefail
+set -Eexo pipefail
 
 # make_sample_equal_distrib.sh
 # takes a set of elements associated to a class and a value and returns a sample of those elements where the distribution of values 

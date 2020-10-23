@@ -1,5 +1,5 @@
 
-set -Eeuxo pipefail
+set -Eexo pipefail
 # ~sdjebali/bin/fastq_fromtgz_togz.sh
 
 # usage

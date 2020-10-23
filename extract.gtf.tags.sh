@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -Eeuxo pipefail
+set -Eexo pipefail
 
 file=$1
 select=$2

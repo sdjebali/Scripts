@@ -1,5 +1,5 @@
 #!/bin/bash
-set -Eeuxo pipefail
+set -Eexo pipefail
 myname=`basename $0`
 FEATURES=( gene exon transcript CDS UTR UTR5 UTR3 utr utr5 utr3 five_prime_utr three_prime_utr intron noncoding non_coding non-coding miRNA snoRNA ncRNA lncRNA tRNA mRNA rRNA protein);
 usage() { echo "#############################################################################################################################

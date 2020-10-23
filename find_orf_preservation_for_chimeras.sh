@@ -1,5 +1,5 @@
 #!/bin/bash
-set -Eeuxo pipefail
+set -Eexo pipefail
 
 # find_orf_preservation_for_chimeras.sh
 # takes as input 4 mandatory arguments:

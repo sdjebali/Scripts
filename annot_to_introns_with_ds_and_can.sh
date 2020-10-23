@@ -1,5 +1,5 @@
 #!/bin/bash
-set -Eeuxo pipefail
+set -Eexo pipefail
 # annot_to_introns_with_ds_and_can.sh
 ######################################
 # !!! can be generalized easily to any kind of junction since duplseq_gal exists !!!

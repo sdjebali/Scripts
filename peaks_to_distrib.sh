@@ -1,5 +1,5 @@
 #!/bin/bash
-set -Eeuxo pipefail
+set -Eexo pipefail
 # /work2/project/fragencode/tools/peaks_to_distrib.sh
 
 # usage

@@ -1,5 +1,5 @@
 #!/bin/bash
-set -Eeuxo pipefail
+set -Eexo pipefail
 
 # make_hist_rna_in_ref_better_until_gff.sh 
 ###########################################

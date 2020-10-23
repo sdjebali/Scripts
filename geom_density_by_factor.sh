@@ -1,5 +1,5 @@
 #!/bin/bash
-set -Eeuxo pipefail
+set -Eexo pipefail
 
 # geom_density_by_factor.sh
 # Make density plot for a column in a tsv file but splitting the data by a factor provided as another column in the tsv file

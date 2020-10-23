@@ -1,5 +1,5 @@
 #!/bin/bash
-set -Eeuxo pipefail
+set -Eexo pipefail
 
 # make_barplot_double.sh 
 # makes a barplot with two bars, taking a file where column number $2 is the x axis names,

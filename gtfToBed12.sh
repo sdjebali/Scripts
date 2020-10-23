@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -Eeuxo pipefail
+set -Eexo pipefail
 
 if [ $# != 1 ]; then
 	echo "From a complete gtf file, generates a GenePred and a bed12 file."

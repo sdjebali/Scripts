@@ -1,5 +1,5 @@
 
-set -Eeuxo pipefail
+set -Eexo pipefail
 # TrtoEx_RPKM.sh
 # takes as input a gtf file of transcripts produced by the flux capacitor
 # and makes as output an exon gff file with an rpkm value associated to each exon

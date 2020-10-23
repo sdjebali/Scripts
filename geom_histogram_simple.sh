@@ -1,5 +1,5 @@
 #!/bin/bash
-set -Eeuxo pipefail
+set -Eexo pipefail
 
 # geom_histogram_simple.sh (following model of geom_density_simple.sh)
 # Make a simple histogram plot for a numeric column of a tsv file 

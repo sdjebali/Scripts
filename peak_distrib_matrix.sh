@@ -1,5 +1,5 @@
 #!/bin/bash
-set -Eeuxo pipefail
+set -Eexo pipefail
 # added strand option on dec 20th 2017 and tested on bos taurus atacseq peaks and ref gene annot without strand
 # added possibility to write transcript id instead of gene in final matrix on jan 11th 2018 and tested on bos taurus polya site clusters
 # and ref gene annot with strand, and gene or transcript or match as element (I did not really check the transcript info was ok

@@ -1,5 +1,5 @@
 #!/bin/bash
-set -Eeuxo pipefail
+set -Eexo pipefail
 
 # find_retained_introns.sh
 # takes as input an annotation file in gff2 or gtf format with at least exon rows and with gene_id and transcript_id information

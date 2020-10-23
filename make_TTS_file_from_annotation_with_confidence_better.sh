@@ -1,5 +1,5 @@
 #!/bin/bash
-set -Eeuxo pipefail
+set -Eexo pipefail
 
 # make_TTS_file_from_annotation_with_confidence_better.sh
 # improved on 06/05/2012 replacing i++ by i+=2 when looking for tr biotype in step1

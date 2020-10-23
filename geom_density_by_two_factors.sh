@@ -1,5 +1,5 @@
 #!/bin/bash
-set -Eeuxo pipefail
+set -Eexo pipefail
 
 # geom_density_by_two_factors.sh
 # Make a density plot for a numeric column of a tsv file according to two factors (for example type of element and score quantile)

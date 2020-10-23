@@ -1,5 +1,5 @@
 #!/bin/bash
-set -Eeuxo pipefail
+set -Eexo pipefail
 
 # usage
 # fastq_sample.sh R1.fastq.gz R2.fastq.gz pcent

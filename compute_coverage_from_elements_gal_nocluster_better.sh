@@ -1,5 +1,5 @@
 #!/bin/bash
-set -Eeuxo pipefail
+set -Eexo pipefail
 
 # compute_coverage_from_elements_gal_nocluster_better.sh
 # same as ~/bin/compute_coverage_from_elements_gal_nocluster.sh except that the projex and projgn bed files

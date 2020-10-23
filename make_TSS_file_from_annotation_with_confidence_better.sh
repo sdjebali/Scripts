@@ -1,5 +1,5 @@
 #!/bin/bash
-set -Eeuxo pipefail
+set -Eexo pipefail
 
 #make_TSS_file_from_annotation_with_confidence_better.sh
 # this script takes as input:
