@@ -54,17 +54,25 @@ fi
 outdir=`dirname $1`
 cd $outdir
 
-# Set the min and max for the plot in case proper integers are given
-#####################################################################
+# Set the min and max for the plot in case proper numbers (integers or floats) are provided
+###########################################################################################
 mM=$4
 arg41=`echo $mM | awk '{split($1,a,"-"); print a[1]}'`
 arg42=`echo $mM | awk '{split($1,a,"-"); print a[2]}'`
-if [[ "$arg41" =~ ^[0-9]+$ ]] && [[ "$arg42" =~ ^[0-9]+$ ]] 
+# test the min score
+if [[ $arg41 =~ ^[+-]?[0-9]*$ ]] || [[ $arg41 =~ ^[+-]?[0-9]+\.?[0-9]*$ ]]
 then
     m=$arg41
+else
+    echo "min score value should be a proper number" >&2
+    exit 1
+fi
+# test the max score
+if [[ $arg42 =~ ^[+-]?[0-9]*$ ]] || [[ $arg42 =~ ^[+-]?[0-9]+\.?[0-9]*$ ]]
+then
     M=$arg42
 else
-    echo "min and max values for the column to be plotted should be proper integers and be provided separated by a dash on the command line" >&2
+    echo "max score value should be a proper number" >&2
     exit 1
 fi
 
