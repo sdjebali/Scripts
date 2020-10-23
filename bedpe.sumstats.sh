@@ -69,6 +69,7 @@ then
     echo "- several tsv or tsv.gz files that represent summary statistics tables and that are supposed to complete the messages from the plots" >&2
     echo "" >&2
     echo "Note1:" >&2 
+    echo "- This script needs R with ggplot2 and optparse libraries" >&2
     echo "- This script writes files with fixed names and therefore should not be run twice in the same directory for different inputs" >&2
     echo "- It will also not work if some gzipped files from a previous run were made so erase the sumstats dir before running it" >&2
     echo "Note2:" >&2 
@@ -97,6 +98,7 @@ DENSITY1=$rootDir/geom_density_simple.sh
 DENSITY2=$rootDir/geom_density_by_factor.sh
 BARPLOT=$rootDir/barplot.specific.1.sh
 DENSITY3=$rootDir/geom_density_by_two_factors.sh
+STATS=$rootDir/stats.sh
 
 # 0. Create the output directory and go there
 #############################################
@@ -169,7 +171,7 @@ $DENSITY3 refelt.scorequantile.fraglength.tsv frag.length refelt score.quantile 
 
 # c. make a tsv file to see the complete distrib (not truncated like here)
 ###########################################################################
-for i in $(seq 1 4); do for e in elt1 elt2; do awk -v i=$i -v e=$e '$1==e&&$2==i{print $3}' refelt.scorequantile.fraglength.tsv > tmp; stats.sh tmp | awk -v i=$i -v e=$e 'BEGIN{OFS="\t"} NR==1{tot=$3}NR==3{print i, e, tot, $2, $3, $4, $5, $6, $7}' ; done; done > scorequantile.refelt.nb.fraglength.distrib.tsv 
+for i in $(seq 1 4); do for e in elt1 elt2; do awk -v i=$i -v e=$e '$1==e&&$2==i{print $3}' refelt.scorequantile.fraglength.tsv > tmp; $STATS tmp | awk -v i=$i -v e=$e 'BEGIN{OFS="\t"} NR==1{tot=$3}NR==3{print i, e, tot, $2, $3, $4, $5, $6, $7}' ; done; done > scorequantile.refelt.nb.fraglength.distrib.tsv 
 # 1	elt1	6074049	582	7285	10764	12318	15627	122914
 # 1	elt2	6074049	321	3968	5150	6340	7125	1664250
 # 8 (9 fields)  *** exact same file as when doing step by step
