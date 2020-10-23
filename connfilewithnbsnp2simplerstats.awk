@@ -18,7 +18,7 @@
 # filt=all
 # ct=HCmerge
 # obj=promelt2
-# pgm=~/fragencode/tools/multi/Scripts/connfilewithsnp2stats.awk
+# pgm=~/tools/multi/Scripts/connfilewithnbsnp2simplerstats.awk
 # cd $outdir/$ct
 # time awk -v ct=$ct -v obj=$obj -v fldno1=$((fldno-2)) -v fldno2=$((fldno-1)) -v fldnotot=$fldno -f $pgm $ct.pall.score2.ens.$obj.prom.elt2.list.nb.sclist.prom.elt2.cumullength.sum.dist.min.max.elt2equprom.$filt\postqcsnp.nb1.nb2.nb3.0kb.10kb.100kb.tsv
 
@@ -30,7 +30,7 @@
 
 
 {
-    n++;
+    tot++;
     if($fldnotot==0)
     {
 	nb0++;
@@ -74,7 +74,7 @@
 
 END{
     OFS="\t";
-    print ct"\t"obj"\t"n("\t")(nn(nb0))("\t")(nb0/n*100)("\t")(nn(nb1))("\t")(nb1/n*100)("\t")(nn(nb21))("\t")(nb21/n*100)("\t")(nn(nb31))("\t")(nb31/n*100)("\t")(nn(nb22))("\t")(nb22/n*100)("\t")(nn(nb32))("\t")(nb32/n*100);
+    print ct"\t"obj"\t"tot"\t"(nn(nb0))("\t")(nb0/tot*100)("\t")(nn(nb1))("\t")(nb1/tot*100)("\t")(nn(nb21))("\t")(nb21/tot*100)("\t")(nn(nb31))("\t")(nb31/tot*100)("\t")(nn(nb22))("\t")(nb22/tot*100)("\t")(nn(nb32))("\t")(nb32/tot*100);
 }
 
 function nn(x){
