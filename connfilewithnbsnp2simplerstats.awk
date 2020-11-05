@@ -21,6 +21,7 @@
 # pgm=~/tools/multi/Scripts/connfilewithnbsnp2simplerstats.awk
 # cd $outdir/$ct
 # time awk -v ct=$ct -v obj=$obj -v fldno1=$((fldno-2)) -v fldno2=$((fldno-1)) -v fldnotot=$fldno -f $pgm $ct.pall.score2.ens.$obj.prom.elt2.list.nb.sclist.prom.elt2.cumullength.sum.dist.min.max.elt2equprom.$filt\postqcsnp.nb1.nb2.nb3.0kb.10kb.100kb.tsv
+# real	0m0.153s
 
 # input is like this
 # 1:1183838:1209657	1	1:1491937:1496017	1	2.18497234006452,	25819	4080	29899	282280	282280	NA	56	4	60	121	53	174	665	212	877
@@ -28,6 +29,9 @@
 # 64514 (20 fields)  *** 11 first fields = promlist, nbprom, elt2list, nbelt2, scorelist, promlistcumullength, elt2listcumullength, sumofthetwo, mindist, maxdist, listofelt2equaltoprom
 #                    *** 9 next fields = nbsnpinprom, nbsnpinelt2, nbsnpinboth at 0kb extension and then the same for 10kb extension and for 100kb extension
 
+# output is like this
+# HCmerge	promelt2	64514	4058	6.29011	19	0.029451	18	0.0279009	437	0.677372	10	0.0155005	59972	92.9597
+# majority has more than 3 and at least one on each side
 
 {
     tot++;
