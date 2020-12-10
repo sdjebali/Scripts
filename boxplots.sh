@@ -45,7 +45,7 @@ then
     echo "produces as output:" >&2
     echo "- the file specified as the last argument with as many boxplots as categories for x and with the values indicated in y" >&2
     echo "" >&2
-    echo "Note1: needs reshape2 and ggplot2 libraries to be installed" >&2
+    echo "Note1: needs ggplot2 libraries to be installed" >&2
     echo "Note2: in order to have the boxplots in a given order one can number the different sets for which we want boxplots" >&2
     exit 1
 fi
