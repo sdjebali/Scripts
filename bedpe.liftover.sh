@@ -22,7 +22,36 @@ set -Eexo pipefail
 # pgm=/work2/project/fragencode/tools/multi/Sccripts/bedpe.liftover.sh
 # map=/work2/project/fragencode/data/species/homo_sapiens/liftover/hg19ToHg38.over.chain.gz
 # module load bioinfo/kentUtils-v370
-# time $pgm HCmerge.pall.score2.gninfo.elt2info.bedpe.gz $map hg19 GRCh38 > bedpe.liftover.out 2> bedpe.liftover.err
+# /usr/bin/time -v $pgm HCmerge.pall.score2.gninfo.elt2info.bedpe.gz $map hg19 GRCh38 > bedpe.liftover.out 2> bedpe.liftover.err
+# User time (seconds): 2.78
+# 	System time (seconds): 0.14
+# 	Percent of CPU this job got: 119%
+# 	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:02.46
+# 	Average shared text size (kbytes): 0
+# 	Average unshared data size (kbytes): 0
+# 	Average stack size (kbytes): 0
+# 	Average total size (kbytes): 0
+# 	Maximum resident set size (kbytes): 13764
+# 	Average resident set size (kbytes): 0
+# 	Major (requiring I/O) page faults: 0
+# 	Minor (reclaiming a frame) page faults: 14994
+# 	Voluntary context switches: 9702
+# 	Involuntary context switches: 33
+# 	Swaps: 0
+# 	File system inputs: 0
+# 	File system outputs: 13584
+# 	Socket messages sent: 0
+# 	Socket messages received: 0
+# 	Signals delivered: 0
+# 	Page size (bytes): 4096
+# 	Exit status: 0
+# Elements with smaller, bigger and equal length after liftover
+# 55728	381	0.683678	286	0.513207	55061	98.8031
+# Absolute difference between target and initial element length for smaller lengths and bigger lengths non equal to 0
+# 55728	258807	4.64411	5977	0.107253
+# Number of initial and lifted over pairs and percent of the second over the first
+# 64514	64438	99.8822
+
 
 # Note: was initially done for HCmerge promoter capture hic data from Jung et al, 2019 but without taking strand into account
 
@@ -58,18 +87,18 @@ base=`basename ${bedpe%.bedpe.gz}`
 # chr1	1183838	1209657	chr1	1491937	1496017	chr1:1183838:1209657,chr1:1491937:1496017	2.18497234006452	.	.	po	22511	4859	6	297230	2.0085	2.9873	1.0369	1.9571	1	chr1:1189288:1209265:-:ENSG00000160087.16:UBE2J2,	0	NA	elt2A	282280	NA	ENSG00000160075.10,	NA	NA	NA	NA	NA	ENSG00000160075.10,
 # 64514 (33 fields)
 echo "I am making a bed file of unique elements from the bedpe input file but remembering the element coordinates" >&2
-zcat $bedpe | awk 'BEGIN{OFS="\t"} {str1=(($9=="+"||$9=="-") ? $9 : ""); str2=(($10=="+"||$10=="-") ? $10 : ""); print $1, $2, $3, $1":"$2":"$3":"str1, ".", str1; print $4, $5, $6, $4":"$5":"$6":"str2, ".", str2}' | sort -V -k1,1 -k2,2n -k3,3n | uniq > $base.elt1.elt2.named.uniq.bed
-# chr1 1183838 1209657 chr1:1183838:1209657
-# 55768 (4 fields)
+zcat $bedpe | awk 'BEGIN{OFS="\t"} {str1=(($9=="+"||$9=="-") ? $9 : "."); str2=(($10=="+"||$10=="-") ? $10 : "."); print $1, $2, $3, $1":"$2":"$3":"str1, ".", str1; print $4, $5, $6, $4":"$5":"$6":"str2, ".", str2}' | sort -V -k1,1 -k2,2n -k3,3n | uniq > $base.elt1.elt2.named.uniq.bed
+# chr1	1183838	1209657	chr1:1183838:1209657:.	.	.
+# 55768 (6 fields)
 echo "done" >&2
 
 # 2) Lift this bed file over to the target genome assembly and make some stats about the liftover quality
 #########################################################################################################
 # liftOver oldFile map.chain newFile unMapped
 echo "I am lifting this bed file over to the target genome assembly and make some stats about the liftover quality" >&2
-liftOver $base.elt1.elt2.named.uniq.bed $map $base.elt1.elt2.named.uniq.$assemb2.bed $base.elt1.elt2.named.uniq.unmapped.to.$assembl2.bed 
-# chr1	1248458	1274277	chr1:1183838:1209657
-# 55728 (4 fields) 
+liftOver $base.elt1.elt2.named.uniq.bed $map $base.elt1.elt2.named.uniq.$assemb2.bed $base.elt1.elt2.named.uniq.unmapped.to.$assemb2.bed 
+# chr1	1248458	1274277	chr1:1183838:1209657:.	.	.
+# 55728 (6 fields)
 # how many segments with a smaller length? the same length? a bigger length?
 echo "Elements with smaller, bigger and equal length after liftover"
 awk '{tot++; split($4,a,":"); sz1=$3-$2; sz2=a[3]-a[2]; if(sz2<sz1){less++}else{if(sz2>sz1){more++}else{same++}}} END{OFS="\t"; print tot, less, less/tot*100, more, more/tot*100, same, same/tot*100}' $base.elt1.elt2.named.uniq.$assemb2.bed
@@ -85,8 +114,8 @@ echo "done" >&2
 # chr1	1183838	1209657	chr1	1491937	1496017	chr1:1183838:1209657,chr1:1491937:1496017	2.18497234006452	.	.	po	22511	4859	6	297230	2.0085	2.9873	1.0369	1.9571	1	chr1:1189288:1209265:-:ENSG00000160087.16:UBE2J2,	0	NA	elt2A	282280	NA	ENSG00000160075.10,	NA	NA	NA	NA	NA	ENSG00000160075.10,
 # 64514 (33 fields) 
 echo "I am making a bedpe file from the lifted over bed file and deriving some statistics about the liftover" >&2
-zcat $bedpe | awk -v fileRef=$base.elt1.elt2.named.uniq.$assemb2.bed 'BEGIN{OFS="\t"; while (getline < fileRef >0){coord[$4]=$1":"$2":"$3":"$6}} {c1=coord[$1":"$2":"$3":"$9]; c2=coord[$4":"$5":"$6":"$10]; if((c1!="")&&(c2!="")){split(c1,a,":"); split(c2,b,":"); s=$8"\t"((c1[4]=="+"||c1[4]=="-") ? c1[4] : ".")\t((c2[4]=="+"||c2[4]=="-") ? c2[4] : ".")"\t"; for(i=11; i<=NF; i++){s=(s)($i)("\t")} s=(s)($1":"$2":"$3":"$9","$4":"$5":"$6":"$10); print a[1], a[2], a[3], b[1], b[2], b[3], c1","c2, s}}' > $base.$assemb2.bedpe
-# chr1	1248458	1274277	chr1	1556557	1560637	chr1:1248458:1274277,chr1:1556557:1560637	2.18497234006452	.	.	po	22511	4859	6	297230	2.0085	2.9873	1.0369	1.9571	1	chr1:1189288:1209265:-:ENSG00000160087.16:UBE2J2,	0	NA	elt2A	282280	NA	ENSG00000160075.10,	NA	NA	NA	NA	NA	ENSG00000160075.10,	chr1:1183838:1209657,chr1:1491937:1496017
+zcat $bedpe | awk -v fileRef=$base.elt1.elt2.named.uniq.$assemb2.bed 'BEGIN{OFS="\t"; while (getline < fileRef >0){coord[$4]=$1":"$2":"$3":"$6}} {c1=coord[$1":"$2":"$3":"$9]; c2=coord[$4":"$5":"$6":"$10]; if((c1!="")&&(c2!="")){split(c1,a,":"); split(c2,b,":"); s=$8"\t"((a[4]=="+"||a[4]=="-") ? a[4] : ".")"\t"((b[4]=="+"||b[4]=="-") ? b[4] : ".")"\t"; for(i=11; i<=NF; i++){s=(s)($i)("\t")} s=(s)($1":"$2":"$3":"$9","$4":"$5":"$6":"$10); print a[1], a[2], a[3], b[1], b[2], b[3], c1","c2, s}}' > $base.$assemb2.bedpe
+# chr1	1248458	1274277	chr1	1556557	1560637	chr1:1248458:1274277:.,chr1:1556557:1560637:.	2.18497234006452	.	.	po	22511	4859	6	297230	2.0085	2.9873	1.0369	1.9571	1	chr1:1189288:1209265:-:ENSG00000160087.16:UBE2J2,	0	NA	elt2A	282280	NA	ENSG00000160075.10,	NA	NA	NA	NA	NA	ENSG00000160075.10,	chr1:1183838:1209657:.,chr1:1491937:1496017:.
 # 64438 (34 fields)
 # how many element pairs are lifted over and what is the proportion over the initial nb of pairs ?
 echo "Number of initial and lifted over pairs and percent of the second over the first"
