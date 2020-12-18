@@ -55,8 +55,9 @@ set -Eexo pipefail
 
 # Note: was initially done for HCmerge promoter capture hic data from Jung et al, 2019 but without taking strand into account
 
-
-if [ ! -n "$1" ] && [ ! -n "$2" ] && [ ! -n "$3" ] && [ ! -n "$4" ]
+# Check the parameters are fine otherwise exits
+###############################################
+if [ ! -n "$1" ] || [ ! -n "$2" ] || [ ! -n "$3" ] || [ ! -n "$4" ]
 then
     echo "" >&2
     echo "Usage: bedpe.liftover.sh file.bedpe.gz map.file init.assembly.id target.assembly.id > stats.out 2> liftover.err" >&2
