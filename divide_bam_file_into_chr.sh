@@ -59,25 +59,25 @@ fi
 path="`dirname \"$0\"`" # relative path to exec
 rootDir="`( cd \"$path\" && pwd )`" # absolute path to exec
 bamfile=$1
-base1=${bamfile%.bam}
-base2=`basename $base1`
+basetmp=${bamfile%.bam}
+base=`basename $basetmp`
 
 # 1. Sort the bam file
 ######################
 echo "I am sorting the bam file" >&2 
-samtools sort $bamfile > $base1.sorted.bam
+samtools sort $bamfile > $base.sorted.bam
 echo "done" >&2 
 
 # 2. Index the sorted bam file
 ##############################
 echo "I am sorting the bam file" >&2 
-samtools index $base1.sorted.bam > $base1.sorted.bam.bai
+samtools index $base.sorted.bam > $base.sorted.bam.bai
 echo "done" >&2 
 
 # 3. Get the chromosomes present in the bam file and assign the wanted chromosome file
 ######################################################################################
 echo "I am getting the chromosomes present in the bam file and assigning the wanted chromosome file" >&2 
-samtools view -H $base1.sorted.bam | awk '$1=="@SQ"{split($2,a,":"); print a[2]}' | sort -V | uniq > bamfile.chr.txt
+samtools view -H $base.sorted.bam | awk '$1=="@SQ"{split($2,a,":"); print a[2]}' | sort -V | uniq > bamfile.chr.txt
 if [ ! -n "$2" ]
 then
     chrfile=bamfile.chr.txt
@@ -101,7 +101,7 @@ echo "done" >&2
 echo "I am making the individual chromosome bam files" >&2 
 cat common.chr.txt | while read c
 do
-    samtools view $base1.sorted.bam $c -b > $base2.sorted.$c.bam
+    samtools view $base.sorted.bam $c -b > $base.sorted.$c.bam
 done
 echo "done" >&2
 # apparently leaves the complete header in each chr indiv bam file
@@ -109,6 +109,7 @@ echo "done" >&2
 # 6. Removes unuseful files
 ###########################
 echo "I am removing unuseful files" >&2 
-# rm bamfile.chr.txt
-# rm common.chr.txt
+rm bamfile.chr.txt
+rm common.chr.txt
+rm $base.sorted.bam $base.sorted.bam.bai
 echo "done" >&2 

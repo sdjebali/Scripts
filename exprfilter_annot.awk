@@ -36,6 +36,11 @@ BEGIN{
     }
     while (getline < fileRef >0)
     {
+	# if there is a single experiment in the transcript expression matrix then we just ask for tpm more than 0.1 in this sample
+	if(NF==3)
+	{
+	    msamp=1
+	}
 	ok=0;
 	k=fstexpr;
 	while(ok<msamp&&k<=NF)
