@@ -28,7 +28,17 @@ set -Eexo pipefail
 # " | awk 'BEGIN{print "\#\!\/bin\/sh"} {print}' > launch.tss.cage.sh
 # sbatch --mem=8G --cpus-per-task=2 -J tsscage --mail-user=sarah.djebali@inserm.fr --mail-type=END,FAIL --workdir=$PWD --export=ALL -p workq launch.tss.cage.sh
 
+# inputs
+########
+# chr1	11668	12069	ENSG00000223972.4:ENST00000456328.2,:pseudogene:processed_transcript,:not_low	0	+
+# chr1	11671	12072	ENSG00000223972.4:ENST00000515242.2,:pseudogene:transcribed_unprocessed_pseudogene,:not_low	0	+
+# 179148 (6 fields)
+# lid	cage.bam
+# ENCFF928ULT	/work2/project/regenet/results/cage/homo_sapiens/hg38/ENCFF928ULT.bam
+# 3 (2 fields)
+
 # output
+########
 # tssid	tssinfo	ENCFF928ULT	ENCFF002MHE
 # chr10:100011579:100011980:+	ENSG00000230928.1:ENST00000433374.1,:antisense:antisense,:not_low	1	0
 # 178815 (4 fields)  *** a bit less rows than unique $1":"$2":"$3":"$6 from initial tss file, to understand at one point
