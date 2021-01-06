@@ -70,7 +70,7 @@ extract=$rootdir/extract.gtf.tags.awk
 
 # Extract the transcript ids from the reference gtf file
 ########################################################
-awk '$3=="exon"' $ref | awk -v fld=transcript_id -f $extract | sort | uniq > ref_tr_id.txt
+awk '$3=="exon"' $ref | awk -v fld=transcript_id -f $extract | sort -T "." | uniq > ref_tr_id.txt
 # ENSSSCT00000000003
 # 49448 (1 fields)
 
