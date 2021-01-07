@@ -108,22 +108,24 @@ cp stringtie.annot.tpm0.1.2samples.exons.gff $ref $outdir/string_expr
 # a. for ref
 ############
 cd $outdir/ref
-$ANALYSE $refbase $refbase 2> analyse_transcript_models_ref.err
+$ANALYSE $refbase $refbase 2>&1 | tee -a analyse_transcript_models_ref.err
 
 # b. for ref expr
 #################
 cd $outdir/ref_expr
-$ANALYSE ref.annot.tpm0.1.2samples.exons.gff $refbase 2> analyse_transcript_models_ref_expr.err
+$ANALYSE ref.annot.tpm0.1.2samples.exons.gff $refbase 2>&1 | tee -a analyse_transcript_models_ref_expr.err
 
 # c. for stringtie
 ##################
 cd $outdir/string
-$ANALYSE $strbase $refbase 2> analyse_transcript_models_string.err
+$ANALYSE $strbase $refbase 2>&1 | tee -a analyse_transcript_models_string.err
 
 # d. for stringtie expr
 ########################
 cd $outdir/string_expr
-$ANALYSE stringtie.annot.tpm0.1.2samples.exons.gff $refbase 2> analyse_transcript_models_string_expr.err
+$ANALYSE stringtie.annot.tpm0.1.2samples.exons.gff $refbase 2>&1 | tee -a analyse_transcript_models_string_expr.err
+# in bash 4
+# <<2>&1 | tee>> could be replaced by <<|& tee>>
 
 # 3. produce tsv file of 4 sets to be used by the gathering info script
 #######################################################################
