@@ -32,11 +32,11 @@
 # indir=~/egprediction/from3D/predictions/capturehic/jung.ren.2019
 # outdir=~/egingwas/parkinson/intersection.with.jung.ren.2019
 # vcf=~sdjebali/data/parkinson/2017/HRC_Imputations/SANGER/allchr.basic.INFOin0.5-1.ACin60-5086.notstrambig.uniqchrompos.ok.minor.unfreq.info.vcf.gz
-# pgm=~/tools/multi/Scripts/Awk/conn2connwithnbsnps.awk
+# pgm=~/tools/multi/Scripts/conn2connwithnbsnps.awk
 # ct=HCmerge
 # obj=allpromallelt2
 # tsv=$indir/$ct/$ct.pall.score2.ens.$obj.prom.elt2.list.nb.sclist.prom.elt2.cumullength.sum.dist.min.max.elt2equprom.tsv
-# time awk -v ext=0 -v fileRef=$outdir/$ct/$ct.pall.score2.ens.promelt2.prom.elt2.uniq.segcoord.postqcsnplist.tsv -f $pgm $tsv > $outdir/$ct/$ct.pall.score2.ens.$obj.prom.elt2.list.nb.sclist.prom.elt2.cumullength.sum.dist.min.max.elt2equprom.postqcsnp.nb1.nb2.nb3.tsv
+# time awk -v ext=0 -v fileRef=$outdir/$ct/$ct.pall.score2.ens.promelt2.prom.elt2.uniq.segcoord.allpostqcsnplist.tsv -f $pgm $tsv > $outdir/$ct/$ct.pall.score2.ens.$obj.prom.elt2.list.nb.sclist.prom.elt2.cumullength.sum.dist.min.max.elt2equprom.allpostqcsnp.nb1.nb2.nb3.tsv
 # real	0m3.495s
 
 # inputs:
@@ -60,6 +60,7 @@
 # 4640 (14 fields)
 
 BEGIN{
+    # read the file of segments with list of snps inside them and to each segment coordinates associate its list of overlapping snps
     OFS="\t";
     if(ext=="")
     {
@@ -106,9 +107,9 @@ BEGIN{
 	}
 	k++;
     }
-    # split the elt2 list into indiv elt2 (coord)
+    # in the same way as for prom, split the elt2 list into indiv elt2 (coord)
     split($3,b,",");
-    # go over the indiv elt1 of the elt2 list
+    # go over the indiv elt2 of the elt2 list
     k=1;
     while(b[k]!="")
     {
