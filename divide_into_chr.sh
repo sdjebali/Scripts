@@ -5,6 +5,7 @@ set -Eexo pipefail
 
 # takes as input a file and its format (gff (default), gtf, bed) and makes as many files as chr, ie from 1 to 22 and then X, Y and M
 # note: removes the comment lines
+# note: add tsv format where chr is in 1st row such as chr size files
 
 # usage:
 #  divide_into_chr.sh file format
@@ -12,7 +13,7 @@ set -Eexo pipefail
 if [ ! -n "$1" ]
 then
 echo "usage: divide_into_chr.sh file format" >&2
-echo "       where format is gff, gtf or bed (default is gff)" >&2
+echo "       where format is gff, gtf, bed or tsv (default is gff)" >&2
 exit 0
 fi
 

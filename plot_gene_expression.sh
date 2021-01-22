@@ -72,7 +72,7 @@ outdir=$5
 ###########################################
 PLOT_EXPR=$rootdir/rpkm_distribution.R
 PLOT_CUMUL=$rootdir/rpkm_fraction.R
-palette=$rootdir/palettes/cbbPalette.8.txt
+palette=$rootdir/cbbPalette.8.txt
 
 # 0. Go to output directory to produce the intermediate text files and the plots
 #################################################################################

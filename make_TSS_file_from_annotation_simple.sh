@@ -41,6 +41,7 @@ path="`dirname \"$0\"`" # relative path
 rootDir="`( cd \"$path\" && pwd )`" # absolute path
 
 annotation=$1
+outdir=`dirname $annotation`
 annotbasetmp=`basename ${annotation%.gtf}`
 annotbase=${annotbasetmp%.gff}
 
@@ -56,6 +57,7 @@ GFF2GFF=$rootDir/gff2gff.awk
 # Make the TSS file for the asked transcript biotypes    #
 ##########################################################
 
+# cd $outdir
 
 # a. Extract most 5' exons of transcripts
 #########################################

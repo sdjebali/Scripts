@@ -1,9 +1,7 @@
 #!/bin/bash
-set -Eexo pipefail
 
 # boxplots.sh
-# make boxplots for values (y) belonging to several categories (x) from an input tsv file with ggplot2
-# !!! this bash script is only valid for plotting 4 boxplots corresponding to 4 trannscript sets allref, exprref, allnew, exprnew !!!
+# make boxplots for values (y) belonging to several categories (x) from an input tsv file with ggplot2 
 # - takes as input
 #   * absolute path to input tsv file
 #   * header key for x values in the tsv file
@@ -12,7 +10,7 @@ set -Eexo pipefail
 #   * min y value to be plotted
 #   * max y value to be plotted
 #   * absolute path to output file (with extension), could be pdf, png, eps.
-# Note1: needs ggplot2 libraries to be available
+# Note1: needs reshape2 and ggplot2 libraries to be installed
 # Note2: in order to have the boxplots in a given order one can number the different sets for which we want boxplots
 
 # example
@@ -45,23 +43,20 @@ then
     echo "produces as output:" >&2
     echo "- the file specified as the last argument with as many boxplots as categories for x and with the values indicated in y" >&2
     echo "" >&2
-    echo "Note1: needs ggplot2 libraries to be installed" >&2
+    echo "Note1: needs reshape2 and ggplot2 libraries to be installed" >&2
     echo "Note2: in order to have the boxplots in a given order one can number the different sets for which we want boxplots" >&2
     exit 1
 fi
 
 echo '
+library(reshape2)
 library(ggplot2)
-sessionInfo()
 theme_set(theme_bw(base_size = 16))
 data = read.delim("'$1'", sep="\t", h=TRUE)
-gp = ggplot(data) + geom_boxplot(aes(y='$3',x=factor('$2'),fill=factor('$2')), varwidth = TRUE, notch=T)
-gp = gp + scale_x_discrete(labels=c("all_refannot", "expr_refannot", "all_newannot", "expr_newannot"))
-gp = gp + theme(axis.text.x=element_text(angle=35, hjust=1, vjust=1))
-gp = gp + labs(x= "Transcript set", y='\'$4\'') + ylim(c('$5','$6'))   
-gp = gp + scale_fill_manual(name = "Transcript set",
-			    labels = c("00_ref" = "all_refannot", "01_ref_expr" = "expr_refannot", "02_string" ="all_newannot", "03_string_expr" ="expr_newannot"),
-			    values = c("00_ref" = "#E41A1C", "01_ref_expr" = "#377EB8", "02_string" ="#4DAF4A", "03_string_expr" ="#984EA3"))
+gp = ggplot(data) + geom_boxplot(aes(y='$3',x=factor('$2')))  
+gp = gp + scale_x_discrete(labels=gsub("[0-9]+_","",levels(as.factor(data$'$2'))))
+gp = gp + theme(axis.text.x=element_text(angle=60, hjust=1, vjust=1))
+gp = gp + labs(y='\'$4\'') 
+gp = gp + ylim(c('$5','$6'))   
 ggsave(filename="'$7'")
 ' | R --vanilla
-

@@ -47,7 +47,7 @@ then
     echo "  and then make plots and tables to be used in a presentation (odp, ppt or latex)" >&2
     echo "" >&2
     echo "Note: since this script needs quite some time (not parallelized though), so it is better to use a cluster to run it" >&2
-    echo "Note: Requires bedtools" >&2
+    echo "Note: Needs bedtools, R, comptr and overlap in your path" >&2
     exit 1
 fi
 
@@ -61,11 +61,10 @@ base=${basetmp%.gff}
 annot=$2
 annotbasetmp=`basename ${annot%.gtf}`
 annotbase=${annotbasetmp%.gff}
-annotdir=`dirname $annot`
-anntss=$annotdir/$annotbase\_capped_sites.gff
-annrtss=$annotdir/$annotbase\_capped_sites_nr.gff
-anntts=$annotdir/$annotbase\_tts_sites.gff
-annrtts=$annotdir/$annotbase\_tts_sites_nr.gff
+anntss=$annotbase\_capped_sites.gff
+annrtss=$annotbase\_capped_sites_nr.gff
+anntts=$annotbase\_tts_sites.gff
+annrtts=$annotbase\_tts_sites_nr.gff
 
 # Programs
 ##########
@@ -81,21 +80,13 @@ GFF2GFF=$rootDir/gff2gff.awk
 # Start of the script
 #####################
 
-# Make the TSS, nrTSS, TTS, nrTTS files for the annotation where the annotation is if they are not already present there
-########################################################################################################################
-echo "Making TSS from annotated transcripts if not already present where the annotation is" >&2
-if [ ! -e $anntss ] || [ ! -e $annrtss ] 
-then  
+# Make the TSS, nrTSS, TTS, nrTTS files for the annotation in the current working directory
+###########################################################################################
+echo "Making TSS from annotated transcripts" >&2
 $MAKETSS $annot
-# mv $annotbase\_capped_sites.gff $annotbase\_capped_sites_nr.gff $annotdir
-fi
 echo "done" >&2
-echo "Making TTS from annotated transcripts if not already present where the annotation is" >&2
-if [ ! -e $anntts ] || [ ! -e $annrtts ]
-then 
+echo "Making TTS from annotated transcripts" >&2
 $MAKETTS $annot
-# mv $annotbase\_tts_sites.gff $annotbase\_tts_sites_nr.gff $annotdir
-fi
 echo "done" >&2
 
 # Make a complete gff file for the predicted transcripts and compute some basic statistics
