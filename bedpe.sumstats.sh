@@ -5,7 +5,8 @@ set -Eexo pipefail
 ###################
 # This script takes as input:
 #############################
-# - the absolute path of a bedpe.gz file of interactions (either predicted from 3D data in a cell type or from 1D data across cell lines) where the 1st element has a special meaning (for example promoter)
+# - a bedpe.gz file of interactions (either predicted from 3D data in a cell type or from 1D data across cell lines)
+#   where the 1st element has a special meaning (for example promoter)
 # - a min-max thresholds for the score plot
 # - a min-max threshold for the fragment length plot
 # and that produces as output in a sumstats directory that it creates where the bedpe file is:
@@ -15,7 +16,9 @@ set -Eexo pipefail
 # - several tsv or tsv.gz files that represent summary statistics tables and that are supposed to complete the messages from the plots
 
 # TODO:
+#######
 # - change the inter fragment distance from middle to middle to 3' end of most 5' to 5' end of most 3'
+# - calculate the two min and max inside the script in case the user does not provide them
 # - for elt1 and elt2 fragment length (tsv and plot), only take distinct elements, not all, otherwise the same elt is counted several times
 # - make it possible to have plots that are independent of the score (more readable)
 # - make the script able to take a relative path to bedpe file or just the file that is where the script is launched
@@ -62,7 +65,7 @@ set -Eexo pipefail
 if [ ! -n "$1" ] || [ ! -n "$2" ] || [ ! -n "$3" ]
 then
     echo "" >&2
-    echo "Usage: bedpe.sumstats.sh abs.path.to.file.bedpe.gz scoremin-scoremax lengthmin-lengthmax" >&2
+    echo "Usage: bedpe.sumstats.sh file.bedpe.gz scoremin-scoremax lengthmin-lengthmax" >&2
     echo "" >&2
     echo "produces as output:" >&2
     echo "- the same bedpe.gz file but with score quantiles" >&2
@@ -89,7 +92,8 @@ path="`dirname \"$0\"`" # relative path
 rootDir="`( cd \"$path\" && pwd )`" # absolute path
 input=$1
 inbase=`basename ${input%.bedpe.gz}`
-outbase=`dirname $input`
+abspath=`realpath $input`
+outbase=`dirname $abspath`
 outdir=$outbase/sumstats
 
 # Programs
@@ -108,7 +112,7 @@ cd $outdir
 
 # 1. Add score quantile to bedpe file, keep only compulsory columns, add a header and place in sumstat dir
 ##########################################################################################################
-zcat $input | awk 'BEGIN{OFS="\t"} {print $1, $2, $3, $4, $5, $6, $7, $8, $9, $10}' | Rscript $ADDQUANT -i stdin -c 8 -q 4 -m quantiles -s -o stdout | awk 'BEGIN{OFS="\t"; print "chrom1", "start1", "end1", "chrom2", "start2", "end2", "name", "score", "strand1", "strand2", "quantile_score", "quant_index_score", "score.quantile"} {print $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $12"_"$11}' > $inbase.scorequantile.bedpe
+zcat $abspath | awk 'BEGIN{OFS="\t"} {print $1, $2, $3, $4, $5, $6, $7, $8, $9, $10}' | Rscript $ADDQUANT -i stdin -c 8 -q 4 -m quantiles -s -o stdout | awk 'BEGIN{OFS="\t"; print "chrom1", "start1", "end1", "chrom2", "start2", "end2", "name", "score", "strand1", "strand2", "quantile_score", "quant_index_score", "score.quantile"} {print $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $12"_"$11}' > $inbase.scorequantile.bedpe
 # chrom1	start1	end1	chrom2	start2	end2	name	score	strand1	strand2	quantile_score	quant_index_score	score.quantile
 # chr1	915520	932176	chr1	1041678	1048651	chr1:915520-932176,chr1:1041678-1048651	1.65928294258351	.	.	(0.557,79.7]	4	4_(0.557,79.7]
 # 6074050 (13 fields)
@@ -180,7 +184,7 @@ for i in $(seq 1 4); do for e in elt1 elt2; do awk -v i=$i -v e=$e '$1==e&&$2==i
 # 7. remove temporary files and gzip big files
 ##############################################
 rm tmp
-gzip $inbase.scorequantile.bedpe
-gzip dist.score.quantiles.tsv
-gzip refelt.scorequantile.fraglength.tsv
+gzip -f $inbase.scorequantile.bedpe
+gzip -f dist.score.quantiles.tsv
+gzip -f refelt.scorequantile.fraglength.tsv
 
