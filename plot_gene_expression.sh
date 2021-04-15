@@ -56,7 +56,7 @@ then
     echo "where colorfactor is a factor from metadata.tsv which is used for colouring the plot. You can use labExpId" >&2
     echo "Needs R to be installed (tested with version 3.6.2)" >&2
     echo "Be careful: this script is made to deal with outputs from the tagada pipeline and is therefore not very generic" >&2
-    echo "since metadata file is supposed to have two columns only, one for the labExpId and one for the Name" >&2
+    echo "since metadata file is supposed to have two columns only, one for the labExpId and one for the Name ..." >&2
     exit 1
 fi
 
