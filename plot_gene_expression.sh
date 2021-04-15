@@ -44,9 +44,9 @@ set -Eexo pipefail
 # 26560 (12 fields)
 # metadata file
 ###############
-# gene_id	cov_rnaseq.sus_scrofa.cd8.pig3.R1	cov_rnaseq.sus_scrofa.cd4.pig4.R1	cov_rnaseq.sus_scrofa.cd4.pig3.R1	cov_rnaseq.sus_scrofa.cd4.pig2.R1	cov_rnaseq.sus_scrofa.cd8.pig2.R1	cov_rnaseq.sus_scrofa.liver.pig3.R1	cov_rnaseq.sus_scrofa.cd8.pig4.R1	cov_rnaseq.sus_scrofa.liver.pig1	cov_rnaseq.sus_scrofa.liver.pig4.R1	cov_rnaseq.sus_scrofa.liver.pig2.R1	cov_rnaseq.sus_scrofa.cd8.pig1.R1
-# ENSSSCG00000000026	0.0	0.0	0.0	0.0	0.0	0.0	0.228127	0.0	0.0	0.0	0.0
-# 26560 (12 fields)
+# labExpId	file
+# rnaseq.sus_scrofa.cd4.pig2	/work/project/fragencode/workspace/geneswitch/pipelines/rnaseq/tests/sus_scrofa/allbig/data/reads/rnaseq.sus_scrofa.cd4.pig2.R1.fastq.gz
+# 12 (2 fields)
 
 if [ ! -n "$1" ] || [ ! -n "$2" ] || [ ! -n "$3" ] || [ ! -n "$4" ] || [ ! -n "$5" ] 
 then
@@ -55,7 +55,7 @@ then
     echo "" >&2
     echo "where colorfactor is a factor from metadata.tsv which is used for colouring the plot. You can use labExpId" >&2
     echo "Needs R to be installed (tested with version 3.6.2)" >&2
-    echo "Be careful: this script is made to deal with outputs from the tagada pipeline and is not very generic" >&2
+    echo "Be careful: this script is made to deal with outputs from the tagada pipeline and is therefore not very generic" >&2
     echo "since metadata file is supposed to have two columns only, one for the labExpId and one for the Name" >&2
     exit 1
 fi
@@ -82,6 +82,7 @@ cd $outdir
 
 # 1. make an ok metadata file
 #############################
+# !!! here we assume the metadata file comes from tagada and is thus made of two identical columns with labExpId and Name which are the same !!!
 awk 'NR==1{OFS="\t"; print} NR>=2{gsub(/-/,"",$0); print "lid."$1, "lid."$2}' $meta > meta.ok.tsv
 
 # 2. make an ok TPM matrix file (with header with 1 column less than body)
