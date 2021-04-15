@@ -70,7 +70,7 @@ then
     echo "where:" >&2
     echo "- mytr.gff is a set of transcripts in gff 2 format (exon rows at least) one wants to compare to the annotation" >&2
     echo "- annot.gtf is an annotation file in gtf format (exon and gene rows at least) one wants to compare to the annotation" >&2
-    echo "!!! Requires comptr and overlap to be in your path !!!" >&2
+    echo "!!! Requires bedtools, R, comptr and overlap to be in your path !!!" >&2
     echo "!!! Cannot be run in parallel in the same directory since it produces files with constant name !!!" >&2
     echo "" >&2
     exit 1

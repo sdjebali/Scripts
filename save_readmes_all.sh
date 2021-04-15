@@ -1,8 +1,10 @@
-set -Eexo pipefail
-
-/work2/project/fragencode/tools/multi/Scripts/save_readmes.sh /work2/project/fragencode ~/save/READMEs/READMEs_frag
-/work2/project/fragencode/tools/multi/Scripts/save_readmes.sh /work2/project/regenet ~/save/READMEs/READMEs_regenet
-/work2/project/fragencode/tools/multi/Scripts/save_readmes.sh /work/project/dynagen/sdjebali ~/save/READMEs/READMEs_dyna
-/work2/project/fragencode/tools/multi/Scripts/save_readmes.sh /work2/project/fragencode/workspace/unipluri ~/save/READMEs/READMEs_uni
-/work2/project/fragencode/tools/multi/Scripts/save_readmes.sh /work/project/crct/chimeras ~/save/READMEs/READMEs_crct
-/work2/project/fragencode/tools/multi/Scripts/save_readmes.sh /work/project/1000rnaseqchick ~/save/READMEs/READMEs_1000rnaseqchick
+/work2/project/fragencode/tools/multi/Scripts/save_readmes.sh /work2/project/fragencode/workspace/sdjebali /work2/project/fragencode/doc/READMEs_sarah/READMEs_frag/workspace/sdjebali
+/work2/project/fragencode/tools/multi/Scripts/save_readmes.sh /work2/project/fragencode/papers /work2/project/fragencode/doc/READMEs_sarah/READMEs_frag/papers
+/work2/project/fragencode/tools/multi/Scripts/save_readmes.sh /work2/project/fragencode/results /work2/project/fragencode/doc/READMEs_sarah/READMEs_frag/results
+/work2/project/fragencode/tools/multi/Scripts/save_readmes.sh /work2/project/fragencode/tools /work2/project/fragencode/doc/READMEs_sarah/READMEs_frag/tools
+/work2/project/fragencode/tools/multi/Scripts/save_readmes.sh /work2/project/regenet /work2/project/fragencode/doc/READMEs_sarah/READMEs_regenet
+/work2/project/fragencode/tools/multi/Scripts/save_readmes.sh /work2/project/fragencode/data /work2/project/fragencode/doc/READMEs_sarah/READMEs_frag/data
+/work2/project/fragencode/tools/multi/Scripts/save_readmes.sh /work/project/dynagen/sdjebali /work2/project/fragencode/doc/READMEs_sarah/READMEs_dyna
+/work2/project/fragencode/tools/multi/Scripts/save_readmes.sh /work2/project/fragencode/workspace/unipluri /work2/project/fragencode/doc/READMEs_sarah/READMEs_uni
+/work2/project/fragencode/tools/multi/Scripts/save_readmes.sh /work/project/crct/chimeras /work2/project/fragencode/doc/READMEs_sarah/READMEs_crct
+/work2/project/fragencode/tools/multi/Scripts/save_readmes.sh /work/project/1000rnaseqchick /work2/project/fragencode/doc/READMEs_sarah/READMEs_1000rnaseqchick

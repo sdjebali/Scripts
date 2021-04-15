@@ -55,6 +55,8 @@ then
     echo "" >&2
     echo "where colorfactor is a factor from metadata.tsv which is used for colouring the plot. You can use labExpId" >&2
     echo "Needs R to be installed (tested with version 3.6.2)" >&2
+    echo "Be careful: this script is made to deal with outputs from the tagada pipeline and is not very generic" >&2
+    echo "since metadata file is supposed to have two columns only, one for the labExpId and one for the Name" >&2
     exit 1
 fi
 
@@ -78,38 +80,42 @@ palette=$rootdir/cbbPalette.8.txt
 #################################################################################
 cd $outdir
 
-# 1. make an ok TPM matrix file (with header with 1 column less than body)
+# 1. make an ok metadata file
+#############################
+awk 'NR==1{OFS="\t"; print} NR>=2{gsub(/-/,"",$0); print "lid."$1, "lid."$2}' $meta > meta.ok.tsv
+
+# 2. make an ok TPM matrix file (with header with 1 column less than body)
 ##########################################################################
-awk 'NR==1{OFS="\t"; gsub(/TPM_/,"",$0); gsub(/.R1/,"",$0); for(i=2; i<=NF-1; i++){s=(s)($i)("\t")} print (s)($i)} NR>=2{print}' $tpmfile > genes_TPM.tsv
+awk 'NR==1{OFS="\t"; gsub(/TPM_/,"",$0); gsub(/.R1/,"",$0); gsub(/-/,"",$0); for(i=2; i<=NF-1; i++){s=(s)("lid."$i)("\t")} print (s)("lid."$i)} NR>=2{print}' $tpmfile > genes_TPM.tsv
 # rnaseq.sus_scrofa.cd8.pig3	rnaseq.sus_scrofa.cd4.pig4	rnaseq.sus_scrofa.cd4.pig3	rnaseq.sus_scrofa.cd4.pig2	rnaseq.sus_scrofa.cd8.pig2	rnaseq.sus_scrofa.liver.pig3	rnaseq.sus_scrofa.cd8.pig4	rnaseq.sus_scrofa.liver.pig1	rnaseq.sus_scrofa.liver.pig4	rnaseq.sus_scrofa.liver.pig2	rnaseq.sus_scrofa.cd8.pig1
 # ENSSSCG00000000026	0.0	0.0	0.0	0.0	0.0	0.0	0.019718	0.0	0.0	0.0	0.0
 # 1 (11 fields)
 # 26559 (12 fields)
 
-# 2. make an ok read count matrix file
+# 3. make an ok read count matrix file
 ######################################
-awk 'NR==1{OFS="\t"; gsub(/cov_/,"",$0); gsub(/.R1/,"",$0); for(i=2; i<=NF-1; i++){s=(s)($i)("\t")} print (s)($i)} NR>=2{print}' $covfile > genes_readcount.tsv
+awk 'NR==1{OFS="\t"; gsub(/cov_/,"",$0); gsub(/.R1/,"",$0); gsub(/-/,"",$0); for(i=2; i<=NF-1; i++){s=(s)("lid."$i)("\t")} print (s)("lid."$i)} NR>=2{print}' $covfile > genes_readcount.tsv
 # rnaseq.sus_scrofa.cd8.pig3	rnaseq.sus_scrofa.cd4.pig4	rnaseq.sus_scrofa.cd4.pig3	rnaseq.sus_scrofa.cd4.pig2	rnaseq.sus_scrofa.cd8.pig2	rnaseq.sus_scrofa.liver.pig3	rnaseq.sus_scrofa.cd8.pig4	rnaseq.sus_scrofa.liver.pig1	rnaseq.sus_scrofa.liver.pig4	rnaseq.sus_scrofa.liver.pig2	rnaseq.sus_scrofa.cd8.pig1
 # ENSSSCG00000000026	0.0	0.0	0.0	0.0	0.0	0.0	0.228127	0.0	0.0	0.0	0.0
 # 1 (11 fields)
 # 26559 (12 fields)
 
-# 3. run the first expression script for TPM with zeros
+# 4. run the first expression script for TPM with zeros
 ########################################################
-$PLOT_EXPR -i genes_TPM.tsv -r histogram -w -l -v "log10(TPM)" -m $meta -P $palette -f $factor --verbose -o genes_TPM
+$PLOT_EXPR -i genes_TPM.tsv -r histogram -w -l -v "log10(TPM)" -m meta.ok.tsv -P $palette -f $factor --verbose -o genes_TPM
 
-# 4. run the first expression script for TPM without zeros
+# 5. run the first expression script for TPM without zeros
 ###########################################################
-$PLOT_EXPR -i genes_TPM.tsv -r histogram -w -l -p 0 -v "log10(TPM+0)" -m $meta -P $palette -f $factor --verbose -o genes_TPM
+$PLOT_EXPR -i genes_TPM.tsv -r histogram -w -l -p 0 -v "log10(TPM+0)" -m meta.ok.tsv -P $palette -f $factor --verbose -o genes_TPM
 
-# 5. run the first expression script for read counts with zeros
+# 6. run the first expression script for read counts with zeros
 ################################################################
-$PLOT_EXPR -i genes_readcount.tsv -r histogram -w -l -v "log10(readcount)" -m $meta -P $palette -f $factor --verbose -o genes_readcount
+$PLOT_EXPR -i genes_readcount.tsv -r histogram -w -l -v "log10(readcount)" -m meta.ok.tsv -P $palette -f $factor --verbose -o genes_readcount
 
-# 6. run the first expression script for read counts without zeros
+# 7. run the first expression script for read counts without zeros
 ####################################################3#############
-$PLOT_EXPR -i genes_readcount.tsv -r histogram -w -l -p 0 -v "log10(readcount+0)" -m $meta -P $palette -f $factor --verbose -o genes_readcount
+$PLOT_EXPR -i genes_readcount.tsv -r histogram -w -l -p 0 -v "log10(readcount+0)" -m meta.ok.tsv -P $palette -f $factor --verbose -o genes_readcount
 
-# 7. run the second expression script on the TPM file  
+# 8. run the second expression script on the TPM file  
 ######################################################
-$PLOT_CUMUL -i genes_TPM.tsv -m $meta -c $factor -o genes_totalTPM_captured_by_top_genes
+$PLOT_CUMUL -i genes_TPM.tsv -m meta.ok.tsv -c $factor -o genes_totalTPM_captured_by_top_genes
