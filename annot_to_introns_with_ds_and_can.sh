@@ -30,6 +30,7 @@ set -Eexo pipefail
 ###############
 # - fastalength from exonerate
 # - fastaFromBed from bedtools
+# - R
 # - duplseq from Sarah Djebali
 # - 5 awk scripts (see below)
 

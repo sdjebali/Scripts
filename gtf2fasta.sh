@@ -5,7 +5,8 @@ set -Eexo pipefail
 # Takes as input an annotation file in gtf format with gene id followed by transcript id in the 9th field
 # as well as a genome index file in gem format, and outputs a fasta file with the nucleotide sequences
 # of all the transcripts present in the annotation file
-# Note: bedtools getfasta could be able to do the same, need to test it and see what takes less time (since we use an index it might be the present one)
+# Note: bedtools getfasta could be able to do the same using bed12 as input, need to test it and see what takes less time (since we use an index it might be the present one)
+# Note2: on Oct 22nd 2021 the script was improved to allow any gtf file even with comments and with gene_id and transcript_id positionned anywhere in the file
 
 # Usage
 # gtf2fasta.sh annot.gtf genome_index.gem
@@ -46,14 +47,21 @@ b2=${b2tmp%.gff}
 
 # Programs
 ##########
-RETRIEVER=$rootDir/gem-retriever 
+MAKEOK=$rootDir/make_gff_ok.awk
+GFF2GFF=$rootDir/gff2gff.awk
+RETRIEVER=gem-retriever 
 # for example in /users/rg/brodriguez/Chimeras_project/Chimeras_detection_pipeline/ChimPipe/bin/gemtools-1.7.1-i3/
 
+# Make an ok gff file of exons from the input gtf file
+######################################################
+echo I am making an of file of exons sorted by transcript id >&2
+awk '$3=="exon"' $annot | awk -f $MAKEOK | awk -f $GFF2GFF | sort -k12,12 -k4,4n -k5,5n > $b2.exons.ok.sorted.by.tr.gff
+echo done >&2
 
 # Make the list of distinct exon coordinates (fast)
 ###################################################
 echo I am making the list of distinct exon coordinates >&2
-awk 'BEGIN{OFS="\t"} $3=="exon"{print $1, $7, $4, $5}' $annot | sort | uniq > $b2\_distinct_exon_coord.tsv 
+awk 'BEGIN{OFS="\t"} {print $1, $7, $4, $5}' $b2.exons.ok.sorted.by.tr.gff | sort | uniq > $b2\_distinct_exon_coord.tsv 
 echo done >&2
 # chr10	+	100003848	100004106
 # 518897 (4 fields)
@@ -79,7 +87,7 @@ echo done >&2
 # For each transcript make a list of exon coordinates from 5' to 3' (a bit slow)
 ################################################################################
 echo For each transcript I am making a list of exon coordinates from 5\' to 3\' >&2
-awk '$3=="exon"' $annot | sort -k12,12 -k4,4n -k5,5n | awk '{nbex[$12]++; strand[$12]=$7; ex[$12,nbex[$12]]=$1"_"$4"_"$5"_"$7}END{for(t in nbex){s=""; split(t,a,"\""); if(strand[t]=="+"){for(i=1; i<=nbex[t]; i++){s=(s)(ex[t,i])(",")}} else{if(strand[t]=="-"){for(i=nbex[t]; i>=1; i--){s=(s)(ex[t,i])(",")}}} print a[2], s}}' > $b2\_trid_exonlist_5pto3p.txt
+awk '{nbex[$12]++; strand[$12]=$7; ex[$12,nbex[$12]]=$1"_"$4"_"$5"_"$7}END{for(t in nbex){s=""; split(t,a,"\""); if(strand[t]=="+"){for(i=1; i<=nbex[t]; i++){s=(s)(ex[t,i])(",")}} else{if(strand[t]=="-"){for(i=nbex[t]; i>=1; i--){s=(s)(ex[t,i])(",")}}} print a[2], s}}' $b2.exons.ok.sorted.by.tr.gff > $b2\_trid_exonlist_5pto3p.txt
 echo done >&2
 # ENST00000556118.1 chr15_91573118_91573226_+,
 # 173599 (2 fields)
@@ -95,6 +103,7 @@ echo done >&2
 # Clean
 #######
 echo I am cleaning >&2
+rm $b2.exons.ok.sorted.by.tr.gff
 rm $b2\_distinct_exon_coord.tsv $b2\_distinct_exon_coord.seq 
 rm $b2\_distinct_exon_coord_seq.txt $b2\_trid_exonlist_5pto3p.txt
 echo done >&2

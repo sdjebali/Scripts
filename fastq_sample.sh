@@ -3,6 +3,8 @@ set -Eexo pipefail
 
 # usage
 # fastq_sample.sh R1.fastq.gz R2.fastq.gz pcent
+# made for paired end data
+# for single end data use fastq_sample_SE.sh
 
 # Improved on June 15th 2020 so that intermediate files are named after the first fastq.gz file and uses wc -l instead of an awk script to count rows in count file
 
@@ -10,7 +12,7 @@ set -Eexo pipefail
 #########
 # cd ~/fragencode/workspace/sdjebali/irsd/courses/rnaseq/SIB_august2020/analysis/sample_1pcent
 # datadir=~/fragencode/workspace/sdjebali/irsd/courses/rnaseq/SIB_august2020/data
-# pgm=~/fragencode/tools/multi/Scripts/Bash/fastq_sample.sh
+# pgm=~/fragencode/tools/multi/Scripts/fastq_sample.sh
 # time $pgm $datadir/ENCFF000EWJ.fastq.gz $datadir/ENCFF000EWX.fastq.gz 1 2> ENCFF000EWJ.fastq_sample.err
 # real	13m39.501s  *** makes 2*85M files of 1 million reads each from two 8.1G files of 120 million reads each 
 
