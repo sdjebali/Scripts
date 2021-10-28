@@ -87,7 +87,7 @@ echo "done" >&2
 # 2. Call ref_pred_all_expr_2_tr_ratio_size_pos.sh
 ##################################################
 echo "I am calling ref_pred_all_expr_2_tr_ratio_size_pos.sh" >&2
-$TRPOS $ref $str $trexpr $PWD
+$TRPOS $ref $str $trexpr "$PWD"
 echo "done" >&2
 
 # 3. Call ref_pred_annot2stats.sh and redirect main output tsv file in a file called detected_elements_numbers.tsv
