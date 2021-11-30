@@ -87,10 +87,10 @@ printf "Element\tref_nb\tref_in_file_nb\tref_in_file_pcent\tref_det_nb\tref_det_
 
 # Compute the stats for the transcript elements
 ###############################################
-awk -v fileRef=ref_tr_id.txt 'BEGIN{OFS="\t"; while (getline < fileRef >0){refelt++; inref[$1]=1}} NR>=2{n++; if(n==1){onesamp=((NF==3) ? 1 : 0)} ok=0; k=3; while(ok<=1&&k<=NF){if($k>=0.1){ok++} k++} if(inref[$1]==1){refeltinfile++; if((onesamp&&ok==1)||ok==2){refeltdet++}} else{noveltinfile++; if((onesamp&&ok==1)||ok==2){noveltdet++}}} END{print "transcript", refelt, refeltinfile, refeltinfile/refelt*100, refeltdet, refeltdet/refelt*100, noveltinfile, noveltdet, noveltdet/noveltinfile*100}' $tr 
+awk -v fileRef=ref_tr_id.txt 'BEGIN{OFS="\t"; while (getline < fileRef >0){refelt++; inref[$1]=1}} NR>=2{n++; if(n==1){onesamp=((NF==3) ? 1 : 0)} ok=0; k=3; while(ok<=1&&k<=NF){if($k>=0.1){ok++} k++} if(inref[$1]==1){refeltinfile++; if((onesamp&&ok==1)||ok==2){refeltdet++}} else{noveltinfile++; if((onesamp&&ok==1)||ok==2){noveltdet++}}} END{print "transcript", refelt, refeltinfile, refeltinfile/refelt*100, refeltdet, refeltdet/refelt*100, noveltinfile, (noveltdet!="" ? noveltdet : 0), (noveltinfile!="" ? noveltdet/noveltinfile*100 : "NA")}' $tr 
 # transcript 49448	49442	99.9879	29715	60.0934	38824	36731	94.609
 
 # Compute the stats for the gene elements
 #########################################
-awk -v fileRef=ref_gn_id.txt 'BEGIN{OFS="\t"; while (getline < fileRef >0){refelt++; inref[$1]=1}} NR>=2{n++; if(n==1){onesamp=((NF==2) ? 1 : 0)} ok=0; k=2; while(ok<=1&&k<=NF){if($k>=0.1){ok++} k++} if(inref[$1]==1){refeltinfile++; if((onesamp&&ok==1)||ok==2){refeltdet++}} else{noveltinfile++; if((onesamp&&ok==1)||ok==2){noveltdet++}}} END{print "gene", refelt, refeltinfile, refeltinfile/refelt*100, refeltdet, refeltdet/refelt*100, noveltinfile, noveltdet, noveltdet/noveltinfile*100}' $gn
+awk -v fileRef=ref_gn_id.txt 'BEGIN{OFS="\t"; while (getline < fileRef >0){refelt++; inref[$1]=1}} NR>=2{n++; if(n==1){onesamp=((NF==2) ? 1 : 0)} ok=0; k=2; while(ok<=1&&k<=NF){if($k>=0.1){ok++} k++} if(inref[$1]==1){refeltinfile++; if((onesamp&&ok==1)||ok==2){refeltdet++}} else{noveltinfile++; if((onesamp&&ok==1)||ok==2){noveltdet++}}} END{print "gene", refelt, refeltinfile, refeltinfile/refelt*100, refeltdet, refeltdet/refelt*100, noveltinfile, (noveltdet!="" ? noveltdet : 0), (noveltinfile!="" ? noveltdet/noveltinfile*100 : "NA")}' $gn
 # gene 25880	8492	32.813	1905	7.3609	18067	15414	85.3158 
