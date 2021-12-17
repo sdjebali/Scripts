@@ -81,6 +81,7 @@ fi
 ###########################
 EXPRFILTER=$rootdir/exprfilter_annot.awk
 GFFOK=$rootdir/make_gff_ok.awk
+GFF2GFF=$rootdir/gff2gff.awk
 ANALYSE=$rootdir/analyse_transcript_models.sh
 COMPARE=$rootdir/compare_multiple_trsets_wrt_reftrset.sh
 
@@ -88,8 +89,8 @@ COMPARE=$rootdir/compare_multiple_trsets_wrt_reftrset.sh
 # 1. Make the two expression filtered gff files and hard copy the 4*2 files given as input to analyse_transcript_models in the 4 directories where it is run
 #############################################################################################################################################################
 cd $outdir
-awk -v mexpr=0.1 -v msamp=2 -v fstexpr=3 -v fileRef=$tr -f $EXPRFILTER $ref | awk -f $GFFOK > ref.annot.tpm0.1.2samples.exons.gff
-awk -v mexpr=0.1 -v msamp=2 -v fstexpr=3 -v fileRef=$tr -f $EXPRFILTER $str | awk -f $GFFOK > stringtie.annot.tpm0.1.2samples.exons.gff
+awk -f $GFFOK $ref | awk -v mexpr=0.1 -v msamp=2 -v fstexpr=3 -v fileRef=$tr -f $EXPRFILTER | awk -f $GFF2GFF > ref.annot.tpm0.1.2samples.exons.gff
+awk -f $GFFOK $str | awk -v mexpr=0.1 -v msamp=2 -v fstexpr=3 -v fileRef=$tr -f $EXPRFILTER | awk -f $GFF2GFF > stringtie.annot.tpm0.1.2samples.exons.gff
 mkdir -p $outdir/ref
 mkdir -p $outdir/ref_expr
 mkdir -p $outdir/string

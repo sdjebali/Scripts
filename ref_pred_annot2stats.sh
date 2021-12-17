@@ -76,16 +76,17 @@ basestr=${basestrtmp2%.gff}
 # Set variables of programs
 ###########################
 gffok=$rootdir/make_gff_ok.awk
+gff2gff=$rootdir/gff2gff.awk
 exprfilter=$rootdir/exprfilter_annot.awk
 makesum=$rootdir/make_summary_stat_from_annot.sh
 
 # 1. Make the exon gff file of reference transcripts with tpm 0.1 in 2 samples
 ##############################################################################
-awk -v mexpr=0.1 -v msamp=2 -v fstexpr=3 -v fileRef=$expr -f $exprfilter $ref | awk -f $gffok > ref.annot.tpm0.1.2samples.exons.gff
+awk -f $gffok $ref | awk -v mexpr=0.1 -v msamp=2 -v fstexpr=3 -v fileRef=$expr -f $exprfilter | awk -f $gff2gff > ref.annot.tpm0.1.2samples.exons.gff
 
 # 2. Make the exon gff file of all stringtie transcripts with tpm 0.1 in 2 samples
 ##################################################################################
-awk -v mexpr=0.1 -v msamp=2 -v fstexpr=3 -v fileRef=$expr -f $exprfilter $str | awk -f $gffok > stringtie.annot.tpm0.1.2samples.exons.gff
+awk -f $gffok $str | awk -v mexpr=0.1 -v msamp=2 -v fstexpr=3 -v fileRef=$expr -f $exprfilter | awk -f $gff2gff > stringtie.annot.tpm0.1.2samples.exons.gff
 
 # 3. Apply the make_summary_stat_from_annot.sh script to the ref annot, the ref annot with tr with tpm 0.1 in 2 samples
 #######################################################################################################################
