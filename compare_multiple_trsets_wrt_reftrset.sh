@@ -384,7 +384,7 @@ WORKDIR=`dirname $pred`
 cd $WORKDIR
 basetmp=`basename ${pred%.gtf}`
 base=${basetmp%.gff}
-awk -v lid=$src -v dist=$dist 'BEGIN{OFS="\t"}{tot++; if($7<=dist){tss++;} if($8<=dist){tts++;}}END{print lid, tot, tss, tss/tot*100, tts, tts/tot*100}' $base\_predtr_spliced_stranded_exact_$refbase\_correstrlist_TSS_AnnotTSSlist_TTS_AnnotTTSlist_smallerdist_TSS_TTS.txt
+awk -v lid=$src -v dist=$dist 'BEGIN{OFS="\t"}{tot++; if($7<=dist){tss++;} if($8<=dist){tts++;}}END{print lid, tot, tss, (tot!="" ? tss/tot*100 : "NA"), tts, (tot!="" ? tts/tot*100 : "NA")}' $base\_predtr_spliced_stranded_exact_$refbase\_correstrlist_TSS_AnnotTSSlist_TTS_AnnotTTSlist_smallerdist_TSS_TTS.txt
 done | awk -v dist=$dist 'BEGIN{OFS="\t"; print "pred_set", "nb_exact_tr", "hitting_ref_tss_"dist"bp_nb", "hitting_ref_tss_"dist"bp_pcent", "hitting_ref_tts_"dist"bp_nb", "hitting_ref_tts_"dist"bp_pcent"}{print}' > Tables/prediction_sets_nbexacttr_hitting_ref_tss_$dist\bp_nb_pcent_hitting_ref_tts_$dist\bp_nb_pcent.tsv 
 cat Tables/prediction_sets_nbexacttr_hitting_ref_tss_$dist\bp_nb_pcent_hitting_ref_tts_$dist\bp_nb_pcent.tsv >&2
 done
