@@ -83,7 +83,7 @@ cutgff=$rootdir/cutgff.awk
 # I will take a random number between 0 and 10 as a seed
 randomSeed=`shuf -i1-10 -n1`
 
-awk -v elt='exon' '$3==elt' $annot | awk -v to=8 -f $cutgff | sort -k1,1 -k4,4 -k5,5 | uniq | bedtools intersect -abam <(samtools view -b -s ${randomSeed}.01 -F 260 $bamfile) -b stdin -split -bed -wo | awk '{print $4, $6, $19;}' | uniq | awk '{split($1,a,"/"); readCount["total"]++; readCount[a[2]":"$2":"$3]++;}END{fraction1=(readCount["1:+:+"]+readCount["1:-:-"]+readCount["2:+:-"]+readCount["2:-:+"]); fraction2=(readCount["1:+:-"]+readCount["1:-:+"]+readCount["2:+:+"]+readCount["2:-:-"]); other=(readCount["total"]-(fraction1+fraction2)); print (fraction1/readCount["total"]*100), (fraction2/readCount["total"]*100), other;}' 
+awk -v elt='exon' '$3==elt' "$annot" | awk -v to=8 -f $cutgff | sort -k1,1 -k4,4 -k5,5 | uniq | bedtools intersect -abam <(samtools view -b -s ${randomSeed}.01 -F 260 "$bamfile") -b stdin -split -bed -wo | awk '{print $4, $6, $19;}' | uniq | awk '{split($1,a,"/"); readCount["total"]++; readCount[a[2]":"$2":"$3]++;}END{fraction1=(readCount["1:+:+"]+readCount["1:-:-"]+readCount["2:+:-"]+readCount["2:-:+"]); fraction2=(readCount["1:+:-"]+readCount["1:-:+"]+readCount["2:+:+"]+readCount["2:-:-"]); other=(readCount["total"]-(fraction1+fraction2)); print (fraction1/readCount["total"]*100), (fraction2/readCount["total"]*100), other;}' 
 
 
 
