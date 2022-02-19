@@ -1,5 +1,7 @@
 # Scripts
-Bash and awk script for genomics and transcriptomics
+Bash, awk, R, python scripts and executables for genomics and transcriptomics
+
+Authors: Sarah Djebali, Alessandra Breschi, Sylvain Foissac
 
 In order to clone the repository do
 
