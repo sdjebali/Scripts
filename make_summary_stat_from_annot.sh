@@ -5,7 +5,7 @@ set -Eexo pipefail
 #################################
 # takes as input:
 ################
-# - a gff file of which it only considers the exon rows and assumes the gnid is in field no 10 and trid in field no 12
+# - a gff file of which it only considers the exon rows and assumes it has gene_id and transcript_id in the 9th field
 # it outputs:
 #############
 # - a two row files with some numbers of annotated elements (nbex nbdistinctex nbtr nbgn nbintrons nbdistinctintrons)

@@ -81,7 +81,7 @@ BEGIN{
     split($0,a,"\t");
     split(a[9],b," ");
     
-    # find out whether there is a ref transcripts in the supporting transcripts and in this case change the transcript id to the longest of them
+    # find out whether there is a ref transcript in the supporting transcripts and in this case change the transcript id to the longest of them
     k=1;
     while(found==0&&b[k]!="")
     {
