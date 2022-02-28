@@ -225,12 +225,12 @@ if (opt$verbose) {
 
 # read metadata and correct the merging fields
 if (!is.null(opt$col_metadata)) {
-	col_mdata = read.table(opt$col_metadata, h=T, sep="\t", quote="\"", comment.char="")
+	col_mdata = read.table(opt$col_metadata, h=T, sep="\t", quote="\"", comment.char="", colClasses = "factor")
 	col_mdata[opt$merge_col_mdata_on] <- make.names(col_mdata[,opt$merge_col_mdata_on])
 }
 
 if (!is.null(opt$row_metadata)) {
-	row_mdata = read.table(opt$row_metadata, h=T, sep="\t", quote="\"", comment.char="")
+	row_mdata = read.table(opt$row_metadata, h=T, sep="\t", quote="\"", comment.char="", colClasses = "factor")
 	row_mdata[opt$merge_row_mdata_on] <- make.names(row_mdata[,opt$merge_row_mdata_on])
 
 }
