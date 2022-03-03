@@ -1,5 +1,10 @@
 # srnaseq.bedlist.to.dcc.ena.tab.awk
-
+# very similar to srnaseq.tablist.to.dcc.ena.tab.awk so would be good to have a single awk file for both
+# main differences are, apart from file extension (bed vs tab):
+###############################################################
+# - id in 1st column, which is basename_predictions for bed files and just the basename of the tab file for tab file
+# - where to get the metadata info from the basename (from 9th to 13th for bed file, 5 first fields for tab file)
+# - type of file, SEQUENCE_ANNOTATION for bed files, SEQUENCE_FLATFILE for tab files
 
 # this script takes as input:
 #############################
@@ -13,14 +18,15 @@
 #   metadata of the sample (very specific to our example, not really generalizable to anything else)
 # this script makes as output:
 ##############################
-# - a tsv file that will be provided as the ena tab in the dcc submission file for the srnaseq analysis
+# - a tsv file that will be provided as part of the ena tab in the dcc submission file for the srnaseq analysis
 #   of a set of samples. This file has a header and then as many rows as bed files in the input file
 # Notes:
 ########
 # 1. we will take the basename of the bed file without the .bed extension as an alias, although the beg of the file is uggly
 
 # To improve:
-# make it possible to have the columns of the ena file in any number and use the header instead to know what is what
+# 1. make it possible to have the columns of the ena file in any number and use the header instead to know what is what
+# 2. make a single awk file for bed and tab files (see differences above)
 
 # example
 #########
@@ -45,7 +51,6 @@
 
 # sus_scrofa.srnaseq.bedlist.md5sum.tsv
 # /work/project/fragencode/workspace/geneswitch/results/srnaseq/sus_scrofa/nf-core.smrnaseq.1.1.0.Sscrofa11.1.102.21-06-28/mirdeep2/mirdeep/result_28_06_2021_t_16_37_24_pig_stage3_newbornday1_liver_rep1_1.bed	2a7bcbbc3043e1863bec32898641cd44
-# /work/project/fragencode/workspace/geneswitch/results/srnaseq/sus_scrofa/nf-core.smrnaseq.1.1.0.Sscrofa11.1.102.21-06-28/mirdeep2/mirdeep/result_28_06_2021_t_16_37_29_pig_stage3_newbornday1_liver_rep3_1.bed	5cad09745e3f99d9f600db858b6db1ae
 # 84 (2 fields)
 
 
