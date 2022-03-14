@@ -124,7 +124,7 @@ BEGIN{
 	{
 	    if(b[k]!="gene_id"&&b[k]!="transcript_id")
 	    {
-		info[$12]=(info[$12])(b[k])(" ")(b[k+1]);
+		info[$12]=(info[$12])(b[k])(" ")(b[k+1])(" ");
 	    }
 	    k+=2;
 	}

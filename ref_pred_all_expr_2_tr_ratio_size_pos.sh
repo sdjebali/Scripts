@@ -49,7 +49,8 @@ then
     echo "" >&2
     echo where >&2
     echo "- ref_annot.gtf and pred_annot.gff are two gtf or gff2 files with at least exons rows and with gene_id and transcript_id in the 9th field" >&2
-    echo "- tr_TPM.tsv is a tsv file with header that has transcript id, gene id and then TPM expression in a set of samples" >&2
+    echo "- tr_TPM.tsv is a tsv file with header that has predicted transcript id, gene id and then TPM expression in a set of samples" >&2
+    echo "  note that when the predicted tr is the same as a ref tr the tr id should be the ref tr id" >&2
     echo "- outdir is the optional output directory (default current working directory)" >&2
     echo "and will write to output directory" >&2
     echo "- the reference and predicted transcript gff file filtered for TPM above 0.1 in at least 2 samples" >&2

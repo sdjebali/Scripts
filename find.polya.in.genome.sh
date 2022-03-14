@@ -78,5 +78,5 @@ echo "done" >&2
 # 4. Cleans
 ###########
 echo "I am cleaning" >&2
-# rm polyAhex.motif.profile.txt
+rm polyAhex.motif.profile.txt
 echo "done" >&2

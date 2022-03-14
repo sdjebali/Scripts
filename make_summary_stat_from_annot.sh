@@ -38,10 +38,36 @@ set -Eexo pipefail
 # annot=/users/rg/projects/encode/scaling_up/whole_genome/Gencode/version10/Long/Element/gen10.long.exon.gtf
 # time make_summary_stat_from_annot.sh $annot > gen10.long.sumstat.txt 2> gen10.long.sumstat.err
 # real	0m47.351s
+# real	1m52.679s *** on ensembl 102 pig on march 9th 2022
 
 # NOTE: on Dec 13th 2016 added generation of files with nb of tr for each gene and nb of ex for each tr
 # in order to be able to compute the distribution of those things
 # On Dec 15th 2016 replaced the _ delimitor by : in order to be able to accept ncbi annotation
+# On March 9th 2022 I add 6 rows for showing the following with a header before each to say what we show
+# - number and % of monoexonic transcripts
+# - number and % of transcripts longer than 20kb, 50kb, 100kb, 500kb, 1Mb
+# - number and % of transcripts with cdna longer than 2kb, 5kb, 10kb, 50kb, 100kb
+
+# output looks like this
+# nbex	nbdistinctex	nbtr	nbgn	nbintrons	nbdistinctintrons
+# 646004	303420	63041	31908	582963	251017
+# distribution of the number of exons per transcript
+# # Read 63041 items
+# #    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# #    1.00    3.00    7.00   10.25   14.00  151.00 
+# # argmax 39568
+# distribution of the number of transcripts per gene
+# # Read 31908 items
+# #    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+# #   1.000   1.000   1.000   1.976   2.000  10.000 
+# # argmax 128
+# number and percentage of monoexonic transcripts
+# 63041	5452	8.64834
+# number and percentage of transcripts longer than 50kb, 100kb, 500kb, 1Mb, 2Mb
+# 63041	19261	30.5531	10286	16.3164	611	0.969211	84	0.133247	5	0.00793135
+# number and percentage of transcripts with a cdna longer than 2kb, 5kb, 10kb, 50kb, 100kb
+# 63041	41419	65.7017	13999	22.2062	428	0.678923	0	0	0	0
+
 
 if [ ! -n "$1" ]
 then
@@ -51,9 +77,10 @@ then
     exit 1
 fi
 
+# Variable assigments
+#####################
 path="`dirname \"$0\"`" # relative path
 rootDir="`( cd \"$path\" && pwd )`" # absolute path
-
 annot=$1
 b=`basename ${annot%.gff}`
 b2=${b%.gtf} 
@@ -104,7 +131,17 @@ printf "distribution of the number of exons per transcript\n"
 $STATS $b2\_trid_nbex.txt 2 
 printf "distribution of the number of transcripts per gene\n"
 $STATS $b2\_gnid_nbtr.txt 2
+# number and % of monoexonic transcripts
+printf "number and percentage of monoexonic transcripts\n"
+awk '{nbex[$12]++} END{OFS="\t"; for(t in nbex){n++; if(nbex[t]==1){n1++}} print n, n1, n1/n*100}' $b2\_exons_sorted_by_tr.gff
+# number and % of transcripts longer than 50kb, 100kb, 500kb, 1Mb, 2Mb
+printf "number and percentage of transcripts longer than 50kb, 100kb, 500kb, 1Mb, 2Mb\n"
+awk '{trlg[$12]=$5-$4+1} END{OFS="\t"; for(t in trlg){n++; if(trlg[t]>=50000){n1++; if(trlg[t]>=100000){n2++} if(trlg[t]>=500000){n3++} if(trlg[t]>=1000000){n4++} if(trlg[t]>=2000000){n5++}}} print n, nn(n1), n1/n*100, nn(n2), n2/n*100, nn(n3), n3/n*100, nn(n4), n4/n*100, nn(n5), n5/n*100} function nn(x){return (x=="" ? 0 : x)}' $b2\_transcripts.gff
+# number and % of transcripts with a cdna longer than 2kb, 5kb, 10kb, 50kb, 100kb
+printf "number and percentage of transcripts with a cdna longer than 2kb, 5kb, 10kb, 50kb, 100kb\n"
+awk '{cdnalg[$12]+=($5-$4+1)} END{OFS="\t"; for(t in cdnalg){n++; if(cdnalg[t]>=2000){n1++; if(cdnalg[t]>=5000){n2++} if(cdnalg[t]>=10000){n3++} if(cdnalg[t]>=50000){n4++} if(cdnalg[t]>=100000){n5++}}} print n, nn(n1), n1/n*100, nn(n2), n2/n*100, nn(n3), n3/n*100, nn(n4), n4/n*100, nn(n5), n5/n*100} function nn(x){return (x=="" ? 0 : x)}' $b2\_exons_sorted_by_tr.gff
 echo done >&2
+
 
 # Clean
 echo Cleaning >&2

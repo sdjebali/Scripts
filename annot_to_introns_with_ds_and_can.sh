@@ -6,6 +6,8 @@ set -Eexo pipefail
 # !!! needs fastalength to be installed !!!
 # !!! should not be run twice in the same directory since uses files with fixed names !!!
 # !!! TODO: do not crash even if a sequence to extract goes beyond the boundaries of a chromosome !!!
+# on March 10th 2022 allow the gtf/gff2 file to have gene_id and transcript_id anywhere in the 9th field !!!
+# on March 11th 2022 put all the intermediate and the final file where the annot is
 
 # From an annotation makes its introns with information about duplicated sequence (as computed by duplseq) and canonicity
 
@@ -71,11 +73,12 @@ then
     echo "" >&2
     echo Usage: annot_to_introns_with_ds_and_can.sh annot.gtf genome.fa >&2
     echo "where:" >&2
-    echo "- annot.gtf is an annotation in gtf or gff2 format with at least exon rows, and with gene id and transcript id as the first two keys" >&2
+    echo "- annot.gtf is an annotation in gtf or gff2 format with at least exon rows, and with gene id and transcript in the 9th field (anywhere)" >&2
     echo "- genome.fa is a fasta file containing the chromosome sequences for this annotation" >&2
-    echo "will provide as output an intron file made from the annotation with both duplicated sequence (DS, computed by duplseq) and canonicity information" >&2
+    echo "will provide as output in the same directory as the annotation file an intron file made from the annotation with both duplicated sequence (DS, computed by duplseq) and canonicity information" >&2
     echo "as well as some DS statistics depending on the canonicity on the standard output" >&2
-    echo "!!! should not be run twice in the same directory since uses files with fixed names !!!" >&2
+    echo "Note1: needs exonerate, bedtools, R in your path" >&2
+    echo "Note2: should not be run twice in the same directory since uses files with fixed names !!!" >&2
     echo "" >&2
     exit 1
 fi
@@ -84,27 +87,30 @@ fi
 ##################
 path="`dirname \"$0\"`" # relative path
 rootDir="`( cd \"$path\" && pwd )`" # absolute path
-
 annot=$1
 genome=$2
-basetmp=`basename $annot`
-basetmp2=${basetmp%.gtf}
-base=${basetmp2%.gff}
+basetmp=${annot%.gtf}
+base=${basetmp%.gff}
 
 # Programs
 ##########
+MAKEOK=$rootDir/make_gff_ok.awk
+GFF2GFF=$rootDir/gff2gff.awk
 MAKEINTRONS=$rootDir/make_introns.awk
 CUTGFF=$rootDir/cutgff.awk
-GFF2GFF=$rootDir/gff2gff.awk
 DUPLSEQ=$rootDir/duplseq
 CANONICAL=$rootDir/intron_is_canonical_gal.awk
 PROP=$rootDir/compute_prop.awk
+
+# Makes an ok gff file file from the annotation input file
+##########################################################
+awk '$3=="exon"' $annot | awk -f $MAKEOK | awk -f $GFF2GFF | sort -k12,12 -k4,4n -k5,5n > $base\_exons_sorted_by_tr.gff
 
 # Makes the introns from the annotation gtf file
 ################################################
 # !!! the exons have to be sorted according to tr id and then coord !!!
 echo I am making the introns from the annotation gtf file >&2
-awk '$3=="exon"' $annot | sort -k12,12 -k4,4n -k5,5n | awk -v fldgn=10 -v fldtr=12 -f $MAKEINTRONS | awk -v to=12 -f $CUTGFF > $base\_introns.gff
+awk '$3=="exon"' $base\_exons_sorted_by_tr.gff | awk -v fldgn=10 -v fldtr=12 -f $MAKEINTRONS | awk -v to=12 -f $CUTGFF > $base\_introns.gff
 # chr1  HAVANA  intron  12058   12178   .       +       .       gene_id "ENSG00000223972.5"; transcript_id "ENST00000450305.2";
 # 962475 (12 fields) *** real    1m4.374s
 echo done >&2
@@ -237,6 +243,7 @@ echo done >&2
 
 # Cleaning
 ##########
+rm $base\_exons_sorted_by_tr.gff
 rm genome.len
 rm $base\_introns.gff
 rm $base\_introns_24mer_don_acc.gff
@@ -245,3 +252,4 @@ rm $base\_introns_24mer_don_acc_nr.tsv
 rm $base\_introns_24mer_don_acc_seq.gff
 rm $base\_introns_24mer_don_acc_seq_ds.gff
 rm $base.ds.lg.tmp 
+gzip $base\_introns_24mer_don_acc_seq_ds_can.gff

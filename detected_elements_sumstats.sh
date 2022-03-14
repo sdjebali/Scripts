@@ -7,9 +7,13 @@ set -Eexo pipefail
 #################
 # - a reference gene annotation file in gtf (such as the ones provided by ensembl) or gff2 format 
 # - a predicted gene annotation file in gtf or gff2 format
-# - a matrix of transcript TPM values in a set of samples (tsv file with header whose columns are transcript_id, gene_id and TPM values in a set of samples)
+# - a matrix of predicted transcript TPM values in a set of samples (tsv file with header whose columns are transcript_id,
+#   gene_id and TPM values in a set of samples). Predicted transcripts should have a reference transcript id when it is the same
+#   as a reference transcript, otherwise all reference transcripts will be considered not expressed
 #   this file should contain transcript ids from the reference and from the predicted gene annotation
-# - a matrix of gene TPM values in a set of samples (tsv file with header whose columns are gene_id and TPM values in a set of samples)
+# - a matrix of predicted gene TPM values in a set of samples (tsv file with header whose columns are gene_id and TPM values
+#   in a set of samples). It would be good that predicted genes have a reference gene id when the predicted gene is exactly the
+#   same as a ref gene but it is more complicated than for transcripts to do
 # outputs 
 ##########
 # - a tsv file with header that has:

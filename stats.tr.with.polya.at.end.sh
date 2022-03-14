@@ -38,7 +38,7 @@ then
     echo "- an annotation file in gtf format (with transcript rows)" >&2
     echo "- an optional integer representing the flank (# bp from transcripts'ends where polyA sites will be looked for)" >&2
     echo "" >&2
-    echo "produces as output:" >&2
+    echo "produces as output in the same directory as the gff file:" >&2
     echo "- a tsv file with the number and % of transcripts with polyA sites at their ends (+-flank) located at the same place as the gtf file" >&2
     echo "" >&2
     echo "Note: Needs bedtools in your path (tested with v2-2.29.0 on the genotoul slurm cluster)" >&2
@@ -57,9 +57,11 @@ then
 else
     flank=50
 fi
-all=${annot%.gtf}.tts-$flank.all.bed
-distinct=${annot%.gtf}.tts-$flank.distinct.bed
-out=${annot%.gtf}.tts-$flank.polyA.stats.tsv
+basetmp=${annot%.gtf}
+base=${basetmp%.gff}
+all=$base.tts-$flank.all.bed
+distinct=$base.tts-$flank.distinct.bed
+out=$base.tts-$flank.polyA.stats.tsv
 
 # Program assignment
 ####################
@@ -114,5 +116,6 @@ echo "done" >&2
 # 5. Cleans
 ###########
 echo "I am cleaning" >&2
-
+rm $all
+rm $distinct
 echo "done" >&2
