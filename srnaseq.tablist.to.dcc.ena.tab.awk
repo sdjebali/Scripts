@@ -1,4 +1,11 @@
 # srnaseq.tablist.to.dcc.ena.tab.awk
+# !!! on March 16th 2022 I put a much smaller description for the sake of conversion from tsv to excel !!!
+# !!! the long one for pig was !!!
+# RNA sequencing of pig tissues for small RNA annotation and expression analysis. Tissue specific RNA-seq data was generated to support annotation of small non-coding genes (in particular miRNAs) and to measure tissue specific expression. This study is part of the FAANG project, promoting rapid prepublication of data to support the research community. These data are released under Fort Lauderdale principles, as confirmed in the Toronto Statement (Toronto International Data Release Workshop. Birney et al. 2009. Pre-publication data sharing. Nature 461:168-170). Any use of this dataset must abide by the FAANG data sharing principles. Data producers reserve the right to make the first publication of a global analysis of this data. If you are unsure if you are allowed to publish on this dataset, please contact the FAANG Data Coordination Centre and FAANG Consortium (email: sarah.djebali@inserm.fr, sylvain.foissac@inrae.fr, faang-dcc@ebi.ac.uk, and cc faang@iastate.edu) to enquire. The full guidelines can be found at http://www.faang.org/data-share-principle.
+# !!! and it now is !!!
+# RNA sequencing
+
+
 # very similar to srnaseq.bedlist.to.dcc.ena.tab.awk so would be good to have a single awk file for both
 # main differences are, apart from file extension (bed vs tab):
 ###############################################################
@@ -56,9 +63,8 @@
 
 # output sus_scrofa.srnaseq.tabfile.ena.tab.tsv 
 # Alias	Title	Analysis Type	Description	Study	Samples	Samples	Experiments	Experiments	Runs	Runs	Related Analyses	File Names	File Types	Checksum Methods	Checksums	Analysis Center	Analysis Date	Unit
-# pig_stage1_fetusday30_cerebellum_rep1_1.mature.cpm	GENE-SWitCH Pig transcriptome and gene expression atlas (smallRNA-seq)	SEQUENCE_FLATFILE	RNA sequencing of pig tissues for small RNA annotation and expression analysis. Tissue specific RNA-seq data was generated to support annotation of small non-coding genes (in particular miRNAs) and to measure tissue specific expression. This study is part of the FAANG project, promoting rapid prepublication of data to support the research community. These data are released under Fort Lauderdale principles, as confirmed in the Toronto Statement (Toronto International Data Release Workshop. Birney et al. 2009. Pre-publication data sharing. Nature 461:168-170). Any use of this dataset must abide by the FAANG data sharing principles. Data producers reserve the right to make the first publication of a global analysis of this data. If you are unsure if you are allowed to publish on this dataset, please contact the FAANG Data Coordination Centre and FAANG Consortium (email: sarah.djebali@inserm.fr, sylvain.foissac@inrae.fr, faang-dcc@ebi.ac.uk, and cc faang@iastate.edu) to enquire. The full guidelines can be found at http://www.faang.org/data-share-principle.		SAMEA7629264		ERX4801454		ERR4991929				tab	MD5	b3c09276943df25e9dc415ff7c1ed958	INRAE Centre Toulouse Occitanie	2021-11-29	YYYY-MM-DD
-# 1 (26 fields)
-# 168 (172 fields)  *** 2nd samples, 2nd experiments, 2nd runs, related analyses, fine names are all empty here
+# pig_stage1_fetusday30_cerebellum_rep1_1.mature.cpm	GENE-SWitCH Pig transcriptome and gene expression atlas (smallRNA-seq)	SEQUENCE_FLATFILE	RNA sequencingPRJEB42001	SAMEA7629264		ERX4801454		ERR4991929			pig_stage1_fetusday30_cerebellum_rep1_1.mature.cpm.tab	tab	MD5	b3c09276943df25e9dc415ff7c1ed958	INRAE Centre Toulouse Occitanie	2021-11-29	YYYY-MM-DD
+# 169 (26 fields) *** 2nd samples, 2nd experiments, 2nd runs, related analyses, fine names are all empty here
 
 
 BEGIN{
@@ -83,10 +89,12 @@ BEGIN{
 
 {
     # for each tab file from the list, put the basename of the file without the .tab extension as an alias, and from its metadata get the runid and the other ids
+    # note the basename of the file looks like this
+    # pig_stage1_fetusday30_cerebellum_rep1_1.mature.cpm.tab
     n=split($1,a,"/");
     split(a[n],b,".tab");
     split(b[1],c,"_");
     run=runid[c[1]"_"c[2]"_"c[3]"_"c[4]"_"c[5]];
     # write the 19 columnms (some of which are empty)
-    print b[1], "GENE-SWitCH Pig transcriptome and gene expression atlas (smallRNA-seq)", "SEQUENCE_FLATFILE", "RNA sequencing of pig tissues for small RNA annotation and expression analysis. Tissue specific RNA-seq data was generated to support annotation of small non-coding genes (in particular miRNAs) and to measure tissue specific expression. This study is part of the FAANG project, promoting rapid prepublication of data to support the research community. These data are released under Fort Lauderdale principles, as confirmed in the Toronto Statement (Toronto International Data Release Workshop. Birney et al. 2009. Pre-publication data sharing. Nature 461:168-170). Any use of this dataset must abide by the FAANG data sharing principles. Data producers reserve the right to make the first publication of a global analysis of this data. If you are unsure if you are allowed to publish on this dataset, please contact the FAANG Data Coordination Centre and FAANG Consortium (email: sarah.djebali@inserm.fr, sylvain.foissac@inrae.fr, faang-dcc@ebi.ac.uk, and cc faang@iastate.edu) to enquire. The full guidelines can be found at http://www.faang.org/data-share-principle.", studid[run], sampleid[run], "", expid[run], "", run, "", "", "", "tab", "MD5", $2, "INRAE Centre Toulouse Occitanie", "2021-11-29", "YYYY-MM-DD";
+    print b[1], "GENE-SWitCH Pig transcriptome and gene expression atlas (smallRNA-seq)", "SEQUENCE_ANNOTATION", "RNA sequencing", studyid[run], sampleid[run], "", expid[run], "", run, "", "", "srnaseq/tabfiles/"a[n], "tab", "MD5", $2, "INRAE Centre Toulouse Occitanie", "2021-11-29", "YYYY-MM-DD";
 }

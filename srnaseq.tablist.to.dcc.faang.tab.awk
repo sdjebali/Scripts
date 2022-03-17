@@ -15,7 +15,7 @@
 ########
 # 1. many things on those rows are hard-coded here such as the bioinformatics protocol and others
 #    since the header and the first row should look like this
-# Alias	Project	Secondary Project	Assay Type	Analysis Protocol	Analysis Code	Analysis Version	Reference Genome
+# Alias	Project	Secondary Project	Assay Type	Analysis Protocol	Analysis Code	Analysis Code Version	Reference Genome
 # labExpId_processed_reads	FAANG	GENE-SWitCH	microRNA profiling by high throughput sequencing	https://data.faang.org/api/fire_api/analyses/INSERM-INRAE_SOP_srnaseq-processing_20211129.pdf	https://github.com/nf-core/smrnaseq	v1.1.0	Sscrofa11.1
 # 2. we will take the basename of the tab file without the .tab extension as an alias
 
@@ -36,7 +36,7 @@
 # 168 (2 fields)
 
 # output sus_scrofa.srnaseq.tabfile.faang.tab.tsv 
-# Alias	Project	Secondary Project	Assay Type	Analysis Protocol	Analysis Code	Analysis Version	Reference Genome
+# Alias	Project	Secondary Project	Assay Type	Analysis Protocol	Analysis Code	Analysis Code Version	Reference Genome
 # pig_stage1_fetusday30_cerebellum_rep1_1.mature.cpm	FAANG	GENE-SWitCH	microRNA profiling by high throughput sequencing	https://data.faang.org/api/fire_api/analyses/INSERM-INRAE_SOP_srnaseq-processing_20211129.pdf	https://github.com/nf-core/smrnaseq	v1.1.0	Sscrofa11.1
 # 168 (13 fields)
 # 1 (14 fields) 
@@ -44,7 +44,7 @@
 BEGIN{
     OFS="\t";
     # print the header
-    print "Alias", "Project", "Secondary Project", "Assay Type", "Analysis Protocol", "Analysis Code", "Analysis Version", "Reference Genome";
+    print "Alias", "Project", "Secondary Project", "Assay Type", "Analysis Protocol", "Analysis Code", "Analysis Code Version", "Reference Genome";
 }
 
 {

@@ -1,5 +1,9 @@
 # srnaseq.bamlist.to.dcc.ena.tab.awk
-
+# !!! on March 16th 2022 I put a very basic description instead of the long one since conversion issue to go from tsv to excel then !!!
+# !!! for pig it was the following !!!
+# RNA sequencing of pig tissues for small RNA annotation and expression analysis. Tissue specific RNA-seq data was generated to support annotation of small non-coding genes (in particular miRNAs) and to measure tissue specific expression. This study is part of the FAANG project, promoting rapid prepublication of data to support the research community. These data are released under Fort Lauderdale principles, as confirmed in the Toronto Statement (Toronto International Data Release Workshop. Birney et al. 2009. Pre-publication data sharing. Nature 461:168-170). Any use of this dataset must abide by the FAANG data sharing principles. Data producers reserve the right to make the first publication of a global analysis of this data. If you are unsure if you are allowed to publish on this dataset, please contact the FAANG Data Coordination Centre and FAANG Consortium (email: sarah.djebali@inserm.fr, sylvain.foissac@inrae.fr, faang-dcc@ebi.ac.uk, and cc faang@iastate.edu) to enquire. The full guidelines can be found at http://www.faang.org/data-share-principle.
+# !!! and it now is !!!
+# RNA sequencing 
 
 # this script takes as input:
 #############################
@@ -17,16 +21,17 @@
 #   of a set of samples. This file has a header and then as many rows as bam files in the input file
 # Notes:
 ########
-# 1. we will take the basename of the bam file without .sorted.bam as an alias
+# 1. we will take the basename of the bam file without .bam as an alias as it must be the same as in the faang tab!
 
 # To improve:
 # make it possible to have the columns of the ena file in any number and use the header instead to know what is what
 
 # example
 #########
-# cd /work2/project/fragencode/workspace/geneswitch/data/metadata/srnase
-# pgm=/work2/project/fragencode/tools/multi/Scripts/srnaseq.bamlist.to.dcc.ena.tab.awk
-# time awk -v fileRef1=srnaseq.read1.sus_scrofa.tsv -v fileRef2=ena_export_pig_srnas_PRJEB42001.tsv -f $pgm sus_scrofa.srnaseq.bamlist.md5sum.tsv > sus_scrofa.srnaseq.pig.bamfile.ena.tab.tsv 
+# cd /work/project/fragencode/workspace/geneswitch/data/metadata/srnaseq
+# pgm=/work/project/fragencode/tools/multi/Scripts/srnaseq.bamlist.to.dcc.ena.tab.awk
+# time awk -v fileRef1=srnaseq.read1.sus_scrofa.tsv -v fileRef2=ena_export_pig_srnas_PRJEB42001.tsv -f $pgm sus_scrofa.srnaseq.bamlist.md5sum.tsv > sus_scrofa.srnaseq.bamfile.ena.tab.tsv 
+# real	0m0.022s
 
 
 # fileRef1=srnaseq.read1.sus_scrofa.tsv
@@ -44,15 +49,14 @@
 #                  *** the study id from this file is more reliable than in the read file (where need to be corrected for pig)
 
 # sus_scrofa.srnaseq.bamlist.md5sum.tsv
-# /work2/project/fragencode/workspace/geneswitch/results/srnaseq/sus_scrofa/nf-core.smrnaseq.1.1.0.Sscrofa11.1.102.21-06-28/bowtie/miRBase_mature/pig_stage1_fetusday30_cerebellum_rep1_1.mature.sorted.bam	2a1545e0a6e3950ff8cd28b50338aa31
+# /work/project/fragencode/workspace/geneswitch/results/srnaseq/sus_scrofa/nf-core.smrnaseq.1.1.0.Sscrofa11.1.102.21-06-28/bowtie/miRBase_mature/pig_stage1_fetusday30_cerebellum_rep1_1.mature.sorted.bam	2a1545e0a6e3950ff8cd28b50338aa31
 # 168 (2 fields)
 
 
 # output sus_scrofa.srnaseq.pig.bamfile.ena.tab.tsv 
 # Alias	Title	Analysis Type	Description	Study	Samples	Samples	Experiments	Experiments	Runs	Runs	Related Analyses	File Names	File Types	Checksum Methods	Checksums	Analysis Center	Analysis Date	Unit
-# pig_stage1_fetusday30_cerebellum_rep1_1.mature	GENE-SWitCH Pig transcriptome and gene expression atlas (smallRNA-seq)	PROCESSED_READS	RNA sequencing of pig tissues for small RNA annotation and expression analysis. Tissue specific RNA-seq data was generated to support annotation of small non-coding genes (in particular miRNAs) and to measure tissue specific expression. This study is part of the FAANG project, promoting rapid prepublication of data to support the research community. These data are released under Fort Lauderdale principles, as confirmed in the Toronto Statement (Toronto International Data Release Workshop. Birney et al. 2009. Pre-publication data sharing. Nature 461:168-170). Any use of this dataset must abide by the FAANG data sharing principles. Data producers reserve the right to make the first publication of a global analysis of this data. If you are unsure if you are allowed to publish on this dataset, please contact the FAANG Data Coordination Centre and FAANG Consortium (email: sarah.djebali@inserm.fr, sylvain.foissac@inrae.fr, faang-dcc@ebi.ac.uk, and cc faang@iastate.edu) to enquire. The full guidelines can be found at http://www.faang.org/data-share-principle.										bam	MD5	2a1545e0a6e3950ff8cd28b50338aa31	INRAE Centre Toulouse Occitanie	2021-11-29	YYYY-MM-DD
-# 1 (26 fields)
-# 168 (169 fields)  *** 2nd samples, 2nd experiments, 2nd runs, related analyses, fine names are all empty here
+# pig_stage1_fetusday30_cerebellum_rep1_1.mature.sorted	GENE-SWitCH Pig transcriptome and gene expression atlas (smallRNA-seq)	PROCESSED_READS	RNA sequencing	PRJEB42001	SAMEA7629264		ERX4801454		ERR4991929			srnaseq/bamfiles/pig_stage1_fetusday30_cerebellum_rep1_1.mature.sorted.bam	bam	MD5	2a1545e0a6e3950ff8cd28b50338aa31	INRAE Centre Toulouse Occitanie	2021-11-29	YYYY-MM-DD
+# 169 (26 fields)  *** 2nd samples, 2nd experiments, 2nd runs, related analyses, fine names are all empty here
 
 
 BEGIN{
@@ -60,7 +64,8 @@ BEGIN{
     # read the reads file to get the correspondence between the bam file name and the run number (reverse procedure compared to making symlinks)
     while (getline < fileRef1 >0)
     {
-	runid[$2"_"$4"_"$7"_"$3"_"$5]=$9;
+	runid[$2"_"$4"_"$7"_"$3"_"$5"_1.mature"]=$9;
+	runid[$2"_"$4"_"$7"_"$3"_"$5"_1.hairpin"]=$9;
     }
     
     # read the ena file to get the correspondence between the run id and the study id, the sample id and the expt id
@@ -76,11 +81,12 @@ BEGIN{
 }
 
 {
-    # for each bam file from the list, put the basename of the file without .sorted.bam as an alias, and from its metadata get the runid and the other ids
+    # for each bam file from the list, put the basename of the file without .bam as an alias, and from its metadata get the runid and the other ids
+    # the basename of the file looks like this pig_stage1_fetusday30_cerebellum_rep1_1.mature.sorted.bam
     n=split($1,a,"/");
-    split(a[n],b,".sorted.bam");
-    split(b[1],c,".mature");
+    split(a[n],b,".bam");
+    split(b[1],c,".sorted");
     run=runid[c[1]];
     # write the 19 columnms (some of which are empty)
-    print b[1], "GENE-SWitCH Pig transcriptome and gene expression atlas (smallRNA-seq)", "PROCESSED_READS", "RNA sequencing of pig tissues for small RNA annotation and expression analysis. Tissue specific RNA-seq data was generated to support annotation of small non-coding genes (in particular miRNAs) and to measure tissue specific expression. This study is part of the FAANG project, promoting rapid prepublication of data to support the research community. These data are released under Fort Lauderdale principles, as confirmed in the Toronto Statement (Toronto International Data Release Workshop. Birney et al. 2009. Pre-publication data sharing. Nature 461:168-170). Any use of this dataset must abide by the FAANG data sharing principles. Data producers reserve the right to make the first publication of a global analysis of this data. If you are unsure if you are allowed to publish on this dataset, please contact the FAANG Data Coordination Centre and FAANG Consortium (email: sarah.djebali@inserm.fr, sylvain.foissac@inrae.fr, faang-dcc@ebi.ac.uk, and cc faang@iastate.edu) to enquire. The full guidelines can be found at http://www.faang.org/data-share-principle.", studid[run], sampleid[run], "", expid[run], "", run, "", "", "", "bam", "MD5", $2, "INRAE Centre Toulouse Occitanie", "2021-11-29", "YYYY-MM-DD";
+    print b[1], "GENE-SWitCH Pig transcriptome and gene expression atlas (smallRNA-seq)", "PROCESSED_READS", "RNA sequencing", studyid[run], sampleid[run], "", expid[run], "", run, "", "", "srnaseq/bamfiles/"a[n], "bam", "MD5", $2, "INRAE Centre Toulouse Occitanie", "2021-11-29", "YYYY-MM-DD";
 }

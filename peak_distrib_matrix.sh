@@ -27,6 +27,10 @@ set -Eexo pipefail
 # annot=/work/project/fragencode/data/species/sus_scrofa/Sscrofa10.2.84/sus_scrofa.gtf
 # time peak_distrib_matrix.sh $pig $annot 0 gene > mergedpeaks_allinfo.tsv 2> peak_distrib_matrix.err
 # real	0m26.723s    *** for about 50 000 peaks
+# Note: can be followed by allinfo_to_distrib.awk to compute the distribution into gx domains
+# such as in
+# awk -v info1=$Sp -v info2=tissue.peaks.merged -f /work/project/fragencode/tools/multi/Scripts/allinfo_to_distrib.awk $resdir/$sp/tissue.peaks.merged/mergedpeaks_allinfo.tsv | awk 'BEGIN{OFS="\t"; print "Species", "peakcallmeth", "peaks_in_class_nb", "peaks_in_class_pcent", "class"} {print}' 
+
 
 # More precisely the body of the matrix will contain the following:
 ###################################################################
@@ -92,6 +96,7 @@ then
     echo "  the intersection with different genomic domains as columns (exons, introns, tss, tss1kb, tss5kb, tts, tts1kb, tts5kb)" >&2
     echo "" >&2
     echo "!!! be careful: do not run twice simulaneously in the same working directory since uses files with fixed names !!!" >&2
+    echo "!!! be careful: overlap must be in your path !!!" >&2
     exit 1
 fi
 
@@ -143,7 +148,7 @@ INTRONS=$rootDir/make_introns.awk
 MAKETSS=$rootDir/make_TSS_file_from_annotation_simple.sh
 MAKETTS=$rootDir/make_TTS_file_from_annotation_simple.sh
 GFF2GFF=$rootDir/gff2gff.awk
-OVERLAP=$rootDir/overlap
+OVERLAP=overlap
 CLASSIF=$rootDir/peakoverlap2classif.awk
 
 

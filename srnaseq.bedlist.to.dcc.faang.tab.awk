@@ -15,9 +15,9 @@
 ########
 # 1. many things on those rows are hard-coded here such as the bioinformatics protocol and others
 #    since the header and the first row should look like this
-# Alias	Project	Secondary Project	Assay Type	Analysis Protocol	Analysis Code	Analysis Version	Reference Genome
+# Alias	Project	Secondary Project	Assay Type	Analysis Protocol	Analysis Code	Analysis Code Version	Reference Genome
 # labExpId_processed_reads	FAANG	GENE-SWitCH	microRNA profiling by high throughput sequencing	https://data.faang.org/api/fire_api/analyses/INSERM-INRAE_SOP_srnaseq-processing_20211129.pdf	https://github.com/nf-core/smrnaseq	v1.1.0	Sscrofa11.1
-# 2. we will take the basename of the bed file without the .bed extension as an alias, although in the case if mirdeep2 files
+# 2. we will take the basename of the bed file without the .bed extension as an alias, although in the case of mirdeep2 files
 #    there is a strange begining of file ...
 # Improvements
 ##############
@@ -32,12 +32,12 @@
 # real	0m0.005s
 
 # sus_scrofa.srnaseq.bedlist.md5sum.tsv
-# /work/project/fragencode/workspace/geneswitch/results/srnaseq/sus_scrofa/nf-core.smrnaseq.1.1.0.Sscrofa11.1.102.21-06-28/mirdeep2/mirdeep/result_28_06_2021_t_16_37_24_pig_stage3_newbornday1_liver_rep1_1.bed	2a7bcbbc3043e1863bec32898641cd44
+# /work/project/fragencode/workspace/geneswitch/results/srnaseq/sus_scrofa/nf-core.smrnaseq.1.1.0.Sscrofa11.1.102.21-06-28/mirdeep2/mirdeep/result_28_06_2021_t_16_37_24_pig_stage3_newbornday1_liver_rep1_1.bed.gz	17815e014cd1bca17c74224d30a926df
 # 84 (2 fields)
 
 # output sus_scrofa.srnaseq.bedfile.faang.tab.tsv 
-# Alias	Project	Secondary Project	Assay Type	Analysis Protocol	Analysis Code	Analysis Version	Reference Genome
-# result_28_06_2021_t_16_37_24_pig_stage3_newbornday1_liver_rep1_1_predictions	FAANG	GENE-SWitCH	microRNA profiling by high throughput sequencing	https://data.faang.org/api/fire_api/analyses/INSERM-INRAE_SOP_srnaseq-processing_20211129.pdf	https://github.com/nf-core/smrnaseq	v1.1.0	Sscrofa11.1
+# Alias	Project	Secondary Project	Assay Type	Analysis Protocol	Analysis Code	Analysis Code Version	Reference Genome
+# result_28_06_2021_t_16_37_24_pig_stage3_newbornday1_liver_rep1_1	FAANG	GENE-SWitCH	microRNA profiling by high throughput sequencing	https://data.faang.org/api/fire_api/analyses/INSERM-INRAE_SOP_srnaseq-processing_20211129.pdf	https://github.com/nf-core/smrnaseq	v1.1.0	Sscrofa11.1
 # 84 (13 fields)
 # 1 (14 fields)
 
@@ -45,11 +45,11 @@
 BEGIN{
     OFS="\t";
     # print the header
-    print "Alias", "Project", "Secondary Project", "Assay Type", "Analysis Protocol", "Analysis Code", "Analysis Version", "Reference Genome";
+    print "Alias", "Project", "Secondary Project", "Assay Type", "Analysis Protocol", "Analysis Code", "Analysis Code Version", "Reference Genome";
 }
 
 {
     n=split($1,a,"/");
-    split(a[n],b,".bed");
-    print b[1]"_predictions", "FAANG", "GENE-SWitCH", "microRNA profiling by high throughput sequencing", "https://data.faang.org/api/fire_api/analyses/INSERM-INRAE_SOP_srnaseq-processing_20211129.pdf", "https://github.com/nf-core/smrnaseq", "v1.1.0", genome;
+    split(a[n],b,".bed.gz");
+    print b[1], "FAANG", "GENE-SWitCH", "microRNA profiling by high throughput sequencing", "https://data.faang.org/api/fire_api/analyses/INSERM-INRAE_SOP_srnaseq-processing_20211129.pdf", "https://github.com/nf-core/smrnaseq", "v1.1.0", genome;
 }

@@ -15,14 +15,14 @@
 ########
 # 1. many things on those rows are hard-coded here such as the bioinformatics protocol and others
 #    since the header and the first row should look like this
-# Alias	Project	Secondary Project	Assay Type	Analysis Protocol	Analysis Code	Analysis Version	Reference Genome
+# Alias	Project	Secondary Project	Assay Type	Analysis Protocol	Analysis Code	Analysis Code Version	Reference Genome
 # labExpId_processed_reads	FAANG	GENE-SWitCH	microRNA profiling by high throughput sequencing	https://data.faang.org/api/fire_api/analyses/INSERM-INRAE_SOP_srnaseq-processing_20211129.pdf	https://github.com/nf-core/smrnaseq	v1.1.0	Sscrofa11.1
-# 2. we will take the basename of the bam file without .sorted.bam as an alias 
+# 2. we will take the basename of the bam file without .bam as an alias 
 
 # example
 #########
 # cd ~/fragencode/workspace/geneswitch/data/metadata/srnaseq
-# pgm=/work2/project/fragencode/tools/multi/Scripts/srnaseq.bamlist.to.dcc.faang.tab.awk
+# pgm=/work/project/fragencode/tools/multi/Scripts/srnaseq.bamlist.to.dcc.faang.tab.awk
 # time awk -v genome=Sscrofa11.1 -f $pgm sus_scrofa.srnaseq.bamlist.md5sum.tsv > sus_scrofa.srnaseq.bamfile.faang.tab.tsv 
 # real	0m0.758s
 
@@ -33,8 +33,8 @@
 # 168 (2 fields)
 
 # output sus_scrofa.srnaseq.bamfile.faang.tab.tsv 
-# Alias	Project	Secondary Project	Assay Type	Analysis Protocol	Analysis Code	Analysis Version	Reference Genome
-# pig_stage1_fetusday30_cerebellum_rep1_1.mature_alignments	FAANG	GENE-SWitCH	microRNA profiling by high throughput sequencing	https://data.faang.org/api/fire_api/analyses/INSERM-INRAE_SOP_srnaseq-processing_20211129.pdf	https://github.com/nf-core/smrnaseq	v1.1.0	Sscrofa11.1
+# Alias	Project	Secondary Project	Assay Type	Analysis Protocol	Analysis Code	Analysis Code Version	Reference Genome
+# pig_stage1_fetusday30_cerebellum_rep1_1.mature.sorted	FAANG	GENE-SWitCH	microRNA profiling by high throughput sequencing	https://data.faang.org/api/fire_api/analyses/INSERM-INRAE_SOP_srnaseq-processing_20211129.pdf	https://github.com/nf-core/smrnaseq	v1.1.0	Sscrofa11.1
 # 168 (13 fields)
 # 1 (14 fields)
 
@@ -42,11 +42,11 @@
 BEGIN{
     OFS="\t";
     # print the header
-    print "Alias", "Project", "Secondary Project", "Assay Type", "Analysis Protocol", "Analysis Code", "Analysis Version", "Reference Genome";
+    print "Alias", "Project", "Secondary Project", "Assay Type", "Analysis Protocol", "Analysis Code", "Analysis Code Version", "Reference Genome";
 }
 
 {
     n=split($1,a,"/");
-    split(a[n],b,".sorted.bam");
-    print b[1]"_alignments", "FAANG", "GENE-SWitCH", "microRNA profiling by high throughput sequencing", "https://data.faang.org/api/fire_api/analyses/INSERM-INRAE_SOP_srnaseq-processing_20211129.pdf", "https://github.com/nf-core/smrnaseq", "v1.1.0", genome;
+    split(a[n],b,".bam");
+    print b[1], "FAANG", "GENE-SWitCH", "microRNA profiling by high throughput sequencing", "https://data.faang.org/api/fire_api/analyses/INSERM-INRAE_SOP_srnaseq-processing_20211129.pdf", "https://github.com/nf-core/smrnaseq", "v1.1.0", genome;
 }

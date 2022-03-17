@@ -1,5 +1,11 @@
 # srnaseq.bedlist.to.dcc.ena.tab.awk
 # very similar to srnaseq.tablist.to.dcc.ena.tab.awk so would be good to have a single awk file for both
+# !!! on March 16th 2022 I put a much smaller description for the sake of conversion from tsv to excel !!!
+# !!! the long one for pig was !!!
+# RNA sequencing of pig tissues for small RNA annotation and expression analysis. Tissue specific RNA-seq data was generated to support annotation of small non-coding genes (in particular miRNAs) and to measure tissue specific expression. This study is part of the FAANG project, promoting rapid prepublication of data to support the research community. These data are released under Fort Lauderdale principles, as confirmed in the Toronto Statement (Toronto International Data Release Workshop. Birney et al. 2009. Pre-publication data sharing. Nature 461:168-170). Any use of this dataset must abide by the FAANG data sharing principles. Data producers reserve the right to make the first publication of a global analysis of this data. If you are unsure if you are allowed to publish on this dataset, please contact the FAANG Data Coordination Centre and FAANG Consortium (email: sarah.djebali@inserm.fr, sylvain.foissac@inrae.fr, faang-dcc@ebi.ac.uk, and cc faang@iastate.edu) to enquire. The full guidelines can be found at http://www.faang.org/data-share-principle.
+# !!! and it now is !!!
+# RNA sequencing 
+
 # main differences are, apart from file extension (bed vs tab):
 ###############################################################
 # - id in 1st column, which is basename_predictions for bed files and just the basename of the tab file for tab file
@@ -50,15 +56,15 @@
 #                  *** the study id from this file is more reliable than in the read file (where need to be corrected for pig)
 
 # sus_scrofa.srnaseq.bedlist.md5sum.tsv
-# /work/project/fragencode/workspace/geneswitch/results/srnaseq/sus_scrofa/nf-core.smrnaseq.1.1.0.Sscrofa11.1.102.21-06-28/mirdeep2/mirdeep/result_28_06_2021_t_16_37_24_pig_stage3_newbornday1_liver_rep1_1.bed	2a7bcbbc3043e1863bec32898641cd44
+# /work/project/fragencode/workspace/geneswitch/results/srnaseq/sus_scrofa/nf-core.smrnaseq.1.1.0.Sscrofa11.1.102.21-06-28/mirdeep2/mirdeep/result_28_06_2021_t_16_37_24_pig_stage3_newbornday1_liver_rep1_1.bed.gz	17815e014cd1bca17c74224d30a926df
+# /work/project/fragencode/workspace/geneswitch/results/srnaseq/sus_scrofa/nf-core.smrnaseq.1.1.0.Sscrofa11.1.102.21-06-28/mirdeep2/mirdeep/result_28_06_2021_t_16_37_29_pig_stage3_newbornday1_liver_rep3_1.bed.gz	ef5afcf730ea3314faffff8be0c54180
 # 84 (2 fields)
 
 
 # output sus_scrofa.srnaseq.bedfile.ena.tab.tsv 
 # Alias	Title	Analysis Type	Description	Study	Samples	Samples	Experiments	Experiments	Runs	Runs	Related Analyses	File Names	File Types	Checksum Methods	Checksums	Analysis Center	Analysis Date	Unit
-# result_28_06_2021_t_16_37_24_pig_stage3_newbornday1_liver_rep1_1	GENE-SWitCH Pig transcriptome and gene expression atlas (smallRNA-seq)	SEQUENCE_ANNOTATION	RNA sequencing of pig tissues for small RNA annotation and expression analysis. Tissue specific RNA-seq data was generated to support annotation of small non-coding genes (in particular miRNAs) and to measure tissue specific expression. This study is part of the FAANG project, promoting rapid prepublication of data to support the research community. These data are released under Fort Lauderdale principles, as confirmed in the Toronto Statement (Toronto International Data Release Workshop. Birney et al. 2009. Pre-publication data sharing. Nature 461:168-170). Any use of this dataset must abide by the FAANG data sharing principles. Data producers reserve the right to make the first publication of a global analysis of this data. If you are unsure if you are allowed to publish on this dataset, please contact the FAANG Data Coordination Centre and FAANG Consortium (email: sarah.djebali@inserm.fr, sylvain.foissac@inrae.fr, faang-dcc@ebi.ac.uk, and cc faang@iastate.edu) to enquire. The full guidelines can be found at http://www.faang.org/data-share-principle.		SAMEA7629031		ERX4801494		ERR4991969				bed	MD5	2a7bcbbc3043e1863bec32898641cd44	INRAE Centre Toulouse Occitanie	2021-11-29	YYYY-MM-DD
-# 1 (26 fields)
-# 84 (172 fields) *** 2nd samples, 2nd experiments, 2nd runs, related analyses, fine names are all empty here
+# result_28_06_2021_t_16_37_24_pig_stage3_newbornday1_liver_rep1_1	GENE-SWitCH Pig transcriptome and gene expression atlas (smallRNA-seq)	SEQUENCE_ANNOTATION	RNA sequencing	PRJEB42001	SAMEA7629031		ERX4801494		ERR4991969			srnaseq/bedfiles/result_28_06_2021_t_16_37_24_pig_stage3_newbornday1_liver_rep1_1.bed.gz	bed	MD5	17815e014cd1bca17c74224d30a926df	INRAE Centre Toulouse Occitanie	2021-11-29	YYYY-MM-DD
+# 85 (26 fields)   *** 2nd samples, 2nd experiments, 2nd runs, related analyses, fine names are all empty here
 
 
 BEGIN{
@@ -82,11 +88,13 @@ BEGIN{
 }
 
 {
-    # for each bed file from the list, put the basename of the file without the .bed extension as an alias, and from its metadata get the runid and the other ids
+    # for each bed file from the list, put the basename of the file without the .bed.gz extension as an alias, and from its metadata get the runid and the other ids
+    # basename of the file looks like this
+    # result_28_06_2021_t_16_37_24_pig_stage3_newbornday1_liver_rep1_1.bed.gz
     n=split($1,a,"/");
-    split(a[n],b,".bed");
+    split(a[n],b,".bed.gz");
     split(b[1],c,"_");
     run=runid[c[9]"_"c[10]"_"c[11]"_"c[12]"_"c[13]];
     # write the 19 columnms (some of which are empty)
-    print b[1]"_predictions", "GENE-SWitCH Pig transcriptome and gene expression atlas (smallRNA-seq)", "SEQUENCE_ANNOTATION", "RNA sequencing of pig tissues for small RNA annotation and expression analysis. Tissue specific RNA-seq data was generated to support annotation of small non-coding genes (in particular miRNAs) and to measure tissue specific expression. This study is part of the FAANG project, promoting rapid prepublication of data to support the research community. These data are released under Fort Lauderdale principles, as confirmed in the Toronto Statement (Toronto International Data Release Workshop. Birney et al. 2009. Pre-publication data sharing. Nature 461:168-170). Any use of this dataset must abide by the FAANG data sharing principles. Data producers reserve the right to make the first publication of a global analysis of this data. If you are unsure if you are allowed to publish on this dataset, please contact the FAANG Data Coordination Centre and FAANG Consortium (email: sarah.djebali@inserm.fr, sylvain.foissac@inrae.fr, faang-dcc@ebi.ac.uk, and cc faang@iastate.edu) to enquire. The full guidelines can be found at http://www.faang.org/data-share-principle.", studid[run], sampleid[run], "", expid[run], "", run, "", "", "", "bed", "MD5", $2, "INRAE Centre Toulouse Occitanie", "2021-11-29", "YYYY-MM-DD";
+    print b[1], "GENE-SWitCH Pig transcriptome and gene expression atlas (smallRNA-seq)", "SEQUENCE_ANNOTATION", "RNA sequencing", studyid[run], sampleid[run], "", expid[run], "", run, "", "", "srnaseq/bedfiles/"a[n], "bed", "MD5", $2, "INRAE Centre Toulouse Occitanie", "2021-11-29", "YYYY-MM-DD";
 }
