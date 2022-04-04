@@ -1,5 +1,7 @@
 #!/bin/bash
 set -Eexo pipefail
+# on April 2nd 2022 I remove gsub(/.R1/,"",$0);  from the codes that make count and tpm ok files
+# since now those are not any more in the headers of the expression matrices output by tagada
 
 # plot_gene_expression.sh
 #########################
@@ -36,12 +38,12 @@ set -Eexo pipefail
 ###############
 # gene_id	TPM_rnaseq.sus_scrofa.cd8.pig3.R1	TPM_rnaseq.sus_scrofa.cd4.pig4.R1	TPM_rnaseq.sus_scrofa.cd4.pig3.R1	TPM_rnaseq.sus_scrofa.cd4.pig2.R1	TPM_rnaseq.sus_scrofa.cd8.pig2.R1	TPM_rnaseq.sus_scrofa.liver.pig3.R1	TPM_rnaseq.sus_scrofa.cd8.pig4.R1	TPM_rnaseq.sus_scrofa.liver.pig1	TPM_rnaseq.sus_scrofa.liver.pig4.R1	TPM_rnaseq.sus_scrofa.liver.pig2.R1	TPM_rnaseq.sus_scrofa.cd8.pig1.R1
 # ENSSSCG00000000026	0.0	0.0	0.0	0.0	0.0	0.0	0.019718	0.0	0.0	0.0	0.0
-# 26560 (12 fields)
+# 26560 (12 fields)   *** now we assume .R1 are not in the header of the expression matrices output by tagada any more
 # gene read count file
 ######################
 # gene_id	cov_rnaseq.sus_scrofa.cd8.pig3.R1	cov_rnaseq.sus_scrofa.cd4.pig4.R1	cov_rnaseq.sus_scrofa.cd4.pig3.R1	cov_rnaseq.sus_scrofa.cd4.pig2.R1	cov_rnaseq.sus_scrofa.cd8.pig2.R1	cov_rnaseq.sus_scrofa.liver.pig3.R1	cov_rnaseq.sus_scrofa.cd8.pig4.R1	cov_rnaseq.sus_scrofa.liver.pig1	cov_rnaseq.sus_scrofa.liver.pig4.R1	cov_rnaseq.sus_scrofa.liver.pig2.R1	cov_rnaseq.sus_scrofa.cd8.pig1.R1
 # ENSSSCG00000000026	0.0	0.0	0.0	0.0	0.0	0.0	0.228127	0.0	0.0	0.0	0.0
-# 26560 (12 fields)
+# 26560 (12 fields)  *** now we assume .R1 are not in the header of the expression matrices output by tagada any more
 # metadata file
 ###############
 # labExpId	file
@@ -87,7 +89,7 @@ awk 'NR==1{OFS="\t"; print} NR>=2{gsub(/-/,"",$0); print "lid."$1, "lid."$2}' $m
 
 # 2. make an ok TPM matrix file (with header with 1 column less than body)
 ##########################################################################
-awk 'NR==1{OFS="\t"; gsub(/TPM_/,"",$0); gsub(/.R1/,"",$0); gsub(/-/,"",$0); for(i=2; i<=NF-1; i++){s=(s)("lid."$i)("\t")} print (s)("lid."$i)} NR>=2{print}' $tpmfile > genes_TPM.tsv
+awk 'NR==1{OFS="\t"; gsub(/TPM_/,"",$0); gsub(/-/,"",$0); for(i=2; i<=NF-1; i++){s=(s)("lid."$i)("\t")} print (s)("lid."$i)} NR>=2{print}' $tpmfile > genes_TPM.tsv
 # rnaseq.sus_scrofa.cd8.pig3	rnaseq.sus_scrofa.cd4.pig4	rnaseq.sus_scrofa.cd4.pig3	rnaseq.sus_scrofa.cd4.pig2	rnaseq.sus_scrofa.cd8.pig2	rnaseq.sus_scrofa.liver.pig3	rnaseq.sus_scrofa.cd8.pig4	rnaseq.sus_scrofa.liver.pig1	rnaseq.sus_scrofa.liver.pig4	rnaseq.sus_scrofa.liver.pig2	rnaseq.sus_scrofa.cd8.pig1
 # ENSSSCG00000000026	0.0	0.0	0.0	0.0	0.0	0.0	0.019718	0.0	0.0	0.0	0.0
 # 1 (11 fields)
@@ -95,7 +97,7 @@ awk 'NR==1{OFS="\t"; gsub(/TPM_/,"",$0); gsub(/.R1/,"",$0); gsub(/-/,"",$0); for
 
 # 3. make an ok read count matrix file
 ######################################
-awk 'NR==1{OFS="\t"; gsub(/cov_/,"",$0); gsub(/.R1/,"",$0); gsub(/-/,"",$0); for(i=2; i<=NF-1; i++){s=(s)("lid."$i)("\t")} print (s)("lid."$i)} NR>=2{print}' $covfile > genes_readcount.tsv
+awk 'NR==1{OFS="\t"; gsub(/cov_/,"",$0); gsub(/-/,"",$0); for(i=2; i<=NF-1; i++){s=(s)("lid."$i)("\t")} print (s)("lid."$i)} NR>=2{print}' $covfile > genes_readcount.tsv
 # rnaseq.sus_scrofa.cd8.pig3	rnaseq.sus_scrofa.cd4.pig4	rnaseq.sus_scrofa.cd4.pig3	rnaseq.sus_scrofa.cd4.pig2	rnaseq.sus_scrofa.cd8.pig2	rnaseq.sus_scrofa.liver.pig3	rnaseq.sus_scrofa.cd8.pig4	rnaseq.sus_scrofa.liver.pig1	rnaseq.sus_scrofa.liver.pig4	rnaseq.sus_scrofa.liver.pig2	rnaseq.sus_scrofa.cd8.pig1
 # ENSSSCG00000000026	0.0	0.0	0.0	0.0	0.0	0.0	0.228127	0.0	0.0	0.0	0.0
 # 1 (11 fields)

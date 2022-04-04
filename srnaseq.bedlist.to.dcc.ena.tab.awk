@@ -1,4 +1,5 @@
 # srnaseq.bedlist.to.dcc.ena.tab.awk
+# !!! script not totally general since need to put the species name in the description manually !!!
 # very similar to srnaseq.tablist.to.dcc.ena.tab.awk so would be good to have a single awk file for both
 # !!! on March 16th 2022 I put a much smaller description for the sake of conversion from tsv to excel !!!
 # !!! the long one for pig was !!!
@@ -96,5 +97,5 @@ BEGIN{
     split(b[1],c,"_");
     run=runid[c[9]"_"c[10]"_"c[11]"_"c[12]"_"c[13]];
     # write the 19 columnms (some of which are empty)
-    print b[1], "GENE-SWitCH Pig transcriptome and gene expression atlas (smallRNA-seq)", "SEQUENCE_ANNOTATION", "RNA sequencing", studyid[run], sampleid[run], "", expid[run], "", run, "", "", "srnaseq/bedfiles/"a[n], "bed", "MD5", $2, "INRAE Centre Toulouse Occitanie", "2021-11-29", "YYYY-MM-DD";
+    print b[1], "GENE-SWitCH Chicken transcriptome and gene expression atlas (smallRNA-seq)", "SEQUENCE_ANNOTATION", "RNA sequencing", studyid[run], sampleid[run], "", expid[run], "", run, "", "", "srnaseq/bedfiles/"a[n], "bed", "MD5", $2, "INRAE Centre Toulouse Occitanie", "2021-11-29", "YYYY-MM-DD";
 }

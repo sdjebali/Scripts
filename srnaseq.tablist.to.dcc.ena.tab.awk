@@ -1,4 +1,5 @@
 # srnaseq.tablist.to.dcc.ena.tab.awk
+# !!! script not totally general since need to put the species name in the description manually !!!
 # !!! on March 16th 2022 I put a much smaller description for the sake of conversion from tsv to excel !!!
 # !!! the long one for pig was !!!
 # RNA sequencing of pig tissues for small RNA annotation and expression analysis. Tissue specific RNA-seq data was generated to support annotation of small non-coding genes (in particular miRNAs) and to measure tissue specific expression. This study is part of the FAANG project, promoting rapid prepublication of data to support the research community. These data are released under Fort Lauderdale principles, as confirmed in the Toronto Statement (Toronto International Data Release Workshop. Birney et al. 2009. Pre-publication data sharing. Nature 461:168-170). Any use of this dataset must abide by the FAANG data sharing principles. Data producers reserve the right to make the first publication of a global analysis of this data. If you are unsure if you are allowed to publish on this dataset, please contact the FAANG Data Coordination Centre and FAANG Consortium (email: sarah.djebali@inserm.fr, sylvain.foissac@inrae.fr, faang-dcc@ebi.ac.uk, and cc faang@iastate.edu) to enquire. The full guidelines can be found at http://www.faang.org/data-share-principle.
@@ -96,5 +97,5 @@ BEGIN{
     split(b[1],c,"_");
     run=runid[c[1]"_"c[2]"_"c[3]"_"c[4]"_"c[5]];
     # write the 19 columnms (some of which are empty)
-    print b[1], "GENE-SWitCH Pig transcriptome and gene expression atlas (smallRNA-seq)", "SEQUENCE_ANNOTATION", "RNA sequencing", studyid[run], sampleid[run], "", expid[run], "", run, "", "", "srnaseq/tabfiles/"a[n], "tab", "MD5", $2, "INRAE Centre Toulouse Occitanie", "2021-11-29", "YYYY-MM-DD";
+    print b[1], "GENE-SWitCH Chicken transcriptome and gene expression atlas (smallRNA-seq)", "SEQUENCE_ANNOTATION", "RNA sequencing", studyid[run], sampleid[run], "", expid[run], "", run, "", "", "srnaseq/tabfiles/"a[n], "tab", "MD5", $2, "INRAE Centre Toulouse Occitanie", "2021-11-29", "YYYY-MM-DD";
 }

@@ -2,7 +2,7 @@
 # this script starts from a tsv file with header that has qc for atac seq technical replicates
 # and outputs a tsv file with header that has the same qc but for biological replicates
 # additionally it gives a unique and short biorep id and associates each biorep to all its techrep
-# it is not easily generalisable since some metrics can be added, other averages, other like pass, warn or fail
+# it is not easily generalisable since some metrics can be added, other averaged, other like pass, warn or fail
 # will be taken as the worst of them. We also assume that we only have two tech rep for each biorep here
 # in particular in the end portion of the script
 
@@ -14,22 +14,26 @@
 # real	0m0.074s
 
 
+# fileRef1
 # samplesheet.ok.csv
 # group,replicate,fastq_1,fastq_2
 # liver_fetus_lowfibre,1,/work/project/geneswitch/data/reads/atacseq/sus_scrofa/wp5/complete/Liv-941-1_CCGTGAAG-ATCCACTG-AHJK7WDSX2_L003_R1.fastq.gz,/work/project/geneswitch/data/reads/atacseq/sus_scrofa/wp5/complete/Liv-941-1_CCGTGAAG-ATCCACTG-AHJK7WDSX2_L003_R2.fastq.gz
 # 633 (1 fields)
 
+# fileRef2
 # $meta
 # fastqfile	readtype	runnumber	tissue	age	motherid	diet	sampleid	samplename	sex	motherbreed	fatherid
 # Skel-mus-Fetus-109-1_TTGGACTC-CTGCTTCC-BHMYNVDSX2_L004_R2.fastq.gz	R2	BHMYNVDSX2	skeletalmuscle	fetus	109	control	109.1	SSC_WU_WP5_FT_70dpf_109.1	male	TN70	E6211
 # 1281 (12 fields)  *** $9":"$4":"$3 identify a techrep uniquely, while $9":"$4 identify a biorep uniquely
 
+# main input
 # lid.read1.2.nb.bp.trim.nb.pcent.gc.duplev.read12.clnreadnb.map.nb.pcent.mt.nb.pcent.fracdupl.peaknb.frip.tsv
 # techrep    read1.initnb    read2.initnb    read1.initbp.nb read1.trimbp.nb    read1.trimbp.pcent    read2.initbp.nb read2.trimbp.nb    read2.trimbp.pcent    read1.gcsummary read2.gcsummary    read1.duplevsummary    read2.duplevsummary clnread.tot    clnreadmap.nb    clnreadmap.pcent clnreadmt.nb    clnreadmt.pcent    frac.dupl.picard    peak.nb frip
 # liver_fetus_control_R10    18718468    18718468    2807770200 1919447001    68.362    2807770200    1926371664    68.6086 PASS    PASS    PASS    PASS    24606658    24493104    99.5385 473292    1.92343    0.179214    35060    0.359275
 # 633 (21 fields)
 
-# output biorepid.techreps.tiss.age.mid.mdiet.animal.id.name.gender.mbreed.fid.read1.2.nb.bp.trim.nb.pcent.gc.duplev.read12.clnreadnb.map.nb.pcent.mt.nb.pcent.fracdupl.frip.tsv
+# output
+# biorepid.techreps.tiss.age.mid.mdiet.animal.id.name.gender.mbreed.fid.read1.2.nb.bp.trim.nb.pcent.gc.duplev.read12.clnreadnb.map.nb.pcent.mt.nb.pcent.fracdupl.frip.tsv
 # biorep	techreps	tissue	age	motherid	motherdiet	animalid	animalname	gender	motherbreed	fatherid	read1.initnb	read2.initnb	read1.initbp.nb	read1.trimbp.nb	read1.trimbp.pcent	read2.initbp.nb	read2.trimbp.nb	read2.trimbp.pcent	read1.gcsummary	read2.gcsummary	read1.duplevsummary	read2.duplevsummary	clnread.tot	clnreadmap.nb	clnreadmap.pcent	clnreadmt.nb	clnreadmt.pcent	frac.dupl.picard	frip
 # SSC_WU_WP5_Piglet_6447:skeletalmuscle	skelmus_piglet_highfibre_R38,skelmus_piglet_highfibre_R37,	skeletalmuscle	piglet	194	highfibre	6447	SSC_WU_WP5_Piglet_6447	female	TN60	E6021	72091288	72091288	10813693200	7031819374	65.027	10813693200	6992384383	64.6623	PASS	PASS	PASS	PASS	89828778	89318716	99.4322	2469796	2.74945	0.206196	0.226743
 # 317 (30 fields)  *** many checks done in the readme of the output dir and seems fine

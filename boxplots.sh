@@ -3,7 +3,7 @@ set -Eexo pipefail
 
 # boxplots.sh
 # make boxplots for values (y) belonging to several categories (x) from an input tsv file with ggplot2
-# !!! this bash script is only valid for plotting 4 boxplots corresponding to 4 trannscript sets allref, exprref, allnew, exprnew !!!
+# !!! this bash script is only valid for plotting 4 boxplots corresponding to 4 transcript sets allref, exprref, allnew, exprnew !!!
 # - takes as input
 #   * absolute path to input tsv file
 #   * header key for x values in the tsv file
@@ -45,6 +45,8 @@ then
     echo "produces as output:" >&2
     echo "- the file specified as the last argument with as many boxplots as categories for x and with the values indicated in y" >&2
     echo "" >&2
+    echo "WARNING: this bash script is only valid for plotting 4 boxplots corresponding to 4 transcript sets allref, exprref, allnew, exprnew" >&2
+    echo "WARNING: this bash script will plot the boxplots in the alphabetical order of the trpred ids" >&2
     echo "Note1: needs ggplot2 libraries to be installed" >&2
     echo "Note2: in order to have the boxplots in a given order one can number the different sets for which we want boxplots" >&2
     exit 1

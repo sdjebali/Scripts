@@ -5,7 +5,7 @@ set -Eexo pipefail
 ################
 # - takes as input:
 ###################
-#   * a gtf or gff2 annotation file with at least exon rows and with gene_id and transcript_id in the 9th field
+#   * a gtf or gff2 annotation file with at least exon rows and with gene_id and transcript_id in the 9th field (anywhere)
 # - produces as output:
 #######################
 #   * a tsv file without header with as many rows as transcripts in the input file and with the following columns

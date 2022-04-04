@@ -1,4 +1,7 @@
 # srnaseq.bamlist.to.dcc.faang.tab.awk
+# !!! on March 31st 2022 add two new necesary colums !!! 
+# !!! nextflow config url and	nextflow spreadsheet url !!! 
+# !!!! but with empty values there !!!
 
 
 # this script takes as input:
@@ -36,17 +39,17 @@
 # Alias	Project	Secondary Project	Assay Type	Analysis Protocol	Analysis Code	Analysis Code Version	Reference Genome
 # pig_stage1_fetusday30_cerebellum_rep1_1.mature.sorted	FAANG	GENE-SWitCH	microRNA profiling by high throughput sequencing	https://data.faang.org/api/fire_api/analyses/INSERM-INRAE_SOP_srnaseq-processing_20211129.pdf	https://github.com/nf-core/smrnaseq	v1.1.0	Sscrofa11.1
 # 168 (13 fields)
-# 1 (14 fields)
+# 1 (14 fields)   *** plus the two last columns in theory 
 
 
 BEGIN{
     OFS="\t";
     # print the header
-    print "Alias", "Project", "Secondary Project", "Assay Type", "Analysis Protocol", "Analysis Code", "Analysis Code Version", "Reference Genome";
+    print "Alias", "Project", "Secondary Project", "Assay Type", "Analysis Protocol", "Analysis Code", "Analysis Code Version", "Reference Genome", "nextflow config url", "nextflow spreadsheet url";
 }
 
 {
     n=split($1,a,"/");
     split(a[n],b,".bam");
-    print b[1], "FAANG", "GENE-SWitCH", "microRNA profiling by high throughput sequencing", "https://data.faang.org/api/fire_api/analyses/INSERM-INRAE_SOP_srnaseq-processing_20211129.pdf", "https://github.com/nf-core/smrnaseq", "v1.1.0", genome;
+    print b[1], "FAANG", "GENE-SWitCH", "microRNA profiling by high throughput sequencing", "https://data.faang.org/api/fire_api/analyses/INSERM-INRAE_SOP_srnaseq-processing_20211129.pdf", "https://github.com/nf-core/smrnaseq", "v1.1.0", genome, "", "";
 }
