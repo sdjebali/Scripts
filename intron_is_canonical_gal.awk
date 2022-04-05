@@ -5,7 +5,8 @@
 # - the 24 mer corresponding to the donor site in field no 11 (this can be changed)
 # - the 24 mer corresponding to the acc site in field no 12 (this can be changed)
 # note that independtly of the combination of strands (+/+, -/-, +/-, -/+) and since the 24mers are revcomp when on -
-# the donor splice site is always in pos 13 and 14 and the acceptor splice site is always on pos 11 and 12
+# the donor splice site is always in pos 13 and 14 of the 1st 24mer and the acceptor splice site is always on pos 11 and 12
+# of the second 24mer.
 # This program will output the same bedpe as input with added information about whether this intron is canonical wrt Havana criteria = 
 # GT-AG or GC-AG or AT-AC (even if the strand is - we have this pattern here, due to the extraction)
 
@@ -32,15 +33,15 @@ BEGIN{
 
 {
     canonical=0;
-    split($flddon,d,"");   # the piece of interest is in d[13]d[14] whatever the strand
-    split($fldacc,a,"");   # the piece of interest is in a[11]a[12] whatever the strand   
+    split($flddon,d,"");   # the piece of interest (donor ss) is in d[13]d[14] whatever the strand
+    split($fldacc,a,"");   # the piece of interest (acceptor ss) is in a[11]a[12] whatever the strand   
 
-    don=(toupper(a[11]))(toupper(a[12]));
-    acc=(toupper(d[13]))(toupper(d[14]));
+    don=(toupper(d[13]))(toupper(d[14]));
+    acc=(toupper(a[11]))(toupper(a[12]));
     
-    if(don=="AG")
+    if(acc=="AG")
     {
-	if((acc=="GT")||(acc=="GC"))
+	if((don=="GT")||(don=="GC"))
 	{
 	    canonical=1;
 	}	
