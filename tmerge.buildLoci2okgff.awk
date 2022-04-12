@@ -26,10 +26,10 @@
 # pgm2=~/fragencode/tools/multi/Scripts/tmerge.buildLoci2okgff.awk
 # pgm3=~/fragencode/tools/multi/Scripts/gff2gff.awk
 # time awk -v fileRef1=$indir/sus_scrofa.gtf -v fileRef2=tmp.gff -f $pgm2 tmp.gff | awk -f $pgm3 | sort -k1,1 -k4,4n -k5,5n > novel.gtf
-# real	5m26.312s but 2m10 for the present awk script
+# real	3m34.295s
 # rm tmp.gff
 
-# fileRef1=sus_scrofa.gtf
+# fileRef1=$indir/sus_scrofa.gtf
 # #!genome-build Sscrofa11.1
 # #!genome-version Sscrofa11.1
 # 1	ensembl	gene	1	3782	.	+	.	gene_id "ENSSSCG00000048769"; gene_version "1"; gene_source "ensembl"; gene_biotype "lncRNA";
@@ -52,13 +52,14 @@
 
 
 # output file is like this
-# 1	tagada	exon	1	2465	0	+	.	gene_id "LOC_000000050668"; transcript_id "TM_000000000001"; ref_gene_id "ENSSSCG00000048769";
-# 1	tagada	transcript	1	2465	0	+	.	gene_id "LOC_000000050668"; transcript_id "TM_000000000001"; contains "duodenum_pig4.filtered:STRG.1.1,liver_pig2.filtered:STRG.1.1,cd8_pig1.filtered:STRG.1.1,cd8_pig2.filtered:STRG.1.1,cerebellum_pig2.filtered:STRG.1.1,testis_pig2.filtered:STRG.1.1,ileum_pig4.filtered:STRG.1.1,cerebellum_pig1.filtered:STRG.1.1,muscle_pig4.filtered:STRG.1.1,muscle_pig3.filtered:STRG.1.1,ileum_pig3.filtered:STRG.1.1,kidney_pig4.filtered:STRG.1.1,cd8_pig4.filtered:STRG.1.1,testis_pig1.filtered:STRG.1.1,duodenum_pig1.filtered:STRG.1.1,cd4_pig3.filtered:STRG.1.1,ref:ENSSSCT00000066540,cerebellum_pig3.filtered:STRG.1.1,duodenum_pig3.filtered:STRG.1.1,muscle_pig1.filtered:STRG.1.1,liver_pig4.filtered:STRG.1.1,liver_pig1.filtered:STRG.1.1,kidney_pig3.filtered:STRG.1.1,muscle_pig2.filtered:STRG.1.1,cerebellum_pig4.filtered:STRG.1.1,cd8_pig3.filtered:STRG.1.1,lung_pig2.filtered:STRG.1.1,ileum_pig2.filtered:STRG.1.1,lung_pig1.filtered:STRG.1.1,duodenum_pig2.filtered:STRG.1.1,cd4_pig4.filtered:STRG.1.1,liver_pig3.filtered:STRG.1.1,ileum_pig1.filtered:STRG.1.1,cd4_pig2.filtered:STRG.1.1"; contains_count "34"; 3p_dists_to_3p "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"; 5p_dists_to_5p "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"; flrpm "57.190992"; longest "duodenum_pig4.filtered:STRG.1.1,liver_pig2.filtered:STRG.1.1,cd8_pig1.filtered:STRG.1.1,cd8_pig2.filtered:STRG.1.1,cerebellum_pig2.filtered:STRG.1.1,testis_pig2.filtered:STRG.1.1,ileum_pig4.filtered:STRG.1.1,cerebellum_pig1.filtered:STRG.1.1,muscle_pig4.filtered:STRG.1.1,muscle_pig3.filtered:STRG.1.1,ileum_pig3.filtered:STRG.1.1,kidney_pig4.filtered:STRG.1.1,cd8_pig4.filtered:STRG.1.1,testis_pig1.filtered:STRG.1.1,duodenum_pig1.filtered:STRG.1.1,cd4_pig3.filtered:STRG.1.1,ref:ENSSSCT00000066540,cerebellum_pig3.filtered:STRG.1.1,duodenum_pig3.filtered:STRG.1.1,muscle_pig1.filtered:STRG.1.1,liver_pig4.filtered:STRG.1.1,liver_pig1.filtered:STRG.1.1,kidney_pig3.filtered:STRG.1.1,muscle_pig2.filtered:STRG.1.1,cerebellum_pig4.filtered:STRG.1.1,cd8_pig3.filtered:STRG.1.1,lung_pig2.filtered:STRG.1.1,ileum_pig2.filtered:STRG.1.1,lung_pig1.filtered:STRG.1.1,duodenum_pig2.filtered:STRG.1.1,cd4_pig4.filtered:STRG.1.1,liver_pig3.filtered:STRG.1.1,ileum_pig1.filtered:STRG.1.1,cd4_pig2.filtered:STRG.1.1"; longest_FL_supporters "liver_pig2.filtered:STRG.1.1,testis_pig2.filtered:STRG.1.1,cerebellum_pig2.filtered:STRG.1.1,ileum_pig4.filtered:STRG.1.1,cd4_pig2.filtered:STRG.1.1,ileum_pig3.filtered:STRG.1.1,muscle_pig3.filtered:STRG.1.1,kidney_pig4.filtered:STRG.1.1,cd8_pig4.filtered:STRG.1.1,cerebellum_pig3.filtered:STRG.1.1,kidney_pig3.filtered:STRG.1.1,muscle_pig2.filtered:STRG.1.1,cd8_pig3.filtered:STRG.1.1,ileum_pig2.filtered:STRG.1.1,duodenum_pig2.filtered:STRG.1.1,cd4_pig4.filtered:STRG.1.1,liver_pig3.filtered:STRG.1.1,ileum_pig1.filtered:STRG.1.1,duodenum_pig4.filtered:STRG.1.1,cd8_pig1.filtered:STRG.1.1,cd8_pig2.filtered:STRG.1.1,cerebellum_pig1.filtered:STRG.1.1,muscle_pig4.filtered:STRG.1.1,duodenum_pig1.filtered:STRG.1.1,cd4_pig3.filtered:STRG.1.1,testis_pig1.filtered:STRG.1.1,ref:ENSSSCT00000066540,duodenum_pig3.filtered:STRG.1.1,muscle_pig1.filtered:STRG.1.1,liver_pig4.filtered:STRG.1.1,liver_pig1.filtered:STRG.1.1,cerebellum_pig4.filtered:STRG.1.1,lung_pig2.filtered:STRG.1.1,lung_pig1.filtered:STRG.1.1"; longest_FL_supporters_count "34"; mature_RNA_length "3128"; meta_3p_dists_to_5p "1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1"; meta_5p_dists_to_5p "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"; rpm "57.190992"; spliced "1"; ref_gene_id "ENSSSCG00000048769";
+# 1	tagada	exon	1	2465	0	+	.	gene_id "LOC_000000050668"; transcript_id "ENSSSCT00000066540"; ref_gene_id "ENSSSCG00000048769"; tmerge_tr_id "TM_000000000001";
+# 1	tagada	transcript	1	3780	0	+	.	gene_id "LOC_000000050668"; transcript_id "ENSSSCT00000066540"; contains "duodenum_pig4.filtered:STRG.1.1,liver_pig2.filtered:STRG.1.1,cd8_pig1.filtered:STRG.1.1,cd8_pig2.filtered:STRG.1.1,cerebellum_pig2.filtered:STRG.1.1,testis_pig2.filtered:STRG.1.1,ileum_pig4.filtered:STRG.1.1,cerebellum_pig1.filtered:STRG.1.1,muscle_pig4.filtered:STRG.1.1,muscle_pig3.filtered:STRG.1.1,ileum_pig3.filtered:STRG.1.1,kidney_pig4.filtered:STRG.1.1,cd8_pig4.filtered:STRG.1.1,testis_pig1.filtered:STRG.1.1,duodenum_pig1.filtered:STRG.1.1,cd4_pig3.filtered:STRG.1.1,ref:ENSSSCT00000066540,cerebellum_pig3.filtered:STRG.1.1,duodenum_pig3.filtered:STRG.1.1,muscle_pig1.filtered:STRG.1.1,liver_pig4.filtered:STRG.1.1,liver_pig1.filtered:STRG.1.1,kidney_pig3.filtered:STRG.1.1,muscle_pig2.filtered:STRG.1.1,cerebellum_pig4.filtered:STRG.1.1,cd8_pig3.filtered:STRG.1.1,lung_pig2.filtered:STRG.1.1,ileum_pig2.filtered:STRG.1.1,lung_pig1.filtered:STRG.1.1,duodenum_pig2.filtered:STRG.1.1,cd4_pig4.filtered:STRG.1.1,liver_pig3.filtered:STRG.1.1,ileum_pig1.filtered:STRG.1.1,cd4_pig2.filtered:STRG.1.1"; contains_count "34"; 3p_dists_to_3p "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"; 5p_dists_to_5p "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"; flrpm "57.190992"; longest "duodenum_pig4.filtered:STRG.1.1,liver_pig2.filtered:STRG.1.1,cd8_pig1.filtered:STRG.1.1,cd8_pig2.filtered:STRG.1.1,cerebellum_pig2.filtered:STRG.1.1,testis_pig2.filtered:STRG.1.1,ileum_pig4.filtered:STRG.1.1,cerebellum_pig1.filtered:STRG.1.1,muscle_pig4.filtered:STRG.1.1,muscle_pig3.filtered:STRG.1.1,ileum_pig3.filtered:STRG.1.1,kidney_pig4.filtered:STRG.1.1,cd8_pig4.filtered:STRG.1.1,testis_pig1.filtered:STRG.1.1,duodenum_pig1.filtered:STRG.1.1,cd4_pig3.filtered:STRG.1.1,ref:ENSSSCT00000066540,cerebellum_pig3.filtered:STRG.1.1,duodenum_pig3.filtered:STRG.1.1,muscle_pig1.filtered:STRG.1.1,liver_pig4.filtered:STRG.1.1,liver_pig1.filtered:STRG.1.1,kidney_pig3.filtered:STRG.1.1,muscle_pig2.filtered:STRG.1.1,cerebellum_pig4.filtered:STRG.1.1,cd8_pig3.filtered:STRG.1.1,lung_pig2.filtered:STRG.1.1,ileum_pig2.filtered:STRG.1.1,lung_pig1.filtered:STRG.1.1,duodenum_pig2.filtered:STRG.1.1,cd4_pig4.filtered:STRG.1.1,liver_pig3.filtered:STRG.1.1,ileum_pig1.filtered:STRG.1.1,cd4_pig2.filtered:STRG.1.1"; longest_FL_supporters "liver_pig2.filtered:STRG.1.1,testis_pig2.filtered:STRG.1.1,cerebellum_pig2.filtered:STRG.1.1,ileum_pig4.filtered:STRG.1.1,cd4_pig2.filtered:STRG.1.1,ileum_pig3.filtered:STRG.1.1,muscle_pig3.filtered:STRG.1.1,kidney_pig4.filtered:STRG.1.1,cd8_pig4.filtered:STRG.1.1,cerebellum_pig3.filtered:STRG.1.1,kidney_pig3.filtered:STRG.1.1,muscle_pig2.filtered:STRG.1.1,cd8_pig3.filtered:STRG.1.1,ileum_pig2.filtered:STRG.1.1,duodenum_pig2.filtered:STRG.1.1,cd4_pig4.filtered:STRG.1.1,liver_pig3.filtered:STRG.1.1,ileum_pig1.filtered:STRG.1.1,duodenum_pig4.filtered:STRG.1.1,cd8_pig1.filtered:STRG.1.1,cd8_pig2.filtered:STRG.1.1,cerebellum_pig1.filtered:STRG.1.1,muscle_pig4.filtered:STRG.1.1,duodenum_pig1.filtered:STRG.1.1,cd4_pig3.filtered:STRG.1.1,testis_pig1.filtered:STRG.1.1,ref:ENSSSCT00000066540,duodenum_pig3.filtered:STRG.1.1,muscle_pig1.filtered:STRG.1.1,liver_pig4.filtered:STRG.1.1,liver_pig1.filtered:STRG.1.1,cerebellum_pig4.filtered:STRG.1.1,lung_pig2.filtered:STRG.1.1,lung_pig1.filtered:STRG.1.1"; longest_FL_supporters_count "34"; mature_RNA_length "3128"; meta_3p_dists_to_5p "1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1"; meta_5p_dists_to_5p "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"; rpm "57.190992"; spliced "1"; ref_gene_id "ENSSSCG00000048769"; tmerge_tr_id "TM_000000000001";
 # 57645 (12 fields)    *** gene rows always have 12 fields, for gene_id and ref_gene_id
-# 2164135 (14 fields)
-# 5401 (16 fields)     *** exon rows can have 14 or 16 fields, for gene_id, transcript_id, ref_gene_id and same with tmerge_tr_id when tr id becomes from ref
-# 252298 (40 fields)
-# 5401 (42 fields)     *** transcript rows can have 40 or 42 fields, that are the 38 initial ones plus ref_gene_id and also with tmerge_tr_id when tr id becomes from ref, however gene_id is always a locus id and not a ref gene id, this is given in ref_gene_id field
+# 1553055 (14 fields)
+# 616481 (16 fields)   *** exon rows can have 14 or 16 fields, for gene_id, transcript_id, ref_gene_id and same with tmerge_tr_id when tr id becomes from ref
+# 197370 (40 fields)
+# 60329 (42 fields)    *** transcript rows can have 40 or 42 fields, that are the 38 initial ones plus ref_gene_id and also with tmerge_tr_id when tr id becomes from ref, however gene_id is always a locus id and not a ref gene id, this is given in ref_gene_id field     
+
 
 BEGIN{
     # here we read the ref gene annotation gtf file to get the correspondance between transcript id and gene id
@@ -100,24 +101,26 @@ BEGIN{
      while (getline < fileRef2 >0)
     {
 	# when we see the transcript for the 1st time only
-	nbe[$12]++;
-	if(nbe[$12]==1)
+	split($0,a,"\t");
+	split(a[9],b," ");
+	k=1;
+	while(b[k]!="")
 	{
-	    split($0,a,"\t");
-	    split(a[9],b," ");
-	    k=1;
-	    while(b[k]!="")
+	    if(b[k]=="transcript_id")
 	    {
-		if(b[k]=="transcript_id")
+		split(b[k+1],c,"\"");
+		chr[c[2]]=$1;
+		str[c[2]]=$7;
+		if((gbeg[c[2]]=="")||($4<gbeg[c[2]]))
 		{
-		    split(b[k+1],c,"\"");
-		    chr[c[2]]=$1;
 		    gbeg[c[2]]=$4;
-		    gend[c[2]]=$5;
-		    str[c[2]]=$7;
 		}
-		k+=2;
+		if((gend[c[2]]=="")||($5>gend[c[2]]))
+		{
+		    gend[c[2]]=$5;
+		}
 	    }
+	    k+=2;
 	}
     }
 }
