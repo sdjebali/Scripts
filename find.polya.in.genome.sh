@@ -10,6 +10,7 @@ set -Eexo pipefail
 #   * file of polyA site positions in genome (bed format) in the same directory as the genome file
 # - dependences:
 #   * homer
+# usually followed by stats.tr.with.polya.at.end.sh
 
 # example
 #########
@@ -53,7 +54,7 @@ genbase=${genbasetmp%.fasta}
 # 1. Makes a profile of the searched motifs for polyA sites
 ###########################################################
 echo "I am making a profile of the ATTAAA motif" >&2
-seq2profile.pl ATTAAA 0 polyAhex > polyAhex.motif.profile.txt
+seq2profile.pl ATTAAA 0 polyAhex > $genbase.polyAhex.motif.profile.txt
 echo "done" >&2
 # >ATTAAA	polyAhex	8.28973911259755
 # 0.997	0.001	0.001	0.001
@@ -66,17 +67,17 @@ echo "done" >&2
 # 2. Makes a profile of the reverse complement of the motif
 ###########################################################
 echo "I am making a profile of AATAAA motif" >&2
-seq2profile.pl AATAAA 0 polyAhex >> polyAhex.motif.profile.txt
+seq2profile.pl AATAAA 0 polyAhex >> $genbase.polyAhex.motif.profile.txt
 echo "done" >&2
 
 # 3. Scans the genome for the motif and its reverse complement keeping all occurences
 #####################################################################################
 echo "I am scanning the genome for polyA sites using the two provided motif (ATTAAA and AATAAA) profiles" >&2
-scanMotifGenomeWide.pl polyAhex.motif.profile.txt $genome -keepAll -bed | awk '{print $1,$(NF-4)-1,$(NF-3),".",".",$NF}' OFS='\t'  > $genbase.polyAsites.bed
+scanMotifGenomeWide.pl $genbase.polyAhex.motif.profile.txt $genome -keepAll -bed | awk '{print $1,$(NF-4)-1,$(NF-3),".",".",$NF}' OFS='\t'  > $genbase.polyAsites.bed
 echo "done" >&2
 
 # 4. Cleans
 ###########
 echo "I am cleaning" >&2
-rm polyAhex.motif.profile.txt
+rm $genbase.polyAhex.motif.profile.txt
 echo "done" >&2

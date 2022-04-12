@@ -118,7 +118,7 @@ echo done >&2
 # Makes the chromosome length file from the genome fasta file
 #############################################################
 echo I am making the chromosome length file from the genome fasta file >&2
-fastalength $genome > genome.len
+fastalength $genome > $base.genome.len
 # 196202544 1
 # 23475 (2 fields)
 echo done >&2
@@ -129,7 +129,7 @@ echo done >&2
 # the 24acc seq at 3' end of the intron is composed of 12 nt intron which end with the AG and then 12 nt exon
 # !!! here I should check that each feature does not go beyond the boundaries of a chromosome otherwise fastaFromBed fails !!!
 echo I am making a file of coordinates for the 24mers around donor and acceptor >&2
-awk -v fileRef=genome.len 'BEGIN{while (getline < fileRef >0){size[$2]=$1}} {intrbeg=$4; intrend=$5; if($7=="+"){donbeg=intrbeg-12; donend=intrbeg+12-1; accbeg=intrend-12+1; accend=intrend+12;} else{if($7=="-"){donbeg=intrend-12+1; donend=intrend+12; accbeg=intrbeg-12; accend=intrbeg+12-1;}} if((donbeg>=1)&&(donend<=size[$1])&&(accbeg>=1)&&(accend<=size[$1])){print $0, "24merdonbed", "\""$1":"(donbeg-1)":"donend":"$7"\"\;", "24meraccbeg", "\""$1":"(accbeg-1)":"accend":"$7"\"\;"}}' $base\_introns.gff | awk -f $GFF2GFF > $base\_introns_24mer_don_acc.gff
+awk -v fileRef=$base.genome.len 'BEGIN{while (getline < fileRef >0){size[$2]=$1}} {intrbeg=$4; intrend=$5; if($7=="+"){donbeg=intrbeg-12; donend=intrbeg+12-1; accbeg=intrend-12+1; accend=intrend+12;} else{if($7=="-"){donbeg=intrend-12+1; donend=intrend+12; accbeg=intrbeg-12; accend=intrbeg+12-1;}} if((donbeg>=1)&&(donend<=size[$1])&&(accbeg>=1)&&(accend<=size[$1])){print $0, "24merdonbed", "\""$1":"(donbeg-1)":"donend":"$7"\"\;", "24meraccbeg", "\""$1":"(accbeg-1)":"accend":"$7"\"\;"}}' $base\_introns.gff | awk -f $GFF2GFF > $base\_introns_24mer_don_acc.gff
 # chr1  HAVANA  intron  12058   12178   .       +       .       gene_id "ENSG00000223972.5"; transcript_id "ENST00000450305.2"; 24merdonbed "chr1_12045_12069_+"; 24meraccbed "chr1_12166_12190_+";
 # 962475 (16 fields)
 awk '{split($(NF-2),a,"\""); split(a[2],a1,":"); split($NF,b,"\""); split(b[2],b1,":"); print a1[1], a1[2], a1[3], ".", ".", a1[4]; print b1[1], b1[2], b1[3], ".", ".", b1[4]}' $base\_introns_24mer_don_acc.gff | sort | uniq | awk '{print $1"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6}' > $base\_introns_24mers_don_acc_nr.bed
@@ -244,7 +244,7 @@ echo done >&2
 # Cleaning
 ##########
 rm $base\_exons_sorted_by_tr.gff
-rm genome.len
+rm $base.genome.len
 rm $base\_introns.gff
 rm $base\_introns_24mer_don_acc.gff
 rm $base\_introns_24mers_don_acc_nr.bed 

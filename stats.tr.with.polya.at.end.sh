@@ -3,6 +3,7 @@ set -Eexo pipefail
 
 # stats.tr.with.polya.at.end.sh
 # script that provides number and % of transcripts with polyA sites at their ends
+# usually run after find.polya.in.genome.sh that scans a genome to obtain a bed file of polya sites
 # - inputs:
 #   * polya site positions in genome file (bed format), for example obtained by find.polya.in.genome.sh
 #   * gene annotation (gtf format)
