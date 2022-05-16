@@ -81,7 +81,7 @@ set -Eexo pipefail
 #########################################################
 if [ ! -n "$1" ] || [ ! -n "$2" ]
 then
-    echo Usage: peak_distrib_matrix.sh peaks.bed annot.gff [stranded] >&2
+    echo Usage: peak_distrib_matrix.sh peaks.bed annot.gff [stranded] [gene or transcript] >&2
     echo "" >&2
     echo "Takes as input" >&2
     echo "- a file of segments or peaks in bed format" >&2
