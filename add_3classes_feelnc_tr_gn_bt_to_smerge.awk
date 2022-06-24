@@ -81,7 +81,7 @@ BEGIN{
     }
     while (getline < fileRef4 >0)
     {
-	# only read transcript rows from the reference annotation file since the tr bt can be found there and less rows than exons'
+	# only read transcript rows from the reference annotation file since the tr bt can be found there and they represent less rows than exons
 	if($3=="transcript")
 	{
 	    found=0;
@@ -92,13 +92,13 @@ BEGIN{
 	    {
 		if(b[k]=="transcript_biotype")
 		{
-		    if(b[k+1]=="protein_coding")
+		    if(b[k+1]~/protein_coding/)
 		    {
 			mrna2[$12]=1
 		    }
 		    else
 		    {
-			if(b[k+1]=="lncRNA")
+			if(b[k+1]~/lncRNA/)
 			{
 			    lnc2[$12]=1;
 			}

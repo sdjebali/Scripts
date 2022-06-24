@@ -252,4 +252,4 @@ rm $base\_introns_24mer_don_acc_nr.tsv
 rm $base\_introns_24mer_don_acc_seq.gff
 rm $base\_introns_24mer_don_acc_seq_ds.gff
 rm $base.ds.lg.tmp 
-gzip $base\_introns_24mer_don_acc_seq_ds_can.gff
+gzip -f $base\_introns_24mer_don_acc_seq_ds_can.gff

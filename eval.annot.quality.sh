@@ -15,6 +15,10 @@ set -Eexo pipefail
 # - Presence of polya sites at the end of transcripts (from find.polya.in.genome.sh followed by stats.tr.with.polya.at.end.sh)
 # !!! no need to make an ok gff file since all the scripts called here do it !!!
 
+# TODO:
+# - allow to run simulateously on two gtf files with the same basename (now conflict since write in ~/fragencode/tools/multi/Renv
+#   files with the same name). An option would be to index those files by the process name ?
+
 # example
 #########
 # srun --mem=8G --pty bash

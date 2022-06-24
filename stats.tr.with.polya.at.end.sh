@@ -6,7 +6,7 @@ set -Eexo pipefail
 # usually run after find.polya.in.genome.sh that scans a genome to obtain a bed file of polya sites
 # - inputs:
 #   * polya site positions in genome file (bed format), for example obtained by find.polya.in.genome.sh
-#   * gene annotation (gtf format)
+#   * gene annotation (gtf format with at least exon rows and with transcript_id in the 9th field)
 #   * flank integer (default 50)
 # - output:
 #   * report about nb and % of transcripts with a motif at its end +- flank bp
@@ -19,11 +19,12 @@ set -Eexo pipefail
 # cd ~/fragencode/workspace/sdjebali/geneswitch/analysis/annotation.quality/tts
 # module load bioinfo/bedtools2-2.29.0
 # pgm=~/fragencode/tools/multi/Scripts/stats.tr.with.polya.at.end.sh
+# polya=~/fragencode/data/species/gallus_gallus/GRCg6a/gallus_gallus.polyAhexamers.bed
+# annot=~/fragencode/data/species/gallus_gallus/GRCg6a.102/gallus_gallus.gtf
 # time $pgm $polya $annot 2> stats.tr.with.polya.at.end.err
-# real	0m31.812s
+# real	0m19.812s
 
-# output
-# ~/fragencode/data/species/gallus_gallus/GRCg6a.102/gallus_gallus.tts-50.polyA.stats.tsv
+# output = ~/fragencode/data/species/gallus_gallus/GRCg6a.102/gallus_gallus.tts-50.polyA.stats.tsv
 # /home/sdjebali/fragencode/data/species/gallus_gallus/GRCg6a.102/gallus_gallus.gtf	16368	39288	41.66%	14485	33720	42.96%
 
 
@@ -36,7 +37,7 @@ then
     echo "" >&2
     echo "takes as input:" >&2
     echo "- a bed file of polyA site positions in a genome" >&2
-    echo "- an annotation file in gtf format (with transcript rows)" >&2
+    echo "- an annotation file in gtf format (with at least exon rows and with transcript_id in the 9th field)" >&2
     echo "- an optional integer representing the flank (# bp from transcripts'ends where polyA sites will be looked for)" >&2
     echo "" >&2
     echo "produces as output in the same directory as the gff file:" >&2
@@ -75,7 +76,8 @@ percent=$rootDir/percentage.awk
 # 1. Makes the sorted bed file of annotated transcript ends (tts) flanked by flank bp on each side 
 ##################################################################################################
 echo "I am making the sorted bed file of annotated transcript ends (tts) flanked by flank bp on each side" >&2
-sed 's/"/ /g' $annot | awk '!/^#/ && $3=="transcript"{id=".";for(i=7;i<NF;i++){if ($i=="transcript_id"){id=$(i+1)}} print $1,$4-1,$5,id,".",$7}' OFS="\t" | sort -k1,1 -k2,2n -k3,3n | uniq | awk -v flank=$flank '$6=="+"{$2=$3-flank}$6=="-"{$3=$2+flank}1' OFS="\t" | sort -k1,1 -k2,2n -k3,3n > $all
+sed 's/"/ /g' $annot | awk '!/^#/ && $3=="exon"{for(i=7;i<NF;i++){if ($i=="transcript_id"){id=$(i+1); chr[id]=$1; str[id]=$7; if((gbeg[id]=="")||($4<gbeg[id])){gbeg[id]=$4} if((gend[id]=="")||($5>gend[id])){gend[id]=$5}}}} END{for(t in chr){print chr[t], gbeg[t]-1, gend[t], t, ".",str[t]}}' OFS="\t" | sort -k1,1 -k2,2n -k3,3n | uniq | awk -v flank=$flank '$6=="+"{$2=$3-flank}$6=="-"{$3=$2+flank}1' OFS="\t" | sort -k1,1 -k2,2n -k3,3n > $all
+# sed 's/"/ /g' $annot | awk '!/^#/ && $3=="transcript"{id=".";for(i=7;i<NF;i++){if ($i=="transcript_id"){id=$(i+1)}} print $1,$4-1,$5,id,".",$7}' OFS="\t" | sort -k1,1 -k2,2n -k3,3n | uniq | awk -v flank=$flank '$6=="+"{$2=$3-flank}$6=="-"{$3=$2+flank}1' OFS="\t" | sort -k1,1 -k2,2n -k3,3n > $all
 echo "done" >&2
 
 # 2. Makes the sorted bed file of distinct annotated transcript ends (tts) flanked by flank bp on each side 
