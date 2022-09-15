@@ -1,20 +1,21 @@
 # add_2classes_feelnc_tr_gn_bt_to_tmerge.awk
 # The aim is quite similar to add_3classes_feelnc_tr_gn_bt_to_smerge.awk  but only takes the main tagada annotation file as input
-# this files is usually produced by tmerge and it already contains feelnc transcript biotype which is either mRNA or lncRNA
+# this file is usually produced by tmerge and already contains feelnc transcript biotype which is either mRNA or lncRNA
 
-# The rules are simple: if the gene has at least one transcript that is considered protein_coding by the ref
-# or mRNA by feelnc it will have the feelnc biotype mRNA, otherwise if it has at least one transcript
-# labelled as lncRNA by the reference of feelnc then it will be labelled lncRNA, otherwise it will be labelled other
-
+# The rules are therefore very simple: if the gene has at least one transcript that is considered protein_coding by the ref
+# or mRNA by feelnc it will have the feelnc biotype mRNA, otherwise if it has at least one transcript labelled as lncRNA by
+# the reference or feelnc then it will be labelled lncRNA, otherwise it will be labelled other
 
 # It takes as input a single file:
 ##################################
 # - the tagada novel gtf file given as input to feelnc as main input file (exon, transcript and gene rows, gene_id
 #   as first key in the 9th field, transcript_id as second key for exons and transcripts)
-# It outputs a single gtf file which is the same as the tagada novel annot file given as input except that it has
-# an additional feelnc_gene_biotype key at the end of the 9th field
+# It outputs:
+# - a single gtf file which is the same as the tagada novel annot file given as input except that it has
+#   an additional feelnc_gene_biotype key at the end of the 9th field
 
-# example of usage
+# Example of usage
+##################
 # srun --mem=8G --pty bash
 # cd /home/cgenet/genrocwork/Carine/MONOPOLY/Bovin/TAGADA_test11/RESULTATS/annotation
 # pgm=~/fragencode/tools/multi/Scripts/add_2classes_feelnc_tr_gn_bt_to_tmerge.awk
@@ -37,12 +38,22 @@
 #                       there were only rows of 4, 10, 12, 14, 16 or 18 fields in the corresponding file of add_3classes_feelnc_tr_gn_bt_to_smerge.awk 
 
 
+# output file $outdir/$outdir/novel.with.feelnc.biotypes.gtf
+# 3	tagada	gene	110210882	110308132	0	+	.	gene_id "LOC_000000000237"; ref_gene_id "."; feelnc_gene_biotype "other";
+# ...
+# 7	tagada	gene	11344119	11354161	0	+	.	gene_id "LOC_000000039636"; ref_gene_id "ENSBTAG00000021820"; feelnc_gene_biotype "mRNA";
+# 7	tagada	transcript	11344837	11353461	0	+	.	gene_id "LOC_000000039636"; transcript_id "TM_000000536318"; contains "BT14_CTRL.filtered:STRG.4847.2,BT12_BMP15.filtered:STRG.4713.2,BT6_BMP15.filtered:STRG.4569.2,BT8_CTRL.filtered:STRG.4794.2"; contains_count "4"; 3p_dists_to_3p "0,0,1,19"; 5p_dists_to_5p "0,72,78,68"; flrpm "2.51204"; longest "BT14_CTRL.filtered:STRG.4847.2"; longest_FL_supporters "BT12_BMP15.filtered:STRG.4713.2,BT14_CTRL.filtered:STRG.4847.2,BT6_BMP15.filtered:STRG.4569.2,BT8_CTRL.filtered:STRG.4794.2"; longest_FL_supporters_count "4"; mature_RNA_length "1587"; meta_3p_dists_to_5p "1,1,0.999369880277253,0.988027725267801"; meta_5p_dists_to_5p "0,0.0453686200378072,0.0491493383742911,0.0428481411468179"; rpm "2.51204"; spliced "1"; ref_gene_id "."; feelnc_gene_biotype "mRNA";
+# 7	tagada	exon	11344837	11345004	0	+	.	gene_id "LOC_000000039636"; transcript_id "TM_000000536318"; ref_gene_id "."; feelnc_gene_biotype "mRNA";
+# ...
+
+
+
 # the novel annot gtf file has exon, transcript and gene rows and has gene_id as 1st key in the 9th field, and transcript_id
 # as 2nd key for exon and transcript rows. It also has the information of feelnc transcript biotype in some exon and tr rows
 # here we remember all the exon, transcript and gene rows (exons and tr indexed by tr id, gene rows indexed by gene id in hashtables)
 # but we will output the complete file with feelnc gene biotype in the end part of the script
 # note that here we also remember for each transcript its reference transcript biotype if it exists as well as its feelnc tr biotype
-# if it exists and this will serve to compute the feelnc gene biotype that will be reported for exon, tr and gene rows afterwards
+# if it exists, and this will serve to compute the feelnc gene biotype that will be reported for exon, tr and gene rows afterwards
 {
     if($3=="exon")
     {

@@ -5,11 +5,13 @@ set -Eexo pipefail
 # takes as input an annotation file in gff2 or gtf format with at least exon rows and with gene_id and transcript_id information
 # and outputs two 1 column file with the ids of the transcripts that have a retained intron not at the 3' utr and the ids of their genes
 
-# the strategy si the following
+# the strategy is the following
 # if an exon that is not the last exon of a tr strandedly overlaps 2 or more introns
 # from the same other tr and if its beg corresponds to the beg of an exon from this 
 # other tr and its end correspond to the end of an exon from this other tr
 # then I will extract the id of the tr with this big exon and consider it a retained intron tr
+# !!! on sept 2nd 2022 it seems to me there is a mistake here since we want a big internal exon of a tr !!!
+# !!! to overlap at least two EXONS of another transcript, not at least two introns !!!
 
 # example
 # cd ~/faang/projects/piglncRNA/data/lncRNA_analysis/FEELnc_winter20152016/Retained_introns/Test

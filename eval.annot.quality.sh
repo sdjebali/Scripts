@@ -17,7 +17,9 @@ set -Eexo pipefail
 
 # TODO:
 # - allow to run simulateously on two gtf files with the same basename (now conflict since write in ~/fragencode/tools/multi/Renv
-#   files with the same name). An option would be to index those files by the process name ?
+#   files with the same name). An option would be to write those files where the annot is, which means to change make_sumstat.sh
+#   but also all the other scripts that depend on it= analyse tr model.sh, ref_pred_annot2stats.sh, refine_comptr_output.sh
+#   so a lot of care needs to be taken to do it
 
 # example
 #########

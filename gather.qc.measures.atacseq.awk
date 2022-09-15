@@ -1,7 +1,7 @@
 # gather.qc.measures.atacseq.awk
 # this script gathers several kinds of qc metrix distributed in 5 different tsv files and derived from the output of
 # the nf core atacseq pipeline run on data with 2 technical replicates for each bioreplicate:
-# - a main input tsv file with header that has N rows representing N biological replicates and a header, with this info
+# - a main input tsv file with header that has N rows representing N biological replicates and a header, with this info (9 columns)
 #   * biorep
 #   * clnread.tot
 #   * clnreadmap.nb
@@ -20,7 +20,8 @@
 #   * fileRef4=lid.nbbpinit.aftertrim.nb.pcent.tsv that has for each techrep and read no the init nb of bp, the one after trimming and the % it represents (4*N rows)
 #   * fileRef5=lid.gccontent.aftertrimming.summary.tsv that has for each techrep and read no whether it passes the fastqc GC content test (4*N rows)
 #   * fileRef6=lid.dupllevel.aftertrimming.summary.tsv that has for each techrep and read no whether it passes the fastqc duplication level test (4*N rows)
-# it will output a tsv file with header that has 34 fields in this order
+# It will output a tsv file with header that has 34 fields in this order
+########################################################################
 #   * biorep id from the pipeline (such as liver_fetus_control_R10)
 #   * biorep id of the raw count matrix (such as SSC_WU_WP5_FT_70dpf_913.4:skeletalmuscle)
 #   * techrep1.read1.initnb
