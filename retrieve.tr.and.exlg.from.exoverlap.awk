@@ -1,8 +1,9 @@
 # retrieve.tr.and.exlg.from.exoverlap.awk
 # takes as input
-# - fileRef which is a complete exon gff file (gene_id, transcript_id) to which we compared the input exon file to using overlap (2nd file is fileRef, 1st file is input file)
-# - input file is a complete exon gff file (gene_id, transcript_id) for which we want to know for each of its transcripts, the cumulative exon length that is overlapped with the transcripts of fileRef
-# provides as output a with header tsv file that has for each transcript from the input file:
+# - fileRef which is a complete exon gff file (gene_id, transcript_id) to which we compared the input exon file to using the overlap pgm (with 1st columns of input file as 1st file and fileRef as 2nd file)
+# - input file is a complete exon gff file (gene_id, transcript_id) coming from the output of overlap with fileRef (human exon file) for which we want to know for each of its transcripts,
+#   the cumulative exon length that is overlapped with the transcripts of fileRef (initially this input file is the result of the projection of livestock species tr to human)
+# provides as output a tsv file with header that has for each transcript from the input file:
 #############################################################################################
 # - transcript id
 # - gene id
@@ -15,16 +16,20 @@
 # - cumulative exon length of those (comma separated list)
 # - number of exons in the intersection (comma separated list) 
 # - cumulative exon length in the intersection (comma separated list)
+# note that if I had used additional option in the overlap process leading to the input file then I could have obtained directly the human tr ids and gene ids
+# instead of only the human exon coordinates and I would not have had to do such a complicated process here
+
+# TODO
+# when a transcript does not hit any human gene, column 8 and 9 should be NA but here for some reason they are always 37 and 15416
+# so need to modify that
+
 
 # example
 #########
 # cd /work/project/fragencode/workspace/sdjebali/comparativegx/projections/genes_diff_species/livestock_to_human/sus_scrofa
 # annot=/work/project/fragencode/data/species/homo_sapiens/GRCh38.90/homo_sapiens_ucsc_exons.gff
 # awk -v fld=16 -v fileRef=$annot -f retrieve.tr.and.exlg.from.exoverlap.awk fragtr_to_hg38.besthit.exon.over.ens90.gff > fragtr_to_hg38.besthit.trid.gnid.nbex.lgex.overtr.idlist.gnidlist.nbex.lgex.interex.nb.lg.tsv
-# trid	gnid	nbex	exlg	overtrlist	overgnid	nbtr	nbexlist	exlglist	internbexlist	interexlglist
-# TCONS_00087727.1	XLOC_025169	9	233	NA	NA	0	37	15416	NA	NA
-# TCONS_00062595.1	XLOC_018093	66	4282	ENST00000620394,ENST00000614484,ENST00000618262,ENST00000614370,ENST00000618411,ENST00000611405,ENST00000431645,ENST00000423692,ENST00000641476,ENST00000474896,ENST00000460194,ENST00000448764,ENST00000449389,ENST00000466432,ENST00000487311,ENST00000469602,ENST00000478693,ENST00000445337,ENST00000477529,	ENSG00000087087,ENSG00000087087,ENSG00000087087,ENSG00000087087,ENSG00000087087,ENSG00000087087,ENSG00000087087,ENSG00000087087,ENSG00000087087,ENSG00000087087,ENSG00000087087,ENSG00000087087,ENSG00000087087,ENSG00000087087,ENSG00000087087,ENSG00000087087,ENSG00000087087,ENSG00000087087,ENSG00000087087	19	2,20,20,5,20,20,4,4,3,3,3,12,5,2,2,2,3,3,2	582,2964,2955,556,2893,2905,397,727,992,726,575,1607,448,378,563,376,655,446,540	9,31,31,9,30,29,3,8,7,7,4,16,6,2,2,2,4,6,7	353,2943,2946,477,2884,2884,333,726,684,680,357,1591,435,134,328,331,530,431,405
-# 73506 (11 fields) *** real	1m20.942s  *** we see the genes in the list are usually the same ones  *** file is 31M
+
 # Note:
 # supposes that this command was run before and that the output of this command is the one provided as input of the present script (same $annot file for both)
 # overlap=/work/project/fragencode/tools/multi/Scripts/bin/overlap
@@ -37,9 +42,18 @@
 # 1199596 (12 fields)
 
 # input file is like this
-# chr1	p2g	exon	925708	925713	.	+	.	 gene_id "XLOC_024688"; transcript_id "TCONS_00085879.1"; nb_ov_feat2: 0 list_feat2: .
-# chr1	p2g	exon	925715	925771	.	+	.	 gene_id "XLOC_024688"; transcript_id "TCONS_00085879.1"; nb_ov_feat2: 2 list_feat2: chr1_925738_925800_+,chr1_925741_925800_+,
-# 5056308 (16 fields) 
+# chr1	p2g	exon	925708	925713	.	+	.	 gene_id "XLOC_024688"; transcript_id "TCONS_00085879"; nb_ov_feat2: 0 list_feat2: .
+# chr1	p2g	exon	925715	925771	.	+	.	 gene_id "XLOC_024688"; transcript_id "TCONS_00085879"; nb_ov_feat2: 2 list_feat2: chr1_925738_925800_+,chr1_925741_925800_+,
+# 5056308 (16 fields)   *** one row per exon, not more (since output of overlap and not of intersectBed)
+
+# output fragtr_to_hg38.besthit.trid.gnid.nbex.lgex.overtr.idlist.gnidlist.nbex.lgex.interex.nb.lg.tsv is like this
+# trid	gnid	nbex	exlg	overtrlist	overgnid	nbtr	nbexlist	exlglist	internbexlist	interexlglist
+# TCONS_00087727.1	XLOC_025169	9	233	NA	NA	0	37	15416	NA	NA
+# TCONS_00062595.1	XLOC_018093	66	4282	ENST00000620394,ENST00000614484,ENST00000618262,ENST00000614370,ENST00000618411,ENST00000611405,ENST00000431645,ENST00000423692,ENST00000641476,ENST00000474896,ENST00000460194,ENST00000448764,ENST00000449389,ENST00000466432,ENST00000487311,ENST00000469602,ENST00000478693,ENST00000445337,ENST00000477529,	ENSG00000087087,ENSG00000087087,ENSG00000087087,ENSG00000087087,ENSG00000087087,ENSG00000087087,ENSG00000087087,ENSG00000087087,ENSG00000087087,ENSG00000087087,ENSG00000087087,ENSG00000087087,ENSG00000087087,ENSG00000087087,ENSG00000087087,ENSG00000087087,ENSG00000087087,ENSG00000087087,ENSG00000087087	19	2,20,20,5,20,20,4,4,3,3,3,12,5,2,2,2,3,3,2	582,2964,2955,556,2893,2905,397,727,992,726,575,1607,448,378,563,376,655,446,540	9,31,31,9,30,29,3,8,7,7,4,16,6,2,2,2,4,6,7	353,2943,2946,477,2884,2884,333,726,684,680,357,1591,435,134,328,331,530,431,405
+# 73506 (11 fields) *** real	1m20.942s  *** we see the genes in the list are usually the same ones  *** file is 31M
+
+# to check the program works:
+#############################
 # for example exon chr1_925738_925800_+ belongs to ENST00000342066 so ENST00000342066 should be in the tr list of TCONS_00085879.1 and indeed
 # grep TCONS_00085879.1 fragtr_to_hg38.besthit.trid.gnid.nbex.lgex.overtr.idlist.gnidlist.nbex.lgex.interex.nb.lg.tsv
 # TCONS_00085879.1	XLOC_024688	45	2724	ENST00000342066,ENST00000616016,ENST00000616125,ENST00000617307,ENST00000618181,ENST00000618323,ENST00000618779,ENST00000620200,ENST00000622503,ENST00000420190,ENST00000437963,ENST00000341065,ENST00000455979,ENST00000474461,ENST00000478729,ENST00000466827,ENST00000464948,	ENSG00000187634,ENSG00000187634,ENSG00000187634,ENSG00000187634,ENSG00000187634,ENSG00000187634,ENSG00000187634,ENSG00000187634,ENSG00000187634,ENSG00000187634,ENSG00000187634,ENSG00000187634,ENSG00000187634,ENSG00000187634,ENSG00000187634,ENSG00000187634,ENSG00000187634	17	14,13,12,13,11,12,13,9,14,7,5,12,7,4,3,2,2	2551,2391,2230,2314,2179,2159,2368,1874,2557,1578,387,2191,1731,862,318,542,657	38,37,36,37,35,35,36,32,38,6,4,35,17,6,2,5,5	2451,2291,2175,2262,2124,2110,2319,1825,2454,557,347,2162,1567,794,201,439,499	
@@ -63,7 +77,7 @@ BEGIN{
 	split($10,b,"\"");
 	gnid1[a[2]]=b[2];
 	nbex1[a[2]]++;
-	cumulex1[a[2]]+=$5-$4+1;
+	cumulex1[a[2]]+=($5-$4+1);
 	trlist1[$1"_"$4"_"$5"_"$7]=(trlist1[$1"_"$4"_"$5"_"$7])(a[2])(",");
     }
 }
@@ -75,7 +89,7 @@ BEGIN{
     split($10,b,"\"");
     gnid2[a[2]]=b[2];
     nbex2[a[2]]++;
-    cumulex2[a[2]]+=$5-$4+1;
+    cumulex2[a[2]]+=($5-$4+1);
 
     # the list of exons from fileRef that intersects the current exon
     split($fld,b,",");
