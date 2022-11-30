@@ -1,8 +1,7 @@
 #!/bin/bash
 set -Eexo pipefail
 # !!! IMPORTATNT to improve the program !!!
-# !!! index prediction_sumstat.txt by pred tr id so that we can run in parallel in Renv dir !!!
-# !!! and also put the files relative to pred in pred dir and the files relative to ref in ref dir !!!
+# !!! and also put the files relative to pred in pred dir and the files relative to ref in ref dir and indexed by annot underlying file name !!!
 # !!! and not where the script is run !!!
 # !!! before doing that it is important to check that it does not disrupt other scripts' behavior !!!
 
@@ -26,8 +25,8 @@ set -Eexo pipefail
 
 # takes as input two mandatory arguments:
 ########################################
-# - a set of transcripts to compare to the annotation as a gff 2 file containing at least exon rows
-# - an annotation gtf file that has at least exon and gene rows
+# - a set of transcripts to compare to the annotation as a gff 2 file containing at least exon rows and with gene_id and transcript_id in the 9th field
+# - an annotation gtf file that has at least exon rows and with gene_id and transcript_id in the 9th field
 
 # and provides as output:
 #########################
@@ -74,8 +73,10 @@ then
     echo "" >&2
     echo Usage: refine_comptr_output.sh mytr.gff annot.gtf >&2
     echo "where:" >&2
-    echo "- mytr.gff is a set of transcripts in gff 2 format (exon rows at least) one wants to compare to the annotation" >&2
-    echo "- annot.gtf is an annotation file in gtf format (exon and gene rows at least) one wants to compare to the annotation" >&2
+    echo "- mytr.gff is a set of transcripts in gff 2 format (exon rows at least, gene_id and transcript_id in the 9th field)" >&2
+    echo "  one wants to compare to the annotation" >&2
+    echo "- annot.gtf is an annotation file in gtf format (exon rows at least, gene_id and transcript_id in the 9th field)" >&2
+    echo "  one wants to compare to the annotation" >&2
     echo "!!! Requires bedtools, R, comptr and overlap to be in your path !!!" >&2
     echo "!!! Cannot be run in parallel in the same directory since it produces files with constant name !!!" >&2
     echo "" >&2
@@ -109,15 +110,16 @@ INTER=intersectBed
 ##################################################################
 echo I am making gff files of annotated exons, genes and TSS respectively >&2
 awk '$3=="exon"' $annot | awk -f $MAKEOK | awk -f $GFF2GFF | sort -k12,12 -k4,4n -k5,5n > annot_exons.gff
-awk '$3=="gene"' $annot | awk -f $MAKEOK > annot_genes.gff
 awk -v toadd=transcript -v fldno=12 -f $BOUNDARIES annot_exons.gff | awk -v fileRef=annot_exons.gff 'BEGIN{while (getline < fileRef >0){gnid[$12]=$10}} {print $1, $2, $3, $4, $5, $6, $7, $8, "gene_id", gnid[$10], $9, $10}' | awk -f $GFF2GFF > annot_tr.gff
+# awk '$3=="gene"' $annot | awk -f $MAKEOK > annot_genes.gff
+awk -v toadd=gene -v fldno=10 -f $BOUNDARIES annot_exons.gff | awk -f $GFF2GFF > annot_genes.gff
 $MAKETSS $annot
 echo done >&2
 
 # 2. Make a complete file from the prediction
 #############################################
 echo I am making a complete file for the predictions >&2
-$MAKESUM $mytr > prediction_sumstat.txt
+$MAKESUM $mytr > $mytrbasetmp.prediction_sumstat.txt
 echo done >&2
 
 # 3. Compute the number of exons of each transcript to be compared to the annotation

@@ -1,5 +1,6 @@
 # add_intermclass_andgnlist.awk
-# this script takes as input
+# this script takes as input:
+#############################
 # - a complete file of predicted transcripts in gff format (includes exons and transcripts)
 # - an annotated transcript gff file in gff format
 # - a 2 column tsv file with for each predicted spliced transcript with an intron common with an annotated transcript, its id and the list of these transcript genes
@@ -25,6 +26,11 @@
 #    asking for one common intron same strand as the reference and then ask that the transcript is neither
 #    in class 1 nor in class 2                                                 
 # 4) novel = new transcripts = the ones not in 1) or 2) or 3) (for monoex they can only be from class 1, 2 or 4, not 3)
+
+# TODO: apparently the gnlist is not filled in on latest runs of refine_comptr_output.sh
+#       for example comparing tagada annot of geneswitch chicken to chicken atlas from sandy
+#       in ~/fragencode/workspace/sdjebali/geneswitch/analysis/gtfs/annotation.quality/geneswitch/README.sh
+#       Nov 14th 2022 so need to understand why
 
 # note: to be considered annot we used to have this condition before
 # if((abs(gbeg[$1]-gbeg2[a[k]])<=10)&&(abs(gend[$1]-gend2[a[k]])<=10))

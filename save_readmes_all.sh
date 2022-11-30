@@ -1,5 +1,7 @@
 /work/project/fragencode/tools/multi/Scripts/save_readmes.sh /work/sdjebali /work/project/fragencode/doc/READMEs_sarah/READMEs_work
 /work/project/fragencode/tools/multi/Scripts/save_readmes.sh /work/project/fragencode/workspace/sdjebali /work/project/fragencode/doc/READMEs_sarah/READMEs_frag/workspace/sdjebali
+/work/project/fragencode/tools/multi/Scripts/save_readmes.sh /work/project/fragencode/workspace/geneswitch /work/project/fragencode/doc/READMEs_sarah/READMEs_fraggs
+/work/project/fragencode/tools/multi/Scripts/save_readmes.sh /work/project/geneswitch /work/project/fragencode/doc/READMEs_sarah/READMEs_gs
 /work/project/fragencode/tools/multi/Scripts/save_readmes.sh /work/project/fragencode/papers /work/project/fragencode/doc/READMEs_sarah/READMEs_frag/papers
 /work/project/fragencode/tools/multi/Scripts/save_readmes.sh /work/project/fragencode/results /work/project/fragencode/doc/READMEs_sarah/READMEs_frag/results
 /work/project/fragencode/tools/multi/Scripts/save_readmes.sh /work/project/fragencode/tools /work/project/fragencode/doc/READMEs_sarah/READMEs_frag/tools

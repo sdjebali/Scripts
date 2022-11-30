@@ -17,43 +17,47 @@
 # Example of usage
 ##################
 # srun --mem=8G --pty bash
-# cd /home/cgenet/genrocwork/Carine/MONOPOLY/Bovin/TAGADA_test11/RESULTATS/annotation
+# cd /work/project/fragencode/workspace/geneswitch/results/rnaseq/gallus_gallus/TAGADA.v2.1.0.GRCg6a.102.22-07-30/annotation
 # pgm=~/fragencode/tools/multi/Scripts/add_2classes_feelnc_tr_gn_bt_to_tmerge.awk
-# outdir=~/fragencode/workspace/sdjebali/monopoly
-# time awk -f $pgm novel.gtf > $outdir/novel.with.feelnc.biotypes.gtf
-
+# time awk -f $pgm novel.gtf > novel.with.gnbt.gtf
+# real	0m16.596s
 
 # input file novel.gtf 
-# 1	tagada	exon	339070	339312	0	-	.	gene_id "LOC_000000051391"; transcript_id "ENSBTAT00000007786"; ref_gene_id "ENSBTAG00000006648"; tmerge_tr_id "TM_000000000015"; transcript_biotype "protein_coding";
-# 1	tagada	exon	339070	339312	0	-	.	gene_id "LOC_000000051391"; transcript_id "ENSBTAT00000008737"; ref_gene_id "ENSBTAG00000006648"; tmerge_tr_id "TM_000000000016"; transcript_biotype "protein_coding";
-# 29298 (12 fields)
-# 393776 (14 fields)
-# 18696 (16 fields)
-# 391600 (18 fields)
-# 7300 (20 fields)
-# 34824 (40 fields)
-# 6376 (42 fields)
-# 38735 (44 fields)
-# 2352 (46 fields)  *** gene_id first in all rows, transcript_id second in exon and transcript rows
+# 2	tagada	gene	60230459	60323312	0	-	.	gene_id "LOC_000000004120"; ref_gene_id "."; feelnc_gene_biotype "mRNA";
+# 2	tagada	transcript	60234249	60323312	0	-	.	gene_id "LOC_000000004120"; transcript_id "TM_000000407027"; contains "ileum_stage3.filtered:STRG.8622.1,muscle_stage2.filtered:STRG.7929.1,lung_stage1.filtered:STRG.8599.3,muscle_stage1.filtered:STRG.8172.4"; contains_count "4"; 3p_dists_to_3p "0,0,2,0"; 5p_dists_to_5p "0,5,31,43"; flrpm "4.35556"; longest "ileum_stage3.filtered:STRG.8622.1"; longest_FL_supporters "ileum_stage3.filtered:STRG.8622.1,lung_stage1.filtered:STRG.8599.3,muscle_stage1.filtered:STRG.8172.4,muscle_stage2.filtered:STRG.7929.1"; longest_FL_supporters_count "4"; mature_RNA_length "8548"; meta_3p_dists_to_5p "1,1,0.999766027140852,1"; meta_5p_dists_to_5p "0,0.000584932147870847,0.00362657931679925,0.00503041647168928"; rpm "4.35556"; spliced "1"; ref_gene_id "."; feelnc_gene_biotype "mRNA";
+# 34712 (14 fields)
+# 812243 (16 fields)
+# 129578 (18 fields)
+# 280908 (20 fields)
+# 33399 (22 fields)
+# 64717 (42 fields)
+# 39140 (44 fields)
+# 25713 (46 fields)
+# 8702 (48 fields)  *** gene_id first in all rows, transcript_id second in exon and transcript rows
 #                       there were only rows of 4, 10, 12, 14, 16 or 18 fields in the corresponding file of add_3classes_feelnc_tr_gn_bt_to_smerge.awk 
 
 
-# output file $outdir/$outdir/novel.with.feelnc.biotypes.gtf
-# 3	tagada	gene	110210882	110308132	0	+	.	gene_id "LOC_000000000237"; ref_gene_id "."; feelnc_gene_biotype "other";
-# ...
-# 7	tagada	gene	11344119	11354161	0	+	.	gene_id "LOC_000000039636"; ref_gene_id "ENSBTAG00000021820"; feelnc_gene_biotype "mRNA";
-# 7	tagada	transcript	11344837	11353461	0	+	.	gene_id "LOC_000000039636"; transcript_id "TM_000000536318"; contains "BT14_CTRL.filtered:STRG.4847.2,BT12_BMP15.filtered:STRG.4713.2,BT6_BMP15.filtered:STRG.4569.2,BT8_CTRL.filtered:STRG.4794.2"; contains_count "4"; 3p_dists_to_3p "0,0,1,19"; 5p_dists_to_5p "0,72,78,68"; flrpm "2.51204"; longest "BT14_CTRL.filtered:STRG.4847.2"; longest_FL_supporters "BT12_BMP15.filtered:STRG.4713.2,BT14_CTRL.filtered:STRG.4847.2,BT6_BMP15.filtered:STRG.4569.2,BT8_CTRL.filtered:STRG.4794.2"; longest_FL_supporters_count "4"; mature_RNA_length "1587"; meta_3p_dists_to_5p "1,1,0.999369880277253,0.988027725267801"; meta_5p_dists_to_5p "0,0.0453686200378072,0.0491493383742911,0.0428481411468179"; rpm "2.51204"; spliced "1"; ref_gene_id "."; feelnc_gene_biotype "mRNA";
-# 7	tagada	exon	11344837	11345004	0	+	.	gene_id "LOC_000000039636"; transcript_id "TM_000000536318"; ref_gene_id "."; feelnc_gene_biotype "mRNA";
-# ...
+# output file novel.with.gnbt.gtf
+# 2	tagada	gene	60230459	60323312	0	-	.	gene_id "LOC_000000004120"; ref_gene_id "."; feelnc_gene_biotype "mRNA";
+# 2	tagada	transcript	60234249	60323312	0	-	.	gene_id "LOC_000000004120"; transcript_id "TM_000000407027"; contains "ileum_stage3.filtered:STRG.8622.1,muscle_stage2.filtered:STRG.7929.1,lung_stage1.filtered:STRG.8599.3,muscle_stage1.filtered:STRG.8172.4"; contains_count "4"; 3p_dists_to_3p "0,0,2,0"; 5p_dists_to_5p "0,5,31,43"; flrpm "4.35556"; longest "ileum_stage3.filtered:STRG.8622.1"; longest_FL_supporters "ileum_stage3.filtered:STRG.8622.1,lung_stage1.filtered:STRG.8599.3,muscle_stage1.filtered:STRG.8172.4,muscle_stage2.filtered:STRG.7929.1"; longest_FL_supporters_count "4"; mature_RNA_length "8548"; meta_3p_dists_to_5p "1,1,0.999766027140852,1"; meta_5p_dists_to_5p "0,0.000584932147870847,0.00362657931679925,0.00503041647168928"; rpm "4.35556"; spliced "1"; ref_gene_id "."; feelnc_gene_biotype "mRNA";
+# 34712 (14 fields)
+# 812243 (16 fields)
+# 129578 (18 fields)
+# 280908 (20 fields)
+# 33399 (22 fields)
+# 64717 (42 fields)
+# 39140 (44 fields)
+# 25713 (46 fields)
+# 8702 (48 fields) 
 
 
 
 # the novel annot gtf file has exon, transcript and gene rows and has gene_id as 1st key in the 9th field, and transcript_id
 # as 2nd key for exon and transcript rows. It also has the information of feelnc transcript biotype in some exon and tr rows
-# here we remember all the exon, transcript and gene rows (exons and tr indexed by tr id, gene rows indexed by gene id in hashtables)
-# but we will output the complete file with feelnc gene biotype in the end part of the script
+# but not in all. here we remember all the exon, transcript and gene rows (exons and tr indexed by tr id, gene rows indexed
+# by gn id, in hashtables), but we will output the complete file with feelnc gene biotype in the end part of the script
 # note that here we also remember for each transcript its reference transcript biotype if it exists as well as its feelnc tr biotype
-# if it exists, and this will serve to compute the feelnc gene biotype that will be reported for exon, tr and gene rows afterwards
+# if it exists, and this will serve to compute the feelnc gene biotype that will be reported for exon, transcript and gene rows at the end
 {
     if($3=="exon")
     {
@@ -63,6 +67,7 @@
     else
     {
 	# when it reads a transcript row it tries to look for transcript_biotype (from the ref annot) and for feelnc_biotype (from feelnc) information
+	# note that tr and gn indices include both double quotes and the semi colon
 	if($3=="transcript")
 	{
 	    trrow[$12]=$0;
@@ -103,7 +108,7 @@
 			}
 		    }
 		}
-		k+=2;
+		k++;
 	    }
 	    trbt[$12]=(((mrna1[$12]==1)||(mrna2[$12]==1)) ? "mRNA" : (((lnc1[$12]==1)||(lnc2[$12]==1)) ? "lncRNA" : "other"));
 	}
@@ -127,7 +132,7 @@ END{
 	
 	# look for the tr list of the gene of the current transcript t
 	# and make the tr bt list out of it in order to compute the gn bt afterwards
-	# this feelnc gene bt will go to the tr and its exons but also to the gene of the tr (see gnbt[b[2]]=gnbt[t])
+	# this feelnc gene bt will go to the tr and its exons but also to the gene of the tr (see gnbt[b[2]]=gnbt[t] below)
 	split(trlist[b[2]],c,",");
 	k=1;
 	while(c[k]!="")
