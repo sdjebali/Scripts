@@ -1,5 +1,5 @@
 # add_2classes_feelnc_tr_gn_bt_to_tmerge.awk
-# The aim is quite similar to add_3classes_feelnc_tr_gn_bt_to_smerge.awk  but only takes the main tagada annotation file as input
+# The aim is quite similar to add_3classes_feelnc_tr_gn_bt_to_smerge.awk but only takes the main tagada annotation file as input
 # this file is usually produced by tmerge and already contains feelnc transcript biotype which is either mRNA or lncRNA
 
 # The rules are therefore very simple: if the gene has at least one transcript that is considered protein_coding by the ref
