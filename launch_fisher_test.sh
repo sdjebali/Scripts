@@ -7,6 +7,7 @@ set -Eexo pipefail
 # the one observed (or more extreme). I.e., chi2 test return cumulative probability
 # !!! here I use a one sided test where I want the observed value to be GREATER than the expected one
 # !!! this is not possible with chi2 test
+# !!! replaced $2-$3 by $2-2*$3 on March 14th 2023 !!!
 
 # usage:
 # launch_fisher_test.sh nA nB nA&&B nuniv
@@ -22,5 +23,5 @@ if [ ! -n "$1" ] || [ ! -n "$2" ] || [ ! -n "$3" ] || [ ! -n "$4" ]
 then
 echo "usage: launch_fisher_test.sh nA nB nA&&B nuniv"
 else
-echo 'fisher.test(matrix(c('$3','$1'-'$3','$2'-'$3',('$4'-'$1')-('$2'-'$3')),ncol=2,byrow=T),alternative="greater")' | R --vanilla --slave
+echo 'fisher.test(matrix(c('$3','$1'-'$3','$2'-'$3',('$4'-'$1')-('$2'-2*'$3')),ncol=2,byrow=T),alternative="greater")' | R --vanilla --slave
 fi

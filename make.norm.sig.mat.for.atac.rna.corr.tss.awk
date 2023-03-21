@@ -1,14 +1,16 @@
 # make.norm.sig.mat.for.atac.rna.corr.tss.awk
-# given
+# given:
+########
 # - a tsv file of common samples between atacseq and rnaseq w/o header with 5 columns that has the wanted ids first
 #   then an intermediate id from me, then the id it has in the header of the atacseq file/matrix, then an intermediate
 #   rnaseq id from Jos and tagada pipeline and then the id it has in the header of the rna matrix (fileRef1)
 # - a tsv file with header and n-1 columns in the header representing the atacseq matrix (normalized signal) with the
-#   peak ids and the sample ids with double quotes but the normalized values w/o double quotes
+#   peak ids and the sample ids with double quotes but the normalized values w/o double quotes (fileRef2)
 # - the same for the rnaseq matrix (fileRef3)
 # - an input file that is a tsv file w/o header with 2 columns, the peak ids and the gene ids for the peaks at the tss
 #   of genes and with a 1 to 1 correspondance between the peaks and the genes
-# outputs two files that are tsv files with headers and that are named always the same
+# outputs two files that are tsv files with headers and that are named always the same:
+#######################################################################################
 # - tsspeaks1to1.loessnorm.eachcommonsample.tsv
 # - gnoftsspeaks1to1.tmmnorm.eachcommonsample.tsv
 # those files are the subsets of fileRef2 and fileRef3 but that only have the peaks and the genes of the input file
@@ -45,7 +47,7 @@
 # 1 (312 fields)
 # 26872 (313 fields)
 
-# promtss.peak.id.geneid.1to1.tsv
+# promtss.peak.id.geneid.1to1.tsv (main input)
 # 16:60331499:60333062	ENSSSCG00000017022
 # 15:45189478:45191872	ENSSSCG00000015780
 # 10121 (2 fields)
