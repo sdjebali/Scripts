@@ -4,7 +4,7 @@
 
 # The rules are therefore very simple: if the gene has at least one transcript that is considered protein_coding by the ref
 # or mRNA by feelnc it will have the feelnc biotype mRNA, otherwise if it has at least one transcript labelled as lncRNA by
-# the reference or feelnc then it will be labelled lncRNA, otherwise it will be labelled other
+# the reference or feelnc then it will be labelled lncRNA, otherwise it will be labelled other (even if a transcript is noorf or tucp)
 
 # It takes as input a single file:
 ##################################

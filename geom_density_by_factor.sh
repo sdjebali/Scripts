@@ -11,7 +11,7 @@ set -Eexo pipefail
 #   * a one word label for the title of the plot
 #   * the min and max to zoom in for the x axis
 # - produces as output and in the same directory as the input file:
-#   * a png file (named after the one word label of the column and to the factor name), with the density plot of this column split according to the factor
+#   * a png file (named after the one word label of the column and the factor name), with the density plot of this column split according to the factor
 # Note: needs reshape2 and ggplot2 libraries to be installed
 
 # example

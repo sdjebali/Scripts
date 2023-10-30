@@ -1,7 +1,8 @@
 # add_gninfo_to_promtopromoverlap.awk
 # this script takes as input
-# - the result of intersectBed -wao between a prom frag file and a tss+-500bp file
+# - the result of intersectBed -wao between a prom frag file and a tss+-500bp (or +-100) file
 # - the corresponding gene file as fileRef
+# - an optional column number in fileRef gff file for piece of info about the gene to remember (by default 18th column and gene name)
 # and outputs a tsv file with no header that has
 # - the prom frag coord (chr:beg:end)
 # - the number of genes whose tss+-500bp overlaps the prom frag
@@ -9,6 +10,9 @@
 # on Sept 2nd 2020 adding the size of the promoter at the end of the row
 # !!! be careful the information of which tss of the gene extended by 500bp on each side actually overlaps the prom frag is lost !!!
 # !!! and therefore we also loose the info of which tss+-500bp overlaps the prom fragment more, and therefore also the associated gene !!!
+# on April 14th 2023 made it more general by
+# - allowing any gff file with gene rows as fileRef
+# - taking info not only in column 18 as gene name but anything (default 18th)
 
 # example
 # dir=~/regenet/workspace/sdjebali/egprediction/from3D/predictions/capturehic/jung.ren.2019
@@ -46,13 +50,21 @@
 # 25590 (3 fields) 
 
 BEGIN{
-    # read the gene gff file and keep the gene name ($18) corresponding to the gene id ($10) and the gene coord in bed format
+    if(info=="")
+    {
+	info=18;
+    }
+    # read the gene gff file and keep the info in column info and the gene coord in bed format
+    # in case info is not provided this info is in column 18 and is supposed to be gene name in emsembl files
     while (getline < fileRef >0)
     {
-	split($10,a,"\"");
-	split($18,b,"\"");
-	name[a[2]]=b[2];
-	coord[a[2]]=$1":"($4-1)":"$5":"$7;
+	if($3=="gene")
+	{
+	    split($10,a,"\"");
+	    split($info,b,"\"");
+	    name[a[2]]=b[2];
+	    coord[a[2]]=$1":"($4-1)":"$5":"$7;
+	}
     }
 }
 

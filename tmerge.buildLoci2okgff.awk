@@ -1,4 +1,5 @@
 # tmerge.buildLoci2okgff.awk
+# !!! bug: ref_gene_id of a gene should be the union of all the ref_gene_id of the tr of the gene, and not just of the 1st tr of the gene !!!
 # this script takes as input:
 #############################
 # - an exon gff file from tmerge and buildLoci that has been formatted so that the 9th field
@@ -100,7 +101,7 @@ BEGIN{
     # here we read the tmerge file that only has exon rows and with gene_id and transcript_id as two first subfields of the 9th field
      while (getline < fileRef2 >0)
     {
-	# when we see the transcript for the 1st time only
+	# when we see the transcript for the 1st time only, from its first exon row we put the gbeg and gend and then reading the next exon rows we update the tr beg and end
 	split($0,a,"\t");
 	split(a[9],b," ");
 	k=1;
@@ -128,10 +129,10 @@ BEGIN{
 # here we read the tmerge file again but this time to print exon rows (tr and gn rows will be printed in the END part)
 $3=="exon"{
     # it has to be noted that all the exon rows of a given transcript contain the same information in the 9th field
-    # so looking for a ref tr in the 9th field and making the corresponding ref_gene_id can be done for the 1st exon only
+    # so looking for a ref tr in the 9th field and making the corresponding ref_gene_id can be done for the 1st exon of the transcript only
 
-    # here we read each exon row from tmerge and buildLoci and keep the verbose info for the transcript rows
-    # we also compute the transcript and gene boundaries to make transcript and gene rows in the END part
+    # here we read each exon row from tmerge and buildLoci and keep the verbose info for the transcript rows (removing them from the exon rows)
+    # we also compute the transcript and gene boundaries to make transcript and gene rows in the END part of the script
     # note that the tmerge file is supposed to only have exon rows but a test is done here just in case
     nbex[$12]++;
     nbex[$10]++;
@@ -151,6 +152,7 @@ $3=="exon"{
     
 	# find out whether there is a ref transcript in the supporting transcripts and in this case change the transcript id to the longest of them
 	# only if this transcript has exactly the same beg and end as the tmerge tr (otherwise it will not be exactly identical to it) (long process)
+	# here just extract the content of the contains field and assign it to the current tmerge tr id ($12)
 	k=1;
 	while(found[$12]==0&&b[k]!="")
 	{
@@ -163,7 +165,7 @@ $3=="exon"{
 	}
     
 	# if we find a reference transcript in the contains field, then we take the longest one
-	# but remember the gene ids from all the reference transcripts (only once if several tr from the same gene)
+	# but we remember the gene ids from all the reference transcripts (only once if we have several tr from the same gene though)
 	# the info of ref gene and ref tr is associated to the current tmerge tr (with id in $12)
 	if((found[$12]==1)&&(ct[$12]~/ref/))
 	{
@@ -191,7 +193,7 @@ $3=="exon"{
 	    }
 	}
 	
-	# look whether the current ref tr has the same beging and end as the current tr
+	# look whether the current ref tr has the same begining and end as the current tmerge tr (id in $12)
 	# in this case it will replace the tmerge tr id in the 12th field and we will remember the tmerge tr id in a tmerge_tr_id field
 	# we also remember which of the two has to be printed in the END part
 	split($12,a,"\"");
@@ -224,7 +226,6 @@ $3=="exon"{
     # print the current exon row with either the tmerge tr id or the ref tr id in $12 (see above)
     # in case the ref tr id is taken, keep the tmerge tr id in a tmerge_transcript_id field
     # first remove the last comma in the refgnid list
-    # remove the last comma in the refgnid list
     s=(refgnid[$12]=="" ? "." : substr(refgnid[$12],1,(length(refgnid[$12])-1)));
     
     # in case the tmerge tr id is kept
@@ -233,7 +234,7 @@ $3=="exon"{
 	print $1, "tagada", "exon", $4, $5, $6, $7, $8, $9"\t"$10"\t"$11"\t"$12"\tref_gene_id \""s"\";";
 	gene[$12]=$10;
     }
-    # otherwise the ref tr id is kept
+    # otherwise the ref tr id is kept and we remember the tmerge trid as well
     else
     {
 	print $1, "tagada", "exon", $4, $5, $6, $7, $8, $9"\t"$10"\t"$11"\t"currtr[$12]"\tref_gene_id \""s"\"; tmerge_tr_id "$12;
@@ -253,6 +254,7 @@ $3=="exon"{
     }
     
     # only once for each gene we update the info of the gene with gene_id and ref_gene_id
+    # !!! here this is not correct for ref_gene_id as for the gene it should be the union of all the ref_gene_ids of all the tr of the gene !!!
     if(nbex[$10]==1)
     {
 	toprintg[$10]=1;
