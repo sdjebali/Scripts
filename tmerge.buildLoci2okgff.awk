@@ -13,8 +13,7 @@
 # - add a ref_gene_id field with . or a gene or a comma separated gene list according to whether the transcript is supported by at least one ref tr
 # - report the verbose info of the exon rows to the transcript rows and remove it from the exon rows
 # - have gene_id, transcript_id and ref_gene_id in all rows
-# - have a transcript id corresponding to a ref tr id whenever the tmerge transcript EXACTLY
-#   corresponds to a tr of the ref (taking the longest in case there are many)
+# - have a transcript id corresponding to a ref tr id whenever the tmerge transcript EXACTLY corresponds to a tr of the ref (taking the longest in case there are many)
 
 # exemple of usage:
 ###################
@@ -252,13 +251,18 @@ $3=="exon"{
     {
 	gend[$10]=$5;
     }
+    seenrefgnid2[$10,s]++;
+    if((s!=".")&&(seenrefgnid2[$10,s]==1))
+    {
+	refgnid2[$10]=(refgnid2[$10])(s)(",");
+    }
     
-    # only once for each gene we update the info of the gene with gene_id and ref_gene_id
-    # !!! here this is not correct for ref_gene_id as for the gene it should be the union of all the ref_gene_ids of all the tr of the gene !!!
+    # only once for each gene do we update the info of the gene with gene_id
+    # note that ref_gene_id of a gene has to be done later on, since we first need to have the ref_gene_id of all the tr of the gene
     if(nbex[$10]==1)
     {
 	toprintg[$10]=1;
-	info[$10]="gene_id "$10" ref_gene_id \""s"\";";
+	info[$10]="gene_id "$10;  
     }
 
     # only once for each tr (the one to print, either with a tmerge or a ref tr id) we update the info of the tr
@@ -287,6 +291,7 @@ END{
     # gn has double quotes and chr, gnbeg, gend and str for genes accept double quotes
     for(gn in toprintg)
     {
-	print chr[gn], "tagada", "gene", gbeg[gn], gend[gn], 0, str[gn], ".", info[gn];
+	s2=(refgnid2[gn]=="" ? "." : substr(refgnid2[gn],1,(length(refgnid2[gn])-1)));
+	print chr[gn], "tagada", "gene", gbeg[gn], gend[gn], 0, str[gn], ".", info[gn]" ref_gene_id \""s2"\";";
     }
 }
