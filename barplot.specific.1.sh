@@ -14,6 +14,7 @@ set -Eexo pipefail
 # - an optional parameter saying whether the y axis has to be transformed in log10 scale
 # And it produces as output in the same directory as the input file:
 # - a png file named the same way as the input file but ending in png instead of tsv, with the barplot in question
+# !!! remove the move to the dir of file 1 !!!
 
 # Example
 #########
@@ -60,12 +61,10 @@ then
     str="+ scale_y_log10()"
 fi
 
-# Set the basename of the input file and the output directory as the directory of the input tsv file and go there
-#################################################################################################################
+# Set the basename of the input file
+####################################
 input=$1
 inbase=`basename ${input%.tsv}`
-outdir=`dirname $input`
-cd $outdir
 
 # Script content
 #################

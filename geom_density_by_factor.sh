@@ -13,6 +13,8 @@ set -Eexo pipefail
 # - produces as output and in the same directory as the input file:
 #   * a png file (named after the one word label of the column and the factor name), with the density plot of this column split according to the factor
 # Note: needs reshape2 and ggplot2 libraries to be installed
+# !!! linewidth replace size in geom_density since size deprecated for lines in ggplot2 3.4.0 !!!
+# !!! I remove the initial move to the dir of file1 !!!
 
 # example
 #########
@@ -54,10 +56,6 @@ then
     exit 1
 fi
 
-# Set the output directory as the directory of the input tsv file and go there
-##############################################################################
-outdir=`dirname $1`
-cd $outdir
 
 # Set the min and max for the plot in case proper integers are given
 #####################################################################
@@ -80,7 +78,7 @@ library(reshape2)
 library(ggplot2)
 theme_set(theme_bw(base_size = 16))
 data = read.delim("'$1'", sep="\t", h=TRUE)
-gp = ggplot(data, aes(x='$2', colour='$3')) + geom_density(size=1) + coord_cartesian(xlim = c('$m', '$M'))
+gp = ggplot(data, aes(x='$2', colour='$3')) + geom_density(linewidth=1) + coord_cartesian(xlim = c('$m', '$M'))
 gp = gp + labs(title = "'$5'", x="'$4'", y="Density") + theme(plot.title = element_text(hjust = 0.5)) + theme(plot.title = element_text(size=24))
 w=8
 h=5

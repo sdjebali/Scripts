@@ -116,26 +116,25 @@ STATS=$rootDir/stats.sh
 # 0. Create the output directory and go there
 #############################################
 mkdir -p $outdir
-cd $outdir
 
 # 1. Add score quantile to bedpe file, keep only compulsory columns, add a header and place in sumstat dir
 ##########################################################################################################
-zcat $abspath | awk 'BEGIN{OFS="\t"} {print $1, $2, $3, $4, $5, $6, $7, $8, $9, $10}' | Rscript $ADDQUANT -i stdin -c 8 -q 4 -m quantiles -s -o stdout | awk 'BEGIN{OFS="\t"; print "chrom1", "start1", "end1", "chrom2", "start2", "end2", "name", "score", "strand1", "strand2", "quantile_score", "quant_index_score", "score.quantile"} {print $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $12"_"$11}' > $inbase.scorequantile.bedpe
+zcat $abspath | awk 'BEGIN{OFS="\t"} {print $1, $2, $3, $4, $5, $6, $7, $8, $9, $10}' | Rscript $ADDQUANT -i stdin -c 8 -q 4 -m quantiles -s -o stdout | awk 'BEGIN{OFS="\t"; print "chrom1", "start1", "end1", "chrom2", "start2", "end2", "name", "score", "strand1", "strand2", "quantile_score", "quant_index_score", "score.quantile"} {print $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $12"_"$11}' > $outdir/$inbase.scorequantile.bedpe
 # chrom1	start1	end1	chrom2	start2	end2	name	score	strand1	strand2	quantile_score	quant_index_score	score.quantile
 # chr1	915520	932176	chr1	1041678	1048651	chr1:915520-932176,chr1:1041678-1048651	1.65928294258351	.	.	(0.557,79.7]	4	4_(0.557,79.7]
 # 6074050 (13 fields)
 
 # 2. Score distribution
 ########################
-$DENSITY1 $inbase.scorequantile.bedpe score Score $2 $inbase
+$DENSITY1 $outdir/$inbase.scorequantile.bedpe score $$.Score $2 $inbase
 # produces the file Score.png with the density plot for the score
-mv Score.png $inbase.Score.png
+mv $$.Score.png $outdir/$inbase.Score.png
 
 # 3. Total number of connections, of intra and of inter and up and down if the first segment has a meaning (here prom)
 ######################################################################################################################
 # and when asking for a score larger than a quartile (quartile 1 will be the complete network), make tsv file with header for xls
 #################################################################################################################################
-for i in $(seq 1 4); do awk -v i=$i 'BEGIN{OFS="\t"} NR>=2&&$NF>=i{ntot++; if($1==$4){nintra++; mid1=($2+$3)/2; mid2=($5+$6)/2; if(mid1<mid2){nup++}}} END{ninter=ntot-nintra; ndown=nintra-nup; print i, ntot, nintra, nintra/ntot*100, (ninter=="" ? 0 : ninter), ninter/ntot*100, nup, nup/nintra*100, ndown, ndown/nintra*100}' $inbase.scorequantile.bedpe; done | awk 'BEGIN{OFS="\t"; print "score.quantile", "tot_nb", "intra_nb", "intra_pcent", "inter_nb", "inter_pcent", "up_nb", "up_pcent", "down_nb", "down_pcent"} {print}' > $inbase.nbconn.acc.to.score.tsv
+for i in $(seq 1 4); do awk -v i=$i 'BEGIN{OFS="\t"} NR>=2&&$NF>=i{ntot++; if($1==$4){nintra++; mid1=($2+$3)/2; mid2=($5+$6)/2; if(mid1<mid2){nup++}}} END{ninter=ntot-nintra; ndown=nintra-nup; print i, ntot, nintra, nintra/ntot*100, (ninter=="" ? 0 : ninter), ninter/ntot*100, nup, nup/nintra*100, ndown, ndown/nintra*100}' $outdir/$inbase.scorequantile.bedpe; done | awk 'BEGIN{OFS="\t"; print "score.quantile", "tot_nb", "intra_nb", "intra_pcent", "inter_nb", "inter_pcent", "up_nb", "up_pcent", "down_nb", "down_pcent"} {print}' > $outdir/$inbase.nbconn.acc.to.score.tsv
 # score.quantile	tot_nb	intra_nb	intra_pcent	inter_nb	inter_pcent	up_nb	up_pcent	down_nb	down_pcent
 # 1	6074049	6074049	100	0	0	3029189	49.871	3044860	50.129
 # 5 (10 fields)  *** exact same file as when done step by step
@@ -144,51 +143,53 @@ for i in $(seq 1 4); do awk -v i=$i 'BEGIN{OFS="\t"} NR>=2&&$NF>=i{ntot++; if($1
 ########################################################################################################################
 # a. input tsv file with header
 ###############################
-awk 'BEGIN{OFS="\t"} NR==1{print "distance", $8, $11, $12, $13} $1==$4{mid1=($2+$3)/2; mid2=($5+$6)/2; print abs(mid1-mid2), $8, $11, $12, $13} function abs(x){return (x>=0 ? x : (-1)*x)}' $inbase.scorequantile.bedpe > $inbase.dist.score.quantiles.tsv
+awk 'BEGIN{OFS="\t"} NR==1{print "distance", $8, $11, $12, $13} $1==$4{mid1=($2+$3)/2; mid2=($5+$6)/2; print abs(mid1-mid2), $8, $11, $12, $13} function abs(x){return (x>=0 ? x : (-1)*x)}' $outdir/$inbase.scorequantile.bedpe > $outdir/$inbase.dist.score.quantiles.tsv
 # distance	score	quantile_score	quant_index_score	score.quantile
 # 121316	1.65928294258351	(0.557,79.7]	4	4_(0.557,79.7]
 # 6074050 (5 fields)  *** exact same file as when done step by step
 # b. plot the distance of all interactions with ggplot
 ######################################################
-$DENSITY1 $inbase.dist.score.quantiles.tsv distance Distance $sdist $inbase
+$DENSITY1 $outdir/$inbase.dist.score.quantiles.tsv distance $$.Distance $sdist $inbase
 # produces the file Distance.png with the density plot for the score
-mv Distance.png $inbase.Distance.png
+mv $$.Distance.png $outdir/$inbase.Distance.png
 # c. plot the distance of the interactions belonging to each quantile of score
 ##############################################################################
-$DENSITY2 $inbase.dist.score.quantiles.tsv distance score.quantile Distance $inbase $sdist
-# produces the file Distance_by_score.quantile.density.png with the density plot of the distance according to the score
-mv Distance_by_score.quantile.density.png $inbase.Distance_by_score.quantile.density.png 
+$DENSITY2 $outdir/$inbase.dist.score.quantiles.tsv distance score.quantile $$.Distance $inbase $sdist
+# produces the file $$.Distance_by_score.quantile.density.png with the density plot of the distance according to the score
+mv $$.Distance_by_score.quantile.density.png $outdir/$inbase.Distance_by_score.quantile.density.png 
 
 # 5. Degree of first and second elements (vertex degree), according to score
 ############################################################################
 # a. tsv file with header (first 4 files and then gather)
 #########################################################
-for i in $(seq 1 4); do awk -v i=$i 'NR>=2&&$NF>=i' $inbase.scorequantile.bedpe | awk -v i=$i '{nb1[$1":"$2":"$3]++; nb2[$4":"$5":"$6]++} END{OFS="\t"; for(s in nb1){nb1super[nb1[s]]++; if(nb1[s]>m1){m1=nb1[s]}} for(s in nb2){nb2super[nb2[s]]++; if(nb2[s]>m2){m2=nb2[s]}} for(j=1; j<=m1; j++){print "elt1", i, j, nn(nb1super[j])} for(j=1; j<=m2; j++){print "elt2", i, j, nn(nb2super[j])}} function nn(x){return (x!="" ? x : 0)}' ; done | awk 'BEGIN{OFS="\t"; print "vertex.type", "score.quantile", "degree", "number"} {print}' > $inbase.refelt.scorequantile.nbconn.nbtimes.tsv
+for i in $(seq 1 4); do awk -v i=$i 'NR>=2&&$NF>=i' $outdir/$inbase.scorequantile.bedpe | awk -v i=$i '{nb1[$1":"$2":"$3]++; nb2[$4":"$5":"$6]++} END{OFS="\t"; for(s in nb1){nb1super[nb1[s]]++; if(nb1[s]>m1){m1=nb1[s]}} for(s in nb2){nb2super[nb2[s]]++; if(nb2[s]>m2){m2=nb2[s]}} for(j=1; j<=m1; j++){print "elt1", i, j, nn(nb1super[j])} for(j=1; j<=m2; j++){print "elt2", i, j, nn(nb2super[j])}} function nn(x){return (x!="" ? x : 0)}' ; done | awk 'BEGIN{OFS="\t"; print "vertex.type", "score.quantile", "degree", "number"} {print}' > $outdir/$inbase.refelt.scorequantile.nbconn.nbtimes.tsv
 # vertex.type	score.quantile	degree	number
 # elt1	1	1	0
 # 2791 (4 fields)  *** exact same file as when doing step by step
 # b. plot
 ##########
-$BARPLOT $inbase.refelt.scorequantile.nbconn.nbtimes.tsv degree number vertex.type score.quantile $inbase ylog
+$BARPLOT $outdir/$inbase.refelt.scorequantile.nbconn.nbtimes.tsv degree number vertex.type score.quantile $inbase ylog
 # produces the file $inbase.refelt.scorequantile.nbconn.nbtimes.png
+mv $inbase.refelt.scorequantile.nbconn.nbtimes.png $outdir
 
 # 6. Fragment length distribution and distinguishing the first and the second elt, for interactions with a score higher than a quantile
 #######################################################################################################################################
 # a. tsv file with header
 #########################
-for i in $(seq 1 4); do awk -v i=$i 'BEGIN{OFS="\t"} NR>=2&&$NF>=i{print "elt1", i, $3-$2; print "elt2", i, $6-$5}' $inbase.scorequantile.bedpe; done | awk 'BEGIN{OFS="\t"; print "refelt", "score.quantile", "frag.length"} {print}' > $inbase.refelt.scorequantile.fraglength.tsv
+for i in $(seq 1 4); do awk -v i=$i 'BEGIN{OFS="\t"} NR>=2&&$NF>=i{print "elt1", i, $3-$2; print "elt2", i, $6-$5}' $outdir/$inbase.scorequantile.bedpe; done | awk 'BEGIN{OFS="\t"; print "refelt", "score.quantile", "frag.length"} {print}' > $outdir/$inbase.refelt.scorequantile.fraglength.tsv
 # refelt	score.quantile	frag.length
 # elt1	1	16656
 # 30367151 (3 fields)  *** exact same file as when doing step by step
 # b. plot with ggplot2
 ######################
-$DENSITY3 $inbase.refelt.scorequantile.fraglength.tsv frag.length refelt score.quantile $3 $inbase
+$DENSITY3 $outdir/$inbase.refelt.scorequantile.fraglength.tsv frag.length refelt score.quantile $3 $inbase
 # real	1m7.598s
 # produces the file $inbase.refelt.scorequantile.fraglength.png
+mv $inbase.refelt.scorequantile.fraglength.png $outdir
 
 # c. make a tsv file to see the complete distrib (not truncated like here)
 ###########################################################################
-for i in $(seq 1 4); do for e in elt1 elt2; do awk -v i=$i -v e=$e '$1==e&&$2==i{print $3}' $inbase.refelt.scorequantile.fraglength.tsv > $$.tmp; $STATS $$.tmp | awk -v i=$i -v e=$e 'BEGIN{OFS="\t"} NR==1{tot=$3}NR==3{print i, e, tot, $2, $3, $4, $5, $6, $7}' ; done; done > $inbase.scorequantile.refelt.nb.fraglength.distrib.tsv 
+for i in $(seq 1 4); do for e in elt1 elt2; do awk -v i=$i -v e=$e '$1==e&&$2==i{print $3}' $outdir/$inbase.refelt.scorequantile.fraglength.tsv > $$.tmp; $STATS $$.tmp | awk -v i=$i -v e=$e 'BEGIN{OFS="\t"} NR==1{tot=$3}NR==3{print i, e, tot, $2, $3, $4, $5, $6, $7}' ; done; done > $outdir/$inbase.scorequantile.refelt.nb.fraglength.distrib.tsv 
 # 1	elt1	6074049	582	7285	10764	12318	15627	122914
 # 1	elt2	6074049	321	3968	5150	6340	7125	1664250
 # 8 (9 fields)  *** exact same file as when doing step by step
@@ -196,7 +197,7 @@ for i in $(seq 1 4); do for e in elt1 elt2; do awk -v i=$i -v e=$e '$1==e&&$2==i
 # 7. remove temporary files and gzip big files
 ##############################################
 rm $$.tmp
-gzip -f $inbase.scorequantile.bedpe
-gzip -f $inbase.dist.score.quantiles.tsv
-gzip -f $inbase.refelt.scorequantile.fraglength.tsv
+gzip -f $outdir/$inbase.scorequantile.bedpe
+gzip -f $outdir/$inbase.dist.score.quantiles.tsv
+gzip -f $outdir/$inbase.refelt.scorequantile.fraglength.tsv
 

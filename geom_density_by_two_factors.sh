@@ -13,6 +13,7 @@ set -Eexo pipefail
 # - produces as output in the same directory as the input:
 #   * a png file named the same way as the input tsv file but ending in png instead of tsv with the density plot in question but faceted by the two factors
 #     (number of rows given by the 2nd factor and number of columns given by the 1st factor)
+# !!! I remove the first move to the dir of file1 !!!
 
 # Example
 #########
@@ -52,12 +53,10 @@ then
 fi
 
 
-# Set the basename of the input file and the output directory as the directory of the input tsv file and go there
-#################################################################################################################
+# Set the basename of the input file
+####################################
 input=$1
 inbase=`basename ${input%.tsv}`
-outdir=`dirname $input`
-cd $outdir
 
 # Set the min and max for the plot in case proper integers are given
 #####################################################################

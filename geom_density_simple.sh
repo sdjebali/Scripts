@@ -12,6 +12,8 @@ set -Eexo pipefail
 # - produces as output and in the same directory as the input:
 #   * a png file (named after the one word label of the column), with the density plot of this column
 # Note: needs reshape2 and ggplot2 libraries to be installed
+# !!! size replaced by linewidth in geom_density and geom_line since size depreated for lines in ggplot2 3.4.0 !!!
+# !!! I remove the initial move to the dir of file1 !!!
 
 # example
 #########
@@ -49,11 +51,6 @@ then
 fi
 
 
-# Set the output directory as the directory of the input tsv file and go there
-##############################################################################
-outdir=`dirname $1`
-cd $outdir
-
 # Set the min and max for the plot in case proper numbers (integers or floats) are provided
 ###########################################################################################
 mM=$4
@@ -83,10 +80,12 @@ library(reshape2)
 library(ggplot2)
 theme_set(theme_bw(base_size = 16))
 data = read.delim("'$1'", sep="\t", h=TRUE)
-gp = ggplot(data, aes(x='$2')) + geom_density(alpha=.2, fill="#FF6666", size=1) + geom_vline(aes(xintercept=mean('$2')),color="blue", linetype="dashed", size=1) + coord_cartesian(xlim = c('$m', '$M'))
+gp = ggplot(data, aes(x='$2')) + geom_density(alpha=.2, fill="#FF6666", linewidth=1) + geom_vline(aes(xintercept=mean('$2')),color="blue", linetype="dashed", linewidth=1) + coord_cartesian(xlim = c('$m', '$M'))
 gp = gp + labs(title = "'$5'", x="'$3'", y="Density") + theme(plot.title = element_text(hjust = 0.5)) + theme(plot.title = element_text(size=24))
 w=5
 h=5
 ggsave(filename="'$3'.png", h=h, w=w)
 ' | R --vanilla
+
+
 
