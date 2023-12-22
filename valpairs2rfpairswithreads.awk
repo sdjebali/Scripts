@@ -1,4 +1,4 @@
-# from a hicpro valid pair file makes a file of numerically ordered rf fragments with numeric ids provided in fileRef
+# from a hicpro valid pair file makes a file of numerically ordered restrictions fragments with numeric ids provided in fileRef
 
 # example
 # srun --mem=8G --pty bash
