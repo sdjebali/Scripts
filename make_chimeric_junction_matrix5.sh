@@ -3,8 +3,7 @@ set -Eexo pipefail
 
 # make_chimeric_junction_matrix5.sh
 ###################################
-# this script takes as input the CANDIDATE chimeric junctions obtained with chimpipe version 0.9.4 at least
-# or the concatenation of the filtered and the final junctions where the second header has been removed
+# this script takes as input the filtered chimeric junction file obtained with chimpipe version 0.9.8 at least
 # and produces a matrix with all the chimeric junctions from different experiments 
 # with at least x spanning reads and y paired end reads in one expt or tech rep and no too high similarity between the two connected 
 # genes (less than 30 nt sim or less than 80% sim), with their beg and end across all experiments, 
@@ -21,18 +20,12 @@ set -Eexo pipefail
 #############################################
 # 1) a 2 column file containing the chimeric junction files associated to each exp or tech rep
 #   = where column 1 is a unique identifier for the expt or tech rep and column 2 is the absolute
-#   path to the the candidate file of chimeric junctions in this expt with nbspan, nbdiscpe and all info
+#   path to the the little filtered file of chimeric junctions in this expt with nbspan, nbdiscpe and all info
 # for example this one
 # /work/project/fragencode/results/rnaseq/sus_scrofa/liver/pig1/chimpipe/Sus-scrofa-11203-Foie_TTAGGC_L001_Pool1_Foie.9752/chimericJunctions_candidates_Sus-scrofa-11203-Foie_TTAGGC_L001_Pool1_Foie.9752.txt
 # juncCoord	type	filtered	reason	nbTotal(spanning+consistent)	nbSpanningReads	nbStaggered	percStaggered	nbMulti	percMulti	nbConsistentPE	nbInconsistentPE	percInconsistentPE	overlapA	overlapB	distExonBoundaryA	distExonBoundaryB	blastAlignLen	blastAlignSim	donorSS	acceptorSS	beg	end	sameChrStr	okGxOrder	dist	gnIdsA	gnIdsB	gnNamesA	gnNamesB	gnTypesA	gnTypesB	juncSpanningReadsIds	consistentPEIds	inconsistentPEIds
 # JH118593.1_108648_-:JH118593.1_86156_-	readthrough	1	consistentPE,spanningReads,totalSupport,	2	1	1	100	0	0	1	0	0	100	22.1311	0	95	na	na	GT	AG	108675	86035	1	1	22492	ENSSSCG00000023895	ENSSSCG00000027705	na	na	na	na	ST-J00115:48:H# 12428 (35 fields)
 # 12428 (35 fields)
-
-# note: it used to be like this for make_chimeric_junction_matrix4.sh
-######################################################################
-# juncCoord     totalNbPE       nbSpanningPE    nbStag  percStag        nbMulti percMulti       nbDiscordantPE  nbInconsistentPE        percInconsistentPE      overlapA        overlapB   distExonBoundaryA       distExonBoundaryB       maxBLastAlignLen        blastAlignSim   donorSS acceptorSS      beg     end     sameChrStr      okGxOrder       dist    gnIdA       gnIdB  gnNameA gnNameB gnTypeA gnTypeB juncSpanningReadIds     supportingPairsIds      inconsistentPairsIds
-# chrX_100646810_+:chr18_13919745_-       28      28      12      42.8571 28      100     0       0       na      100     100     0       177     321     96.26   GT      AG      100646777  13919690        0       na      na      ENSG00000241343.3,ENSG00000257529.1     ENSG00000243779.1       RPL36A,RP1-164F3.9      RP11-681N23.1   protein_coding,protein_coding      pseudogene      SINATRA_0006:3:109:18510:14395#0/1,SINATRA_0006:1:95:16661:9220#0/1,SINATRA_0006:1:95:19257:7963#0/1,SINATRA_0006:1:78:8979:7945#0/1,SINATRA_0006:2:103:7300:8834#0/1,SINATRA_0006:1:95:6274:6674#0/1,SINATRA_0006:1:95:12119:12408#0/1,SINATRA_0006:1:65:19204:4609#0/1,SINATRA_0006:2:26:15962:4612#0/1,SINATRA_0006:1:78:9741:2208#0/2,SINATRA_0006:3:55:3004:18029#0/1,SINATRA_0006:2:28:17045:15305#0/1,SINATRA_0006:3:28:12150:19552#0/1,SINATRA_0006:1:57:14946:18483#0/1,SINATRA_0006:3:40:17960:10169#0/1,SINATRA_0006:2:78:4492:5160#0/1,SINATRA_0006:1:95:12206:3223#0/1,SINATRA_0006:1:87:6224:19402#0/2,SINATRA_0006:3:117:19626:18481#0/1,SINATRA_0006:2:13:1765:2306#0/1,SINATRA_0006:3:1:10757:14190#0/1,SINATRA_0006:2:69:18762:13853#0/2,SINATRA_0006:1:58:4291:4933#0/1,SINATRA_0006:1:36:4284:12343#0/2,SINATRA_0006:1:95:7884:9420#0/1,SINATRA_0006:3:20:1714:16281#0/1,SINATRA_0006:2:76:17683:16082#0/1,SINATRA_0006:2:72:15990:12773#0/1,      na      na
-# 163745 (32 fields)
 # 2) a minimum number of spanning reads for a junction to be reported in the matrix (e.g. 2) (default 1)
 # 3) a minimum number of discordant pe reads for a junction to be reported in the matrix in the same expt where 2) is achieved (e.g. 1) (default 1)
 # and this script will produce as output a matrix like this one where the script has been run
@@ -116,13 +109,6 @@ echo "minspan is $minspan and minpe is $minpe" >&2
 # juncCoord	type	filtered	reason	nbTotal(spanning+consistent)	nbSpanningReads	nbStaggered	percStaggered	nbMulti	percMulti	nbConsistentPE	nbInconsistentPE	percInconsistentPE	overlapA	overlapB	distExonBoundaryA	distExonBoundaryB	blastAlignLen	blastAlignSim	donorSS	acceptorSS	beg	end	sameChrStr	okGxOrder	dist	gnIdsA	gnIdsB	gnNamesA	gnNamesB	gnTypesA	gnTypesB	juncSpanningReadsIds	consistentPEIds	inconsistentPEIds
 # JH118593.1_108648_-:JH118593.1_86156_-	readthrough	1	consistentPE,spanningReads,totalSupport,	2	1	1	100	0	0	1	0	0	100	22.1311	0	95	na	na	GT	AG	108675	86035	1	1	22492	ENSSSCG00000023895	ENSSSCG00000027705	na	na	na	na	ST-J00115:48:H7WJVBBXX:1:1225:7243:34723/2,	ST-J00115:48:H7WJVBBXX:1:1208:30350:38328,	na
 # 12428 (35 fields)
-
-# it used to be like this before
-# juncCoord     totalNbPE       nbSpanningPE    nbStag  percStag        nbMulti percMulti       nbDiscordantPE  nbInconsistentPE        percInconsistentPE      overlapA        overlapB   distExonBoundaryA       distExonBoundaryB       maxBLastAlignLen        blastAlignSim   donorSS acceptorSS      beg     end     sameChrStr      okGxOrder       dist    gnIdA       gnIdB  gnNameA gnNameB gnTypeA gnTypeB juncSpanningReadIds     supportingPairsIds      inconsistentPairsIds
-# chrX_100646810_+:chr18_13919745_-       28      28      12      42.8571 28      100     0       0       na      100     100     0       177     321     96.26   GT      AG      100646777  13919690        0       na      na      ENSG00000241343.3,ENSG00000257529.1     ENSG00000243779.1       RPL36A,RP1-164F3.9      RP11-681N23.1   protein_coding,protein_coding      pseudogene      SINATRA_0006:3:109:18510:14395#0/1,SINATRA_0006:1:95:16661:9220#0/1,SINATRA_0006:1:95:19257:7963#0/1,SINATRA_0006:1:78:8979:7945#0/1,SINATRA_0006:2:103:7300:8834#0/1,SINATRA_0006:1:95:6274:6674#0/1,SINATRA_0006:1:95:12119:12408#0/1,SINATRA_0006:1:65:19204:4609#0/1,SINATRA_0006:2:26:15962:4612#0/1,SINATRA_0006:1:78:9741:2208#0/2,SINATRA_0006:3:55:3004:18029#0/1,SINATRA_0006:2:28:17045:15305#0/1,SINATRA_0006:3:28:12150:19552#0/1,SINATRA_0006:1:57:14946:18483#0/1,SINATRA_0006:3:40:17960:10169#0/1,SINATRA_0006:2:78:4492:5160#0/1,SINATRA_0006:1:95:12206:3223#0/1,SINATRA_0006:1:87:6224:19402#0/2,SINATRA_0006:3:117:19626:18481#0/1,SINATRA_0006:2:13:1765:2306#0/1,SINATRA_0006:3:1:10757:14190#0/1,SINATRA_0006:2:69:18762:13853#0/2,SINATRA_0006:1:58:4291:4933#0/1,SINATRA_0006:1:36:4284:12343#0/2,SINATRA_0006:1:95:7884:9420#0/1,SINATRA_0006:3:20:1714:16281#0/1,SINATRA_0006:2:76:17683:16082#0/1,SINATRA_0006:2:72:15990:12773#0/1,      na      na
-# 163745 (32 fields)
-
-
 # we want to have this information in the output file
 #####################################################
 # junc_id\tbeg\tend\tsamechrstr\tokgxorder\tdist\ttype\tss1\tss2\tgnlist1\tgnlist2\tgnname1\tgnname2\tgnbt1\tgnbt2
@@ -160,9 +146,9 @@ done
 # 4) Clean
 ##########
 echo I am cleaning >&2
+rm allexp_distinct_junctions_reliable_ineachexp_withmaxbegandend_allinfo.tsv
 cat $input | while read lid f
 do
 #rm ${f%.txt}\_$minspan\spanning_$minpe\discordantpe_withmaxbegandend.tsv
 done
-# rm allexp_distinct_junctions_reliable_ineachexp_withmaxbegandend_allinfo.tsv
 echo I am done >&2
