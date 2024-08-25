@@ -4,7 +4,7 @@ set -Eexo pipefail
 # eval.annot.quality.sh
 # this script takes as input a gene annotation file in gtf or gff2 format with at least exon rows and with
 # at least gene_id and transcript_id in the 9th field, as well as a genome file in fasta format and produces
-# statistics to assess the quality of this gene annotation. This statistics include>
+# statistics to assess the quality of this gene annotation. This statistics include:
 # - Number of elements of each kind and several ratios (from make_summary_stat_from_annot.sh)
 # - Number and % of monoexonic transcripts (from make_summary_stat_from_annot.sh)
 # - Number and % of transcripts longer than several thresholds (from make_summary_stat_from_annot.sh)
@@ -18,7 +18,7 @@ set -Eexo pipefail
 # TODO:
 # - allow to run simulateously on two gtf files with the same basename (now conflict since write in ~/fragencode/tools/multi/Renv
 #   files with the same name). An option would be to write those files where the annot is, which means to change make_sumstat.sh
-#   but also all the other scripts that depend on it= analyse tr model.sh, ref_pred_annot2stats.sh, refine_comptr_output.sh
+#   but also all the other scripts that depend on it = analyse tr model.sh, ref_pred_annot2stats.sh, refine_comptr_output.sh
 #   so a lot of care needs to be taken to do it
 
 # example

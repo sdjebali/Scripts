@@ -6,7 +6,7 @@
 #   starts with gene_id and transcript_id, and where contains is a field that has the set of all transcripts
 #   of different experiments and the ref annot that support the transcript of the exon (with an intron chain either
 #   included or equal to the one of the current transcript)
-# - a ref gene annotation in gtf format
+# - a ref gene annotation in gtf format with exon and transcript rows
 # this script will output a more complete gff file aftering doing the following actions:
 ########################################################################################
 # - adding transcript and gene rows to the file

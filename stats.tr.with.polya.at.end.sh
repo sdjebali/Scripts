@@ -73,21 +73,20 @@ percent=$rootDir/percentage.awk
 
 # Start of the script
 #####################
-# 1. Makes the sorted bed file of annotated transcript ends (tts) flanked by flank bp on each side 
-##################################################################################################
+# 1. Make the sorted bed file of annotated transcript ends (tts) flanked by flank bp on each side 
+#################################################################################################
 echo "I am making the sorted bed file of annotated transcript ends (tts) flanked by flank bp on each side" >&2
 sed 's/"/ /g' $annot | awk '!/^#/ && $3=="exon"{for(i=7;i<NF;i++){if ($i=="transcript_id"){id=$(i+1); chr[id]=$1; str[id]=$7; if((gbeg[id]=="")||($4<gbeg[id])){gbeg[id]=$4} if((gend[id]=="")||($5>gend[id])){gend[id]=$5}}}} END{for(t in chr){print chr[t], gbeg[t]-1, gend[t], t, ".",str[t]}}' OFS="\t" | sort -k1,1 -k2,2n -k3,3n | uniq | awk -v flank=$flank '$6=="+"{$2=$3-flank}$6=="-"{$3=$2+flank}1' OFS="\t" | sort -k1,1 -k2,2n -k3,3n > $all
-# sed 's/"/ /g' $annot | awk '!/^#/ && $3=="transcript"{id=".";for(i=7;i<NF;i++){if ($i=="transcript_id"){id=$(i+1)}} print $1,$4-1,$5,id,".",$7}' OFS="\t" | sort -k1,1 -k2,2n -k3,3n | uniq | awk -v flank=$flank '$6=="+"{$2=$3-flank}$6=="-"{$3=$2+flank}1' OFS="\t" | sort -k1,1 -k2,2n -k3,3n > $all
 echo "done" >&2
 
-# 2. Makes the sorted bed file of distinct annotated transcript ends (tts) flanked by flank bp on each side 
-###########################################################################################################
+# 2. Make the sorted bed file of distinct annotated transcript ends (tts) flanked by flank bp on each side 
+##########################################################################################################
 echo "I am making the sorted bed file of distinct annotated transcript ends (tts) flanked by flank bp on each side" >&2
 cat $all | awk '{$4="."}1' OFS="\t" | sort -k1,1 -k2,2n -k3,3n | uniq > $distinct
 echo "done" >&2
 
-# 3. Computes the number of total and distinct annotated transcript ends (tts) flanked by flank bp on each side
-###############################################################################################################
+# 3. Compute the number of total and distinct annotated transcript ends (tts) flanked by flank bp on each side
+##############################################################################################################
 #    as well as the subset of them that overlap a polya site
 ############################################################
 echo "I am computing the number of total and distinct annotated transcript ends (tss) flanked by flank bp on each side" >&2
@@ -110,14 +109,14 @@ else
 fi
 echo "done" >&2
 
-# 4. Puts everything into a statistic file in tsv format
-########################################################
+# 4. Put everything into a statistic file in tsv format
+#######################################################
 echo "I am putting all the computed numbers into a statistic file in tsv format" >&2
 echo $annot $pa $pd | sed 's/ /\t/g' > $out
 echo "done" >&2
 
-# 5. Cleans
-###########
+# 5. Clean
+##########
 echo "I am cleaning" >&2
 rm $all
 rm $distinct
