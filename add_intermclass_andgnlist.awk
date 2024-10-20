@@ -31,8 +31,10 @@
 #       for example comparing tagada annot of geneswitch chicken to chicken atlas from sandy
 #       in ~/fragencode/workspace/sdjebali/geneswitch/analysis/gtfs/annotation.quality/geneswitch/README.sh
 #       Nov 14th 2022 so need to understand why
+# TODO: when a transcript is Exact and is not extension, consider that it could be of a 5th inclusion class, and not only known
+#       otherwise say that known could be an inclusion as well
 
-# note: to be considered annot we used to have this condition before
+# note: to be considered known we used to have this condition before
 # if((abs(gbeg[$1]-gbeg2[a[k]])<=10)&&(abs(gend[$1]-gend2[a[k]])<=10))
 # but in fact it was wrong because then a transcript more than 10bp inward
 # was considered an extension
@@ -147,18 +149,22 @@ NR>=2{
 		if(ok[$1,i]==1)
 		{
 		    if(gn2[a[i]]!="")
-			gnlist=(gnlist)(gn2[a[i]])(",");   # we only remember the genes that correspond to the annotated transcripts that are extended by the current predicted tr
+		    {
+			gnlist=(gnlist)(gn2[a[i]])(",")
+		    }                                  # we only remember the genes that correspond to the annotated transcripts that are extended by the current predicted tr
 		                                       # note that this list could be redundant
 		}
 	    }
 	}
 	else
 	{
-	    class="known";
+	    class="known";    # here this is wrong since if a transcript is Exact and not extension we consider it is known (defined as exactly the same coord) while it could be inclusion
 	    for(i=1; i<=k; i++)
 	    {
 		if(gn2[a[i]]!="")
-		    gnlist=(gnlist)(gn2[a[i]])(",");   # in case it was never an extension than it is an annotated one and it takes the genes of all the transcripts to which it is similar
+		{
+		    gnlist=(gnlist)(gn2[a[i]])(",")
+		}                                      # in case it was never an extension then it is of class known and it takes the genes of all the transcripts to which it is similar
 	    }
 	}
     }

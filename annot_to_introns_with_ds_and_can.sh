@@ -8,6 +8,7 @@ set -Eexo pipefail
 # !!! TODO: do not crash even if a sequence to extract goes beyond the boundaries of a chromosome !!!
 # on March 10th 2022 allow the gtf/gff2 file to have gene_id and transcript_id anywhere in the 9th field !!!
 # on March 11th 2022 put all the intermediate and the final file where the annot is
+# on Oct 15th 2024 in computing canonical and noncan introns with DS, protected n so that if it is 0 it is fine (NA) !!!
 
 # From an annotation makes its introns with information about duplicated sequence (as computed by duplseq) and canonicity
 
@@ -198,7 +199,7 @@ stats.sh $base.ds.lg.tmp
 echo "# canonical introns with DS" 
 for i in $(seq 5 15)
 do
-cat $base\_introns_24mer_don_acc_seq_ds_can.gff | awk -v minlg=$i '$30==1{n++; found=0; if($22!="."){split($24,a,","); k=1; while((found==0)&&(a[k]!="")){if(a[k]>=minlg){found=1;}k++;}} if(found==1){n1++;}}END{print "#", minlg, n, (n1!=""?n1:0), n1/n*100}' 
+cat $base\_introns_24mer_don_acc_seq_ds_can.gff | awk -v minlg=$i '$30==1{n++; found=0; if($22!="."){split($24,a,","); k=1; while((found==0)&&(a[k]!="")){if(a[k]>=minlg){found=1;}k++;}} if(found==1){n1++;}}END{print "#", minlg, (n!="" ? n : 0), (n1!=""?n1:0), (n!="" ? n1/n*100 : "NA")}' 
 done
 # 5 778759 76014 9.76091
 # 6 778759 27523 3.53421
@@ -221,7 +222,7 @@ stats.sh $base.ds.lg.tmp
 echo "# non canonical introns with DS" 
 for i in $(seq 5 15)
 do
-cat $base\_introns_24mer_don_acc_seq_ds_can.gff | awk -v minlg=$i '$30==0{n++; found=0; if($22!="."){split($24,a,","); k=1; while((found==0)&&(a[k]!="")){if(a[k]>=minlg){found=1;}k++;}} if(found==1){n1++;}}END{print "#", minlg, n, (n1!=""?n1:0), n1/n*100}' 
+cat $base\_introns_24mer_don_acc_seq_ds_can.gff | awk -v minlg=$i '$30==0{n++; found=0; if($22!="."){split($24,a,","); k=1; while((found==0)&&(a[k]!="")){if(a[k]>=minlg){found=1;}k++;}} if(found==1){n1++;}}END{print "#", minlg, (n!="" ? n : 0), (n1!=""?n1:0), (n!="" ? n1/n*100 : "NA")}' 
 done
 # 5 183716 8436 4.59187
 # 6 183716 4288 2.33404
