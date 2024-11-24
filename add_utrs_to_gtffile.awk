@@ -8,22 +8,24 @@
 
 # example
 # srun --x11 --mem=8G --pty bash
-# cd /work/project/fragencode/workspace/geneswitch/results/rnaseq/gallus_gallus/nf-feelnc.tagiso.23-03-03/results/annotation
+# cd /work/project/fragencode/workspace/geneswitch/results/rnaseq/gallus_gallus/nf-feelnc.tagiso.23-03-03/results/annotation/transdecoder
 # pgm1=~/fragencode/tools/multi/Scripts/add_utrs_to_gtffile.awk
 # pgm2=~/fragencode/tools/multi/Scripts/gff2gff.awk
 # pgm3=~/fragencode/tools/multi/Scripts/make_gff_ok.awk
 # awk -v fileRef=tagisotr.fasta.transdecoder.genome.gff3 -f $pgm1 tagisotr.fasta.transdecoder.genome.bestcds.gtf | awk -f $pgm2 | awk -f $pgm3 > tagisotr.fasta.transdecoder.genome.bestcds.withutrs.gtf
 
 # fileRef=tagisotr.fasta.transdecoder.genome.gff3
-# 2	transdecoder	three_prime_UTR	58618404	58618573	.	-	.	ID=TM_000000938490.p2.utr3p1;Parent=TM_000000938490.p2
+# 13	transdecoder	five_prime_UTR	65721467	65721530	.	+	.	ID=G9282.1.p1.utr5p1;Parent=G9282.1.p1
 
 # main input = tagisotr.fasta.transdecoder.genome.bestcds.gtf
-# 1	transdecoder	exon	5315	5512	.	-	.	transcript_id "TM_000000000012.p2"; gene_id "LOC_000000158014^1^-"; gene_name "ORF type:internal (+),score=34.20";
+# 1	transdecoder	CDS	27072	27346	.	-	2	transcript_id "G3.1.p2"; gene_id "LOC_000000090338^1^-"; gene_name "ORF type:5prime_partial (+),score=17.47";
+# 1	transdecoder	CDS	27608	27767	.	-	0	transcript_id "G3.1.p2"; gene_id "LOC_000000090338^1^-"; gene_name "ORF type:5prime_partial (+),score=17.47";
+# 3187630 (16 fields)
 
 # output
-# 1	transdecoder	exon	5315	5512	.	-	.	gene_id "LOC_000000158014"; transcript_id "TM_000000000012"; 
-# 1	transdecoder	exon	6755	6829	.	-	.	gene_id "LOC_000000158014"; transcript_id "TM_000000000012"; 
-# 3296731 (12 fields)
+# 1	transdecoder	CDS	27072	27346	.	-	2	gene_id "LOC_000000090338"; transcript_id "G3.1"; 
+# 1	transdecoder	three_prime_UTR	26468	27071	.	-	.	gene_id "LOC_000000090338"; transcript_id "G3.1"; 
+# 3753767 (12 fields) 
 
 
 
