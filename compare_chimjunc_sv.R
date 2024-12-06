@@ -20,12 +20,18 @@ if(length(args) < 3){
 }
 
 ## arguments for debugging
-## args = c('./chimjunc.union.nopseudo.noercc.nbsamples.pcg.cds.orf.noindivexpr.tsv', './LMS70T_vs_LMS70C.manta.diploid_sv.vcf.gz', 'chim.sv.matches.tsv')
+## args = c('valid.laura.gaelle.hg38.sveachrow.tsv', 'LMS28T_vs_LMS28C.manta.somatic_sv.vcf.gz', 'test.tsv')
 
 ## default max distance between breapoints
 max.ol.dist = 10000
 if(length(args) > 3){
   max.ol.dist = as.integer(args[4])
+}
+  
+## default without using strand
+use.strand = FALSE
+if(length(args) > 4){
+  use.strand = as.logical(args[5])
 }
   
 ## load packages
@@ -120,7 +126,7 @@ if(length(sv.bnd) > 0){
   bnd.t.gr = GRanges(bnd.df$pos_t,
                      strand=bnd.df$strand_t,
                      id=rowRanges(sv.bnd)$id,
-                     bkpt=bnd.df$bkpt_p)
+                     bkpt=bnd.df$bkpt_t)
   sv.junc.gr = c(sv.junc.gr, bnd.p.gr, bnd.t.gr)
 }
 
@@ -170,6 +176,12 @@ sv.junc.inv$orient = 2
 strand(sv.junc.inv) = ifelse(strand(sv.junc.inv)=='+', '-', '+')
 sv.junc.inv$bkpt = ifelse(sv.junc.inv$bkpt==1, 2, 1)
 sv.junc.gr = c(sv.junc.gr, sv.junc.inv)
+
+## TEMPORARY hack: don't consider strands
+if (!use.strand){
+  strand(sv.junc.gr) = "+"
+  strand(chim.junc.gr) = "+"
+}
 
 ## overlap everything and propagate information to match later
 ol = findOverlaps(chim.junc.gr, sv.junc.gr, maxgap=max.ol.dist) %>%
