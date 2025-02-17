@@ -133,13 +133,13 @@ printf "distribution of the number of transcripts per gene\n"
 $STATS $b2\_gnid_nbtr.txt 2
 # number and % of monoexonic transcripts
 printf "number and percentage of monoexonic transcripts\n"
-awk '{nbex[$12]++} END{OFS="\t"; for(t in nbex){n++; if(nbex[t]==1){n1++}} print n, n1, n1/n*100}' $b2\_exons_sorted_by_tr.gff
+awk '{nbex[$12]++} END{OFS="\t"; for(t in nbex){n++; if(nbex[t]==1){n1++}} print nn(n), nn(n1), (n!=0 ? n1/n*100 : "NA")} function nn(x){return (x=="" ? 0 : x)}' $b2\_exons_sorted_by_tr.gff
 # number and % of transcripts longer than 50kb, 100kb, 500kb, 1Mb, 2Mb
 printf "number and percentage of transcripts longer than 50kb, 100kb, 500kb, 1Mb, 2Mb\n"
-awk '{trlg[$12]=$5-$4+1} END{OFS="\t"; for(t in trlg){n++; if(trlg[t]>=50000){n1++; if(trlg[t]>=100000){n2++} if(trlg[t]>=500000){n3++} if(trlg[t]>=1000000){n4++} if(trlg[t]>=2000000){n5++}}} print n, nn(n1), n1/n*100, nn(n2), n2/n*100, nn(n3), n3/n*100, nn(n4), n4/n*100, nn(n5), n5/n*100} function nn(x){return (x=="" ? 0 : x)}' $b2\_transcripts.gff
+awk '{trlg[$12]=$5-$4+1} END{OFS="\t"; for(t in trlg){n++; if(trlg[t]>=50000){n1++; if(trlg[t]>=100000){n2++} if(trlg[t]>=500000){n3++} if(trlg[t]>=1000000){n4++} if(trlg[t]>=2000000){n5++}}} print nn(n), nn(n1), (n!=0 ? n1/n*100 : "NA"), nn(n2), (n!=0 ? n2/n*100 : "NA"), nn(n3), (n!=0 ? n3/n*100 : "NA"), nn(n4), (n!=0 ? n4/n*100 : "NA"), nn(n5), (n!=0 ? n5/n*100 : "NA")} function nn(x){return (x=="" ? 0 : x)}' $b2\_transcripts.gff
 # number and % of transcripts with a cdna longer than 2kb, 5kb, 10kb, 50kb, 100kb
 printf "number and percentage of transcripts with a cdna longer than 2kb, 5kb, 10kb, 50kb, 100kb\n"
-awk '{cdnalg[$12]+=($5-$4+1)} END{OFS="\t"; for(t in cdnalg){n++; if(cdnalg[t]>=2000){n1++; if(cdnalg[t]>=5000){n2++} if(cdnalg[t]>=10000){n3++} if(cdnalg[t]>=50000){n4++} if(cdnalg[t]>=100000){n5++}}} print n, nn(n1), n1/n*100, nn(n2), n2/n*100, nn(n3), n3/n*100, nn(n4), n4/n*100, nn(n5), n5/n*100} function nn(x){return (x=="" ? 0 : x)}' $b2\_exons_sorted_by_tr.gff
+awk '{cdnalg[$12]+=($5-$4+1)} END{OFS="\t"; for(t in cdnalg){n++; if(cdnalg[t]>=2000){n1++; if(cdnalg[t]>=5000){n2++} if(cdnalg[t]>=10000){n3++} if(cdnalg[t]>=50000){n4++} if(cdnalg[t]>=100000){n5++}}} print nn(n), nn(n1), (n!=0 ? n1/n*100 : "NA"), nn(n2), (n!=0 ? n2/n*100 : "NA"), nn(n3), (n!=0 ? n3/n*100 : "NA"), nn(n4), (n!=0 ? n4/n*100 : "NA"), nn(n5), (n!=0 ? n5/n*100 : "NA")} function nn(x){return (x=="" ? 0 : x)}' $b2\_exons_sorted_by_tr.gff
 echo done >&2
 
 

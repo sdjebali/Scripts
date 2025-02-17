@@ -102,7 +102,7 @@ $makesum stringtie.annot.tpm0.1.2samples.exons.gff > make_summary_stat_from_anno
 for lid in ref ref_expr str str_expr
 do
     awk -v lid=$lid 'NR==2{OFS="\t"; print lid, $0}' make_summary_stat_from_annot_$lid.out
-done | awk 'BEGIN{OFS="\t"; print "trset\tnbex\tnbdistinctex\tnbtr\tnbgn\tnbintrons\tnbdistinctintrons\tnbexpertr\tnbexpergn\tnbdistinctexpergn\tnbtrpergn\tnbintronpertr\tnbintronpergn\tnbdistinctintronpergn"}{print $0, $2/$4, $2/$5, $3/$5, $4/$5, $6/$4, $6/$5, $7/$5}' 
+done | awk 'BEGIN{OFS="\t"; print "trset\tnbex\tnbdistinctex\tnbtr\tnbgn\tnbintrons\tnbdistinctintrons\tnbexpertr\tnbexpergn\tnbdistinctexpergn\tnbtrpergn\tnbintronpertr\tnbintronpergn\tnbdistinctintronpergn"}{print $0, div2na($2,$4), div2na($2,$5), div2na($3,$5), div2na($4,$5), div2na($6,$4), div2na($6,$5), div2na($7,$5)} function div2na(x,y){return (y!=0 ? x/y : "NA")}' 
 # nbex      nbdistinctex  nbtr    nbgn   nbintrons  nbdistinctintrons  nbexpertr  nbexpergn  nbdistinctexpergn  nbtrpergn  nbintronpertr  nbintronpergn  nbdistinctintronpergn
 # ref       536859        262635  49448  25880      487411             217796     10.857     20.7442            10.1482    1.91066        9.85704        18.8335                8.41561
 # ref_expr  357234        194945  29715  15646      327519             167254     12.022     22.8323            12.4597    1.89921        11.022         20.9331                10.6899

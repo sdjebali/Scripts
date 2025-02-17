@@ -180,10 +180,15 @@ END{
     nas3=nn(nas[3]);
     nunstrok=nn(nunstr)
     
-    print lid, ntotok, nannot1, nannot1/ntotok*100, nannot2, nannot2/ntotok*100, nannot3, nannot3/ntotok*100, nannot4, nannot4/ntotok*100, nannot5, nannot5/ntotok*100, nextens1, nextens1/ntotok*100, nextens2, nextens2/ntotok*100, nextens3, nextens3/ntotok*100, nextens4, nextens4/ntotok*100, ninter1, ninter1/ntotok*100, ninter2, ninter2/ntotok*100, ninter3, ninter3/ntotok*100, nas1, nas1/ntotok*100, nas2, nas2/ntotok*100, nas3, nas3/ntotok*100, nunstrok, nunstrok/ntotok*100;
+    print lid, ntotok, nannot1, div2na(nannot1,ntotok)*100, nannot2, div2na(nannot2,ntoto)*100, nannot3, div2na(nannot3,ntotok)*100, nannot4, div2na(nannot4,ntotok)*100, nannot5, div2na(nannot5,ntotok)*100, nextens1, div2na(nextens1,ntotok)*100, nextens2, div2na(nextens2,ntotok)*100, nextens3, div2na(nextens3,ntotok)*100, nextens4, div2na(nextens4,ntotok)*100, ninter1, div2na(ninter1,ntotok)*100, ninter2, div2na(ninter2,ntotok)*100, ninter3, div2na(ninter3,ntotok)*100, nas1, div2na(nas1,ntotok)*100, nas2, div2na(nas2,ntotok)*100, nas3, div2na(nas3,ntotok)*100, nunstrok, div2na(nunstrok,ntotok)*100;
 } 
 
 function nn(x)
 {
     return (x!="" ? x : 0)
+}
+
+function div2na(x,y)
+{
+    return (y!=0 ? x/y : "NA");
 }

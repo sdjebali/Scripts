@@ -169,7 +169,7 @@ WORKDIR=`dirname $pred`
 cd $WORKDIR
 basetmp=`basename ${pred%.gtf}`
 base=${basetmp%.gff}
-awk 'NR==2' make_summary_stat_from_annot_$base.out | awk -v set=$src '{OFS="\t"; print set, $0, $1/$3, $1/$4, $2/$4, $3/$4, $5/$3, $5/$4, $6/$4}' 
+awk 'NR==2' make_summary_stat_from_annot_$base.out | awk -v set=$src '{OFS="\t"; print set, $0, div2na($1,$3), div2na($1,$4), div2na($2,$4), div2na($3,$4), div2na($5,$3), div2na($5,$4), div2na($6,$4)} function div2na(x,y){return (y!=0 ? x/y : "NA")}' 
 done | awk 'BEGIN{print "prediction\tnbex\tnnbdistinctex\tnbtr\tnbgn\tnbintrons\tnbdistinctintrons\tnbexpertr\tnbexpergn\tnbdistinctexpergn\tnbtrpergn\tnbintronpertr\tnbintronpergn\tnbdistinctintronpergn"}{print}' > Tables/predtrsets_basic_sumstats.tsv
 cat Tables/predtrsets_basic_sumstats.tsv >&2
 echo "done" >&2
@@ -481,7 +481,7 @@ tsshit1=`wc -l $base\_capped_sites_nr_with_annottss_less50bp.gff | awk '{print $
 tsshit2=`wc -l $base\_capped_sites_nr_with_annottss_less100bp.gff | awk '{print $1}'`
 tsshit3=`wc -l $base\_capped_sites_nr_with_annottss_less500bp.gff | awk '{print $1}'`
 echo $src $distpredtss $tsshit1 $tsshit2 $tsshit3 
-done | awk 'BEGIN{OFS="\t"; print "pred_set", "dist_pred_tss", "tss_hit_by_pred_50bp_nb", "tss_hit_by_pred_50bp_pcent", "tss_hit_by_pred_100bp_nb", "tss_hit_by_pred_100bp_pcent", "tss_hit_by_pred_500bp_nb", "tss_hit_by_pred_500bp_pcent"} {print $1, $2, $3, $3/$2*100, $4, $4/$2*100, $5, $5/$2*100}' > Tables/prediction_sets_nrpredtss_hitbypredtss_50bp_100bp_500bp_nb_pcent.tsv
+done | awk 'BEGIN{OFS="\t"; print "pred_set", "dist_pred_tss", "tss_hit_by_pred_50bp_nb", "tss_hit_by_pred_50bp_pcent", "tss_hit_by_pred_100bp_nb", "tss_hit_by_pred_100bp_pcent", "tss_hit_by_pred_500bp_nb", "tss_hit_by_pred_500bp_pcent"} {print $1, $2, $3, div2na($3,$2)*100, $4, div2na($4,$2)*100, $5, div2na($5,$2)*100} function div2na(x,y){return (y!=0 ? x/y : "NA")}' > Tables/prediction_sets_nrpredtss_hitbypredtss_50bp_100bp_500bp_nb_pcent.tsv
 cat Tables/prediction_sets_nrpredtss_hitbypredtss_50bp_100bp_500bp_nb_pcent.tsv >&2
 echo "done" >&2
 # pred_set        dist_pred_tss   tss_hit_by_pred_50bp_nb tss_hit_by_pred_50bp_pcent      tss_hit_by_pred_100bp_nb        tss_hit_by_pred_100bp_pcent     tss_hit_by_pred_500bp_nb  tss_hit_by_pred_500bp_pcent
@@ -501,7 +501,7 @@ ttshit1=`wc -l $base\_tts_sites_nr_with_annottts_less50bp.gff | awk '{print $1}'
 ttshit2=`wc -l $base\_tts_sites_nr_with_annottts_less100bp.gff | awk '{print $1}'`
 ttshit3=`wc -l $base\_tts_sites_nr_with_annottts_less500bp.gff | awk '{print $1}'`
 echo $src $distpredtts $ttshit1 $ttshit2 $ttshit3 
-done | awk 'BEGIN{OFS="\t"; print "pred_set", "dist_pred_tts", "tts_hit_by_pred_50bp_nb", "tts_hit_by_pred_50bp_pcent", "tts_hit_by_pred_100bp_nb", "tts_hit_by_pred_100bp_pcent", "tts_hit_by_pred_500bp_nb", "tts_hit_by_pred_500bp_pcent"} {print $1, $2, $3, $3/$2*100, $4, $4/$2*100, $5, $5/$2*100}' > Tables/prediction_sets_nrpredtts_hitbypredtts_50bp_100bp_500bp_nb_pcent.tsv
+done | awk 'BEGIN{OFS="\t"; print "pred_set", "dist_pred_tts", "tts_hit_by_pred_50bp_nb", "tts_hit_by_pred_50bp_pcent", "tts_hit_by_pred_100bp_nb", "tts_hit_by_pred_100bp_pcent", "tts_hit_by_pred_500bp_nb", "tts_hit_by_pred_500bp_pcent"} {print $1, $2, $3, div2na($3,$2)*100, $4, div2na($4,$2)*100, $5, div2na($5,$2)*100} function div2na(x,y){return (y!=0 ? x/y : "NA")}' > Tables/prediction_sets_nrpredtts_hitbypredtts_50bp_100bp_500bp_nb_pcent.tsv
 cat Tables/prediction_sets_nrpredtts_hitbypredtts_50bp_100bp_500bp_nb_pcent.tsv >&2
 echo "done" >&2
 # pred_set        dist_pred_tts   tts_hit_by_pred_50bp_nb tts_hit_by_pred_50bp_pcent      tts_hit_by_pred_100bp_nb        tts_hit_by_pred_100bp_pcent     tts_hit_by_pred_500bp_nb  tts_hit_by_pred_500bp_pcent
