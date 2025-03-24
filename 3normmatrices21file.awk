@@ -3,12 +3,15 @@
 # one for tmm norm, one for loess norm and one for the raw expr values (as input)
 # !!! be careful need to only print the expt,gene rows where the gene expr value exists in the 3 files !!!
 # !!! since the normalization from NV's script could filter out some genes !!!
+# !!! this script is made for diogenes data since it has the exprid starting with X in the norm files !!!
+# !!! and not in the exp and raw files, and also we output a file with cidno that only exists in this project !!!
+# !!! so I make another script more general called 3normmatrices21file_gal.awk and use it for GS !!!
 
-# srun --x11 --mem=8G --pty bash
+# srun --x11 --mem=64G --pty bash
 # cd ~/fragencode/workspace/sdjebali/mixomics/Viguerie.Moro.Obesity/rnaseq.qpcr
 # pgm=~/fragencode/tools/multi/Scripts/3normmatrices21file.awk
 # time awk -v fileRef1=50_random_rnaseq_expt.txt -v fileRef2=normfeatures_normc_TMM.tsv -v fileRef3=normfeatures_normc_loess.tsv -f $pgm QB_GENE_rawCounts.okheader.tsv > 50_random_rnaseq_expt.id.cidno.gnid.normmeth.exprval.tsv
-
+# real	0m20.178s
 
 # fileRef1 = 50_random_rnaseq_expt.txt
 # 31122_1
@@ -35,7 +38,7 @@
 # output = 50_random_rnaseq_expt.id.cidno.gnid.normmeth.exprval.tsv
 # exptid	cidno	gnid	normmeth	exprval
 # 31122_1	1	ENSG00000000003	raw	687
-# 8106451 (5 fields) *** real	0m20.178s
+# 8106451 (5 fields) 
 
 BEGIN{
     OFS="\t";
