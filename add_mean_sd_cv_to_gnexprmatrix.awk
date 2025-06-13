@@ -7,9 +7,8 @@
 # - expression coefficient of variation across samples
 # in case we want it on log10+1e-3 we have to add -v applog=1 to the command, otherwise it does not do it
 # TODO next:
-# - make it possible to start from column c and not 2 for expression values (in case we have something more than gene id
-#   in the first columns)
-# note that I checked the below formula gave exactly the same SD as doing sqrt(sum((xi-mean)^2)/(N-1)) 
+# - make it possible to end at column c2 for expression values (in case we have something more than expr values in the last columns)
+# Note that I checked the below formula gave exactly the same SD as doing sqrt(sum((xi-mean)^2)/(N-1)) 
    
 
 # example
@@ -17,7 +16,7 @@
 # cd ~/fragencode/workspace/geneswitch/results/multi/rnaseq.srnaseq/gallus_gallus/PCIT
 # pgm=~/fragencode/tools/multi/Scripts/add_mean_sd_cv_to_gnexprmatrix.awk
 # time awk -f $pgm tagiso.and.shortstack2exp.normexpr.tsv > tmp
-# awk 'BEGIN{OFS="\t"} {print $1, $(NF-2), $(NF-1), $NF}' tmp > tagiso.and.shortstack2exp.mean.sd.cv.onnormexpr.tsv
+# awk 'BEGIN{OFS="\t"} {print (NR==1 ? "gnid" : $1), $(NF-2), $(NF-1), $NF}' tmp > tagiso.and.shortstack2exp.mean.sd.cv.onnormexpr.tsv
 # rm tmp
 
 # input tagiso.and.shortstack2exp.normexpr.tsv
@@ -32,6 +31,13 @@
 # 1 (87 fields)
 # 153304 (88 fields)
 
+BEGIN{
+    if(c1=="")
+    {
+	c1=2;
+    }
+}
+
 NR==1{
     OFS="\t";
     print $0, "mean", "sd", "cv";
@@ -40,7 +46,7 @@ NR==1{
 NR>=2{
     s=0;
     s2=0;
-    for(i=2; i<=NF; i++)
+    for(i=c1; i<=NF; i++)
     {
 	if(applog!=1)
 	{
@@ -53,7 +59,7 @@ NR>=2{
 	s+=v;
 	s2+=v*v;
     }
-    tot=(NF-2+1);
+    tot=(NF-c1+1);
     me=s/tot;
     sd=sqrt((tot*s2-s*s)/((tot*(tot-1))));
     print $0, me, sd, sd/me;
