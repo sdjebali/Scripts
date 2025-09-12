@@ -3,11 +3,11 @@ set -Eexo pipefail
 
 
 # find.polya.in.genome.sh
-# script that looks for occurences of polyA sites in a genome 
+# script that looks for occurences of polyA signals in a genome 
 # - inputs:
 #   * genome file (fasta format)
 # - output:
-#   * file of polyA site positions in genome (bed format) in the same directory as the genome file
+#   * file of polyA signal positions in genome (bed format) in the same directory as the genome file
 # - dependences:
 #   * homer
 # usually followed by stats.tr.with.polya.at.end.sh
@@ -36,7 +36,7 @@ then
     echo "- a genome file in fasta format" >&2
     echo "" >&2
     echo "produces as output:" >&2
-    echo "- the positions of the polyA sites in the genome (both strands) in bed format using homer" >&2
+    echo "- the positions of the polyA signals in the genome (both strands) in bed format using homer" >&2
     echo "  and in the same directory as the genome file was" >&2
     echo "" >&2
     echo "Note: Needs homer in your path (tested with version 4.10.4 on genotoul slurm cluster)" >&2
@@ -51,7 +51,7 @@ genbase=${genbasetmp%.fasta}
 
 # Start of the script
 #####################
-# 1. Makes a profile of the searched motifs for polyA sites
+# 1. Makes a profile of the searched motifs for polyA signals
 ###########################################################
 echo "I am making a profile of the ATTAAA motif" >&2
 seq2profile.pl ATTAAA 0 polyAhex > $genbase.polyAhex.motif.profile.txt
@@ -72,7 +72,7 @@ echo "done" >&2
 
 # 3. Scans the genome for the motif and its reverse complement keeping all occurences
 #####################################################################################
-echo "I am scanning the genome for polyA sites using the two provided motif (ATTAAA and AATAAA) profiles" >&2
+echo "I am scanning the genome for polyA signals using the two provided motif (ATTAAA and AATAAA) profiles" >&2
 scanMotifGenomeWide.pl $genbase.polyAhex.motif.profile.txt $genome -keepAll -bed | awk '{print $1,$(NF-4)-1,$(NF-3),".",".",$NF}' OFS='\t'  > $genbase.polyAsites.bed
 echo "done" >&2
 

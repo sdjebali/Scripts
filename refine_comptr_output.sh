@@ -1,6 +1,8 @@
 #!/bin/bash
 set -Eexo pipefail
-# !!! IMPORTATNT to improve the program !!!
+# !!! IMPORTANT to improve the program !!!
+# !!! for interm class novel (one before last column), it is important to put the overlapped annot genes as well !!!
+# !!! for the other classes than novel, a choice was made between all the overlapped annot genes so using the overlapped annot genes would give more !!! 
 # !!! and also put the files relative to pred in pred dir and the files relative to ref in ref dir and indexed by annot underlying file name !!!
 # !!! and not where the script is run !!!
 # !!! before doing that it is important to check that it does not disrupt other scripts' behavior !!!
@@ -20,7 +22,7 @@ set -Eexo pipefail
 # 3) alternative = new isoform or variant of reference genes = predicted spliced transcripts that are not in 1) or 2)
 #    but that have at least one common intron with a reference annotated tr (I have to compute it from scratch by
 #    asking for one common intron same strand as the reference and then ask that the transcript is neither
-#    in class 1 nor in class 2                                                 
+#    in class 1 nor in class 2)                                               
 # 4) novel = new transcripts = the ones not in 1) or 2) or 3) (for monoex they can only be from class 1, 2 or 4, not 3)
 
 # takes as input two mandatory arguments:
@@ -36,11 +38,16 @@ set -Eexo pipefail
 
 # Example of usage
 ##################
-# cd ~/ENCODE_AWG/Analyses/Human_Promo_cells/Cufflinks_models/All/Classif/TryScript
-# mytr=~/ENCODE_AWG/Analyses/Human_Promo_cells/Cufflinks_models/All/37exp_cuffafterfluxidr0.1_exons_concat.gff_merged_transcripts_stranded_over_cage_ok.gff
-# annot=/users/rg/projects/encode/scaling_up/whole_genome/Gencode/version19/Long/gencode.v19.annotation.long.gtf
-# time refine_comptr_output.sh $mytr $annot 2> refine_comptr_output.err
-# real	1m35.986s
+# srun --x11 --mem=8G --pty bash
+# cd ~/fragencode/tools/multi/Renv
+# module load statistics/R/4.3.1
+# module load bioinfo/bedtools/2.31.1
+# pgm=~/fragencode/tools/multi/Scripts/refine_comptr_output.sh
+# indir=~/work/sarcomas/novel.annot/fromLucile/5kneotr.vs.gencv49
+# neotr=$indir/LMS_neoTranscriptNotInNormal_u_lociFilter_unstrover_gencv49_ok_exons.gff
+# gencv49=~/fragencode/data/species/homo_sapiens/GRCh38.gencv49/gencodev49.exons.gff
+# time $pgm $neotr $gencv49 2> $indir/refine_comptr_output.err > $indir/refine_comptr_output.out
+# real	13m50.163s  
 
 # Another example of usage
 ##########################
@@ -52,6 +59,7 @@ set -Eexo pipefail
 # Important note: 
 #################
 # it uses several programs that need to be present on the system
+# - R
 # - comptr
 # - overlap
 # - bedtools
