@@ -83,7 +83,32 @@ cutgff=$rootdir/cutgff.awk
 # I will take a random number between 0 and 10 as a seed
 randomSeed=`shuf -i1-10 -n1`
 
-awk -v elt='exon' '$3==elt' "$annot" | awk -v to=8 -f $cutgff | sort -k1,1 -k4,4 -k5,5 | uniq | bedtools intersect -abam <(samtools view -b -s ${randomSeed}.01 -F 260 "$bamfile") -b stdin -split -bed -wo | awk '{print $4, $6, $19;}' | uniq | awk '{split($1,a,"/"); readCount["total"]++; readCount[a[2]":"$2":"$3]++;}END{fraction1=(readCount["1:+:+"]+readCount["1:-:-"]+readCount["2:+:-"]+readCount["2:-:+"]); fraction2=(readCount["1:+:-"]+readCount["1:-:+"]+readCount["2:+:+"]+readCount["2:-:-"]); other=(readCount["total"]-(fraction1+fraction2)); print (fraction1/readCount["total"]*100), (fraction2/readCount["total"]*100), other;}' 
+# read ids are either like this
+# xxxx/1 or xxxx/2
+# or
+# xxxx 1:N:0:ATTACTCG+AGGCTATA or xxxx 2:N:0:ATTACTCG+AGGCTATA
+# so in the 1st case the kind of read is after the / and in the 2nd case before the first : of the second string
+# however here we use the bam file and not the fastq file and in the bam file we do not have the second part of the id
+# and therefore we have to look at the bitwise flag
+# so for the moment this script only works with /1 /2 read id nomenclature
+# unless we know how to get 1 or 2 from the bitwise flag
+# in fact from this bam file
+# LH00392:213:22LLCVLT4:6:1101:35958:1056	419	chr1	8894222	110	150M	=	26475639	17581568	*	*	RG:Z:0	NH:i:3	NM:i:2	XT:A:R	md:Z:1G121A26
+# LH00392:213:22LLCVLT4:6:1101:35958:1056	419	chr1	26475591	119	150M	=	26475639	199	*	*	RG:Z:0	NH:i:3	NM:i:1	XT:A:R	md:Z:1G148
+# LH00392:213:22LLCVLT4:6:1101:35958:1056	339	chr1	26475639	119	118M1D32M	=	26475591	-199	*	*	RG:Z:0	NH:i:3	NM:i:2	XT:A:R	md:Z:1G30>1+118
+# LH00392:213:22LLCVLT4:6:1101:35958:1056	339	chr1	26475639	110	118M1D32M	=	8894222	-17581568	*	*	RG:Z:0	NH:i:3	NM:i:2	XT:A:R	md:Z:1G30>1+118
+# to know if read 1 or 2 we need to look at the bitwise flag in column 2
+# in fact
+# - for 2 first rows we have read 2
+#   since bitwise flag = 419 = 00110100011
+#   and therefore because in 8th pos from the right (2^7=128) we have 1 it means it is read2 (or because in 7th pos we have 0)
+# - for 2 next rows we have read 1
+#   since bitwise flag = 339 = 101010011
+#   and therefore because in 8th pos from the right (2^7=128) we have 0 it means it is read 1 (or because in 7th pos we have 1)
+# so we could use that in the script but it would mean converting a number in binary first
+
+
+awk -v elt='exon' '$3==elt' "$annot" | awk -v to=8 -f $cutgff | sort -k1,1 -k4,4 -k5,5 | uniq | bedtools intersect -abam <(samtools view -b -s ${randomSeed}.01 -F 260 "$bamfile") -b stdin -split -bed -wo | awk '{print $4, $6, $19}' | uniq | awk '{readCount["total"]++; split($1,a,"/"); readCount[a[2]":"$2":"$3]++} END{fraction1=(readCount["1:+:+"]+readCount["1:-:-"]+readCount["2:+:-"]+readCount["2:-:+"]); fraction2=(readCount["1:+:-"]+readCount["1:-:+"]+readCount["2:+:+"]+readCount["2:-:-"]); other=(readCount["total"]-(fraction1+fraction2)); print (fraction1/readCount["total"]*100), (fraction2/readCount["total"]*100), other;}' 
 
 
 

@@ -5,7 +5,7 @@
 /work/project/fragencode/tools/multi/Scripts/save_readmes.sh /work/project/fragencode/results /work/project/fragencode/doc/READMEs_sarah/READMEs_frag/results
 /work/project/fragencode/tools/multi/Scripts/save_readmes.sh /work/project/fragencode/tools /work/project/fragencode/doc/READMEs_sarah/READMEs_frag/tools
 /work/project/fragencode/tools/multi/Scripts/save_readmes.sh /work/project/fragencode/data /work/project/fragencode/doc/READMEs_sarah/READMEs_frag/data
-/work/project/fragencode/tools/multi/Scripts/save_readmes.sh /work/project/bridge/workspace/sdjebali /work/project/fragencode/doc/READMEs_sarah/READMEs_bridge
+/work/project/fragencode/tools/multi/Scripts/save_readmes.sh /work/project/bridge /work/project/fragencode/doc/READMEs_sarah/READMEs_bridge
 
 /work/project/fragencode/tools/multi/Scripts/save_readmes.sh /work/project/dynagen/sdjebali /work/project/fragencode/doc/READMEs_sarah/READMEs_dyna
 /work/project/fragencode/tools/multi/Scripts/save_readmes.sh /work/project/regenet /work/project/fragencode/doc/READMEs_sarah/READMEs_regencard
