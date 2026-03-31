@@ -91,9 +91,9 @@ if (opt$verbose) {cat("DONE\n\n")}
 
 # read the matrix from the command line
 if (opt$input_matrix == "stdin") {
-	m = read.table(file("stdin"), h=T)
+	m = read.table(file("stdin"), sep="\t", h=T)
 } else {
-	m = read.table(opt$input_matrix, h=T)
+	m = read.table(opt$input_matrix, sep="\t", h=T)
 }
 
 ylab = opt$x_title
