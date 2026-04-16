@@ -1,15 +1,20 @@
 #!/bin/bash
 set -Eexo pipefail
 
-# 4way_venn.sh accepts 6 inputs
+# 4way_venn.sh accepts 10 inputs
 # - file for 1st set of the venn (string)
 # - file for 2nd set of the venn (string)
 # - file for 3rd set of the venn (string)
 # - file for 4th set of the venn (string)
+# - name of 1st set of the venn (string)
+# - name of 2nd set of the venn (string)
+# - name of 3rd set of the venn (string)
+# - name of 4th set of the venn (string)
 # - title for the venn (string)
 # - file for venn plot (string)
 # !!! on Dec 17th 2025 has been changed to accept tsv files with several columns of which the 1st is of interest !!!
-# !!! and also to have ids for the 4 sets so a total of 10 inputs !!!
+# !!! and also to have ids for the 4 sets so a total of 10 inputs and on April 16th 2026 changed the order of the !!!
+# !!! inputs to be more similar to the 3 way venn diagram script !!!
 # TODO: extract the legend as well
 
 # has been tested on genologin with R 3.3.3 and fragencode configuration
@@ -22,13 +27,13 @@ set -Eexo pipefail
 # set3=/work/project/seqoccin/svdetection/nanopore/bos_taurus/compare.vcfs/vcfs.diff.runs/connected.components/sniffles.minimap.father.INV.cc.of.run3.txt 
 # setall=/work/project/seqoccin/svdetection/nanopore/bos_taurus/compare.vcfs/vcfs.diff.runs/connected.components/sniffles.minimap.father.INV.cc.of.runall.txt
 # output=/work/project/seqoccin/svdetection/nanopore/bos_taurus/compare.vcfs/vcfs.diff.runs/venn.diagrams/sniffles.minimap.father.INV.cc.3runs.and.merged.venn.png
-# time $pgm $set1 $set2 $set3 $setall "trio1-father-minimap+sniffles-INV" $output run1 run2 run3 runall
+# time $pgm $set1 $set2 $set3 $setall run1 run2 run3 runall "trio1-father-minimap+sniffles-INV" $output 
 
 
 echo '
      library("futile.logger")
      library("VennDiagram")
-     png("'$6'")
+     png("'${10}'")
      run1=unlist(read.delim("'$1'", sep="\t", h=FALSE)[,1])
      run2=unlist(read.delim("'$2'", sep="\t", h=FALSE)[,1])
      run3=unlist(read.delim("'$3'", sep="\t", h=FALSE)[,1])
@@ -40,11 +45,11 @@ echo '
      C=run3,
      D=runall
 ),
-	main="'$5'",   
+	main="'$9'",   
 	filename = NULL,
 	fill=c("#FBB4AE", "#B3CDE3", "#CCEBC5", "#DECBE4"), 
 	alpha=0.50,
-	category = c("'$7'","'$8'","'$9'","'${10}'"), #legend
+	category = c("'$5'","'$6'","'$7'","'$8'"), #legend
 	fontfamily="arial",
 	main.cex=2,
 	main.fontfamily="arial",
