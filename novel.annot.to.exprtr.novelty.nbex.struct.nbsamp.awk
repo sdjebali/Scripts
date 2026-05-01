@@ -6,13 +6,12 @@
 #   * gene id
 #   * whether it overlaps a gencode tr in an exonic and stranded way (boolean)
 # and returns as output a tsv file with header that only has transcripts from fileRef that are expressed (seen in at least one sample)
-# and that are either Gencode tr or not exonically and strandedly overlapping gencode tr
+# and that are either exactly Gencode tr or not exonically and strandedly overlapping gencode tr
 # - trid
 # - tr class
 # - nbex
 # - structure class
 # - nb samples where it is seen according to longest_FL_supporters field
-# !!! could be improved by allowing to take the contains field instead of the longest_FL_supporters field !!!
 
 # example of usage on the genotoul cluster
 ##########################################
