@@ -60,7 +60,7 @@ echo '
      ###################################################
      gp = ggplot(dft, aes(x=Term.label, y=upload_1_.fold_Enrichment.)) +
      geom_col(color="'$pal'", fill="'$pal'") + theme_bw() + coord_flip() +
-     ylab("Fold enrichment") + xlab("GO term (FDR)") + ggtitle("'$title'")
-     gp = gp + theme(strip.text.x = element_text(size = 20), axis.text=element_text(size=20), axis.title=element_text(size=30), plot.title=element_text(size=30))
-     ggsave(filename="'$output'", h=15, w=15) 
+     ylab("FE") + xlab("GO term (FDR)") + ggtitle("'$title'")
+     gp = gp + theme(axis.text.x=element_text(angle=35, hjust=1, vjust=1), axis.text=element_text(size=100), axis.title=element_text(size=120), plot.title=element_text(size=120))
+     ggsave(filename="'$output'", h=45, w=45) 
 ' | R --vanilla
