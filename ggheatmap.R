@@ -18,7 +18,6 @@ opt$row_dendro = TRUE
 opt$dist = "euclidean"
 opt$hclust = "complete"
 
-
 #options(stringsAsFactors=FALSE)
 
 
@@ -115,11 +114,18 @@ make_option(c("-v", "--verbose"), default=FALSE, action="store_true",
 
 )
 
+# The following was added because of the following error message at the par function at mark A below 
+# Error in (function (file = if (onefile) "Rplots.pdf" else "Rplot%03d.pdf",  : 
+# cannot open file 'Rplots.pdf'
+  
+pdf(file = NULL)
 
 parser <- OptionParser(usage = "%prog [options] file", option_list=option_list)
 arguments <- parse_args(parser, positional_arguments = TRUE)
 opt <- arguments$options
 if (opt$verbose) {print(opt)}
+
+message("output ", opt$output)
 
 
 #------------#
@@ -439,10 +445,11 @@ if (opt$row_dendro) {
 #row_labels_inches = max(strwidth(row_labels, units="in"))
 #col_labels_inches = max(strwidth(col_labels, units="in"))
 
+
+# mark A
 # This works in the pdf device
 row_labels_inches = max(strwidth(row_labels, units="in", cex=base_size*(as.numeric(theme_get()$axis.text$size))*par()$cex/par()$ps))
 col_labels_inches = max(strwidth(col_labels, units="in", cex=base_size*(as.numeric(theme_get()$axis.text$size))*par()$cex/par()$ps))
-
 
 
 
@@ -713,6 +720,7 @@ total_w = total_w + max_legend_width_inch
 # =======================================
 # PRINT PLOT
 # =======================================
+# message("before pdf ", opt$output)
 
 pdf(opt$output, h = total_h, w=total_w)
 
@@ -754,8 +762,9 @@ if (!is.null(opt$colSide_by) || !is.null(opt$rowSide_by)) {
 	}
 }
 
-
 dev.off()
 
-file.remove("Rplots.pdf")
+# The following was removed because we had an error message above at the par function at mark A above
+# file.remove("Rplots.pdf")
+
 q(save="no")
