@@ -29,19 +29,25 @@ set -Eexo pipefail
 # /home/sdjebali/bridge/workspace/sdjebali/origamir/papers/1st.2026/GO_analysis_for_Sarah_tableno2_miR-877-3p.png miR-877-3p
 
 
-if [ ! -n "$1" ] || [ ! -n "$2" ]
+if [ ! -n "$1" ]
 then
     echo "" >&2
-    echo Usage: make_simple_GO_barplot.sh file.tsv title >&2
+    echo "Usage: make_simple_GO_barplot.sh file.tsv <title>" >&2
     echo "" >&2
     exit 1
 else
     input=$1
-    title=$2
     output=${input%.tsv}.png
     pal="#FEB24C"
 fi
-      
+
+if [ ! -n "$2" ]
+then
+    title=""
+else
+    title=$2
+fi
+
 echo '
      library(reshape2)
      library(dplyr)
@@ -60,7 +66,7 @@ echo '
      ###################################################
      gp = ggplot(dft, aes(x=Term.label, y=upload_1_.fold_Enrichment.)) +
      geom_col(color="'$pal'", fill="'$pal'") + theme_bw() + coord_flip() +
-     ylab("FE") + xlab("GO term (FDR)") + ggtitle("'$title'")
-     gp = gp + theme(axis.text.x=element_text(angle=35, hjust=1, vjust=1), axis.text=element_text(size=100), axis.title=element_text(size=120), plot.title=element_text(size=120))
+     ylab("Fold Enrichment") + xlab("GO term (FDR < 0.05)") + ggtitle("'$title'")
+     gp = gp + theme(axis.text.x=element_text(hjust=1, vjust=1), axis.text=element_text(size=100), axis.title=element_text(size=120), plot.title=element_text(size=120))
      ggsave(filename="'$output'", h=45, w=45) 
 ' | R --vanilla
