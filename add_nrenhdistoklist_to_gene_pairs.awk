@@ -2,9 +2,10 @@
 
 # Given:
 ########
-# - a tsv file of gene tss coordinates with header (fileRef1)
-# - a tsv file of contacted enhancers in many cell types for each gene with header (fileRef2)
-# - a main tsv file with header with gene pairs
+# - a tsv file of gene tss coordinates with header with ens like coordinates (fileRef1)
+# - a tsv file of contacted enhancers in many cell types for each gene with header (fileRef2) and that have an empty column when no enhancer for the cell type and the gene
+#   and with ucsc like coordinates
+# - a main tsv file with header with gene pairs and tss coordinates (ucsc like but only pos is used here) and tss to tss distance
 # adds to the main tsv file
 ###########################
 # - the comma separated list of contacted enhancers of gene 1 that are at a distance between 25kb and 2M
@@ -12,7 +13,7 @@
 # - the same for gene2
 
 # example
-# cd ~/work/duplicons/common_enhancers
+# cd ~/work/duplicons/common_enhancers/test
 # genetsscoord=~/work/duplicons/paper/supplementary_datasets_and_tables/supplementary_datasets10.tsv
 # contactedenhancers=~/work/duplicons/paper/supplementary_datasets_and_tables/supplementary_datasets6.tsv
 # pgm=~/fragencode/tools/multi/Scripts/add_nrenhdistoklist_to_gene_pairs.awk
@@ -40,6 +41,9 @@
 
 BEGIN{
     OFS="\t";
+    # ID	Biotype	Chr	TSSPosition	MeanTPM
+    # ENSMUSG00000064372	Mt_tRNA	MT	15422	NA 
+    # 56306 (5 fields)
     # store the tss position of each gene
     while (getline < fileRef1 >0)
     {
@@ -47,6 +51,8 @@ BEGIN{
 	tsspos[$1]=$4;
     }
     
+    # gene	EpiSC	ESC	ESC_18	ESC_NKO	ESC_wild	ESd_starved	ESd_TPO	FLC	preB_aged	preB_young	TSC	preadip_D0	preadip_D2	preadip_4H
+    # ENSMUSG00000000001	chr3:108101507:108101657;chr3:...
     # store the nr list of enhancers at the ok distance from each gene, using the above tss info
     while (getline < fileRef2 >0)
     {
@@ -85,6 +91,9 @@ NR==1{
     print $0, "nrenhdistok1", "nrenhdistok2";
 }
 
+# gnid1	gnid2	tsspos1	tsspos2	tssdist
+# ENSMUSG00000000056	ENSMUSG00000002280	11:121237253	17:25773776	NA
+# 1421 (5 fields)
 NR>=2{
     # here need to futher filter the two enhancer lists so that:
     # - the enhancers of gene1 are also between 25kb and 2Mb of the tss of gene2

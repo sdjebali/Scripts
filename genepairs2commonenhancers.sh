@@ -34,7 +34,7 @@ set -Eexo pipefail
 # contactedenhancers=~/work/duplicons/paper/supplementary_datasets_and_tables/supplementary_datasets6.tsv
 # pgm=~/fragencode/tools/multi/Scripts/genepairs2commonenhancers.sh
 # time $pgm $genepairs $genetsscoord $contactedenhancers > realpairs.common.out 2> realpairs.common.err
-# real	0m15.867s
+# real    0m16.260s
 
 
 # 1st input file = gene pairs
@@ -74,11 +74,11 @@ set -Eexo pipefail
 # ENSMUSG00000001225	ENSMUSG00000020651	12:31390871	12:31559969	169098	31700960:31701110,31703360:31703510,31701360:31701510,31121860:31122010,31721560:31721710,31719260:31719410,31720560:31720710,31720960:31721410,31719560:31719710,31927460:31927610,	31261260:31261410,31268560:31268710,	31700960:31701110,31703360:31703510,31701360:31701510,31121860:31122010,31721560:31721710,31719260:31719410,31720560:31720710,31720960:31721410,31719560:31719710,31927460:31927610,31261260:31261410,31268560:31268710,	NA
 # 330 (9 fields)
 # gnid1	gnid2	tsspos1	tsspos2	tssdist	nunion	ninter	jaccard.pcent
-# ENSMUSG00000001225	ENSMUSG00000020651	12:31390871	12:31559969	169098	12	0	NA
+# ENSMUSG00000001225	ENSMUSG00000020651	12:31390871	12:31559969	169098	12	0	0
 # 330 (8 fields)
 # Read 329 items
-#     Min.  1st Qu.   Median     Mean  3rd Qu.     Max.     NA's 
-#   0.7246  12.5000  25.7915  30.7282  44.8026 100.0000       75 
+#    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#   0.000   3.226  17.347  23.723  37.500 100.000 
 # argmax 38
 
 # Check the arguments
@@ -119,6 +119,7 @@ base=`basename ${gnpair%.tsv}`
 check=$rootDir/check_simple.sh
 addenh=$rootDir/add_nrenhdistoklist_to_gene_pairs.awk
 unioninter=$rootDir/add_union_inter_enhlists.awk
+computejacc=$rootDir/compute_jaccard_common_enh_gnpair.awk
 stats=$rootDir/stats.sh
 
 
@@ -153,7 +154,7 @@ echo done >&2
 #    made by dividing the 2nd by the 1st and multiplying by 100, and remove the intermediate lists
 ##################################################################################################
 echo "I am adding the cardinal of the union and of the inter lists as well as the corresponding Jaccard percentage" >&2
-awk 'NR==1{OFS="\t"; print $1, $2, $3, $4, $5, "nunion", "ninter", "jaccard.pcent"}  NR>=2{nu=split($8,a,","); ni=split($9,b,","); if($9=="NA"){inter=0; union=nu-1; jac="NA"}else{if($8=="NA"){union=0; jac=0}else{ union=nu-1; inter=ni-1; jac=inter/union*100}} print $1, $2, $3, $4, $5, union, inter, jac}' $base.closer4Mb.gn1.gn2.tss1.tss2.dist.nrenhokdist.gn1.gn2.union.inter.tsv > $base.closer4Mb.gn1.gn2.tss1.tss2.dist.contactedenhancers.union.inter.nb.jaccardpcent.tsv
+awk -f $computejacc $base.closer4Mb.gn1.gn2.tss1.tss2.dist.nrenhokdist.gn1.gn2.union.inter.tsv > $base.closer4Mb.gn1.gn2.tss1.tss2.dist.contactedenhancers.union.inter.nb.jaccardpcent.tsv
 $check $base.closer4Mb.gn1.gn2.tss1.tss2.dist.contactedenhancers.union.inter.nb.jaccardpcent.tsv
 echo done >&2
 
