@@ -3,7 +3,7 @@
 # I need to add to the pchic bedpe file (only cis relations) ordered by gx order, and using two variables and two additional files, 4 booleans:
 # - whether each pchic fragment had to be extended to reach 5kb (in case it was less than that, 2 booleans)
 # - whether the only or the two promoter fragments extended to 5kb were overlapping a hichip fragment (1 bool)
-# - whether it overlaps an hichip relation (1 bool)
+# - whether it overlaps a hichip relation (1 bool)
 # the two variables used are
 # - typecol = the column number in the main input bedpe file where the type of relation is (p-p or p-o)
 # - ordercol = the column number in the main input bedpe file where the order of the relation is (init.order or rev.order)
@@ -16,7 +16,7 @@
 # cd /work/project/bridge/workspace/sdjebali/enhancer.gene/3D.comparison/ipsc_cardiomyocytes
 # pgm=~/fragencode/tools/multi/Scripts/add_4booleans_to_pchicbedpe_relative_to_hichip_overlap.awk
 # pchic=/work/project/bridge/results/pchic/homo_sapiens/hg19/montefiori_2018/pchic.ipsccm.montefiori2018.hg19.overgencv49tss.part1.part2.reltype.gxorder.sorted.bedpe
-# time awk -v typecol=11 -v ordercol=12 -v fileRef1=pchicfragext5kb.over.hichipfrag.bed -v fileRef2=pchic.ipsccm.montefiori2018.hg19.overgencv49tss.fragextto5kb.onesegment.over.hichip.over.othertech.tsv -f $pgm $pchic > pchic.all.relations.onefragoverpchicpromext5kb.overpchic.bedpe
+# time awk -v typecol=11 -v ordercol=12 -v fileRef1=pchicfragext5kb.over.hichipfrag.bed -v fileRef2=pchic.ipsccm.montefiori2018.hg19.overgencv49tss.fragextto5kb.onesegment.over.hichip.over.othertech.tsv -f $pgm $pchic > pchic.all.relations.onefragoverpchicpromext5kb.overhichip.bedpe
 # real	0m1.822s  
 
 # fileRef1=pchicfragext5kb.over.hichipfrag.bed
@@ -31,7 +31,7 @@
 # chr1	834807	835706	chr1	893041	896871	6.6	NOC2L*NM	1	0	p-o	rev.order
 # 401098 (12 fields)  *** here we have the initial pchic relations (with no extension to 5kb of the fragments) with all information
 
-# main output file = pchic.all.relations.onefragoverpchicpromext5kb.overpchic.bedpe
+# main output file = pchic.all.relations.onefragoverpchicpromext5kb.overhichip.bedpe
 # chr1	834807	835706	chr1	893041	896871	6.6	NOC2L*NM	1	0	p-o	rev.order	1	1	0	0
 # chr1	834807	835706	chr1	894208	897150	6.58	KLHL17*NM	1	0	p-o	rev.order	1	1	0	0
 # 401098 (16 fields) 
