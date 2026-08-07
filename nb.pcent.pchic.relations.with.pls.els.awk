@@ -1,9 +1,12 @@
 # nb.pcent.pchic.relations.with.pls.els.awk
-# given a pchic bedpe file where the two fragments are given in gx order
-# but with indication of init.order or rev.order in column 12 and p-p or p-o in column 11
-# and with 6 last fields (columns 13 to 18) including booleans saying whether or not the
-# 1st part (in gx order) and the 2nd part (in gx order) overlap ccre pls, els and dels
-# (distal els) respectively, will provide:
+# given:
+# - a variable, ordercol, indicating the column where to find the relation order (init.order or rev.order) in the input
+#   bedpe file that has the pairs in gx order (by default 12)
+# - a pchic bedpe file where the two fragments are given in gx order
+#   but with indication of init.order or rev.order in this column
+#   and with 6 last fields (columns 13 to 18) including booleans saying whether or not the
+#   1st part (in gx order) and the 2nd part (in gx order) overlap ccre pls, els and dels
+#   (distal els) respectively, will provide:
 # 1. in a file called pchic.16catwrtplsels.nb.pcent.tsv, the number and pcent of all relations
 #    falling in each of the 16 following categories:
 #    - number and % of the relations with a pls on the prom side = pp ($19)
@@ -29,7 +32,7 @@
 # example
 # cd ~/bridge/results/pchic/homo_sapiens/hg19/montefiori_2018
 # pgm=~/fragencode/tools/multi/Scripts/nb.pcent.pchic.relations.with.pls.els.awk
-# time awk -f $pgm pchic.ipsccm.montefiori2018.hg19.overgencv49tss.part1.part2.reltype.gxorder.sorted.overpls.els.dels.first.second.part.bedpe > pchic.ipsccm.montefiori2018.hg19.overgencv49tss.part1.part2.reltype.gxorder.sorted.overpls.els.dels.first.second.part.16catwrtplsels.bedpe
+# time awk -v ordercol=12 -f $pgm pchic.ipsccm.montefiori2018.hg19.overgencv49tss.part1.part2.reltype.gxorder.sorted.overpls.els.dels.first.second.part.bedpe > pchic.ipsccm.montefiori2018.hg19.overgencv49tss.part1.part2.reltype.gxorder.sorted.overpls.els.dels.first.second.part.16catwrtplsels.bedpe
 # real	0m0.843s
 
 # input = pchic.ipsccm.montefiori2018.hg19.overgencv49tss.part1.part2.reltype.gxorder.sorted.overpls.els.dels.first.second.part.bedpe
@@ -63,6 +66,10 @@
 
 BEGIN{
     OFS="\t";
+    if(ordercol=="")
+    {
+	ordercol=12;
+    }
 }
 
 {
@@ -96,7 +103,7 @@ BEGIN{
     else
     {
 	# if in init order means the 1st frag is the prom frag and the 2nd frag is the other end frag
-	if($12=="init.order")
+	if($ordercol=="init.order")
 	{
 	    if($13==1)   # prom frag over pls
 	    {
@@ -179,7 +186,7 @@ BEGIN{
 	# if in rev order means the 1st frag is the other end frag and the 2nd frag is the prom frag
 	else
 	{
-	    if($12=="rev.order")
+	    if($ordercol=="rev.order")
 	    {
 		if($16==1)   # prom frag over pls
 		{

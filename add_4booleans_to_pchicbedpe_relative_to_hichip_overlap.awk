@@ -1,9 +1,12 @@
 # add_4booleans_to_pchicbedpe_relative_to_hichip_overlap.awk
 # In the context of the comparison between pchic and hichip relations found on the same sample (with the same restriction enzyme)
-# I need to add to the pchic bedpe file (only cis relations) ordered by gx order, and using two additional files, 4 booleans:
+# I need to add to the pchic bedpe file (only cis relations) ordered by gx order, and using two variables and two additional files, 4 booleans:
 # - whether each pchic fragment had to be extended to reach 5kb (in case it was less than that, 2 booleans)
 # - whether the only or the two promoter fragments extended to 5kb were overlapping a hichip fragment (1 bool)
 # - whether it overlaps an hichip relation (1 bool)
+# the two variables used are
+# - typecol = the column number in the main input bedpe file where the type of relation is (p-p or p-o)
+# - ordercol = the column number in the main input bedpe file where the order of the relation is (init.order or rev.order)
 # the additional files used to add the 2 last booleans are
 # - a bed file with the pchic promoter fragments extended to 5kb (when needed) that overlap a hichip fragment
 # - a kind of bedpe file of pchic whole segments that actually overlapped a hichip relation when extended to 5kb when needed
@@ -13,7 +16,7 @@
 # cd /work/project/bridge/workspace/sdjebali/enhancer.gene/3D.comparison/ipsc_cardiomyocytes
 # pgm=~/fragencode/tools/multi/Scripts/add_4booleans_to_pchicbedpe_relative_to_hichip_overlap.awk
 # pchic=/work/project/bridge/results/pchic/homo_sapiens/hg19/montefiori_2018/pchic.ipsccm.montefiori2018.hg19.overgencv49tss.part1.part2.reltype.gxorder.sorted.bedpe
-# time awk -v fileRef1=pchicfragext5kb.over.hichipfrag.bed -v fileRef2=pchic.ipsccm.montefiori2018.hg19.overgencv49tss.fragextto5kb.onesegment.over.hichip.over.othertech.tsv -f $pgm $pchic > pchic.all.relations.onefragoverpchicpromext5kb.overpchic.bedpe
+# time awk -v typecol=11 -v ordercol=12 -v fileRef1=pchicfragext5kb.over.hichipfrag.bed -v fileRef2=pchic.ipsccm.montefiori2018.hg19.overgencv49tss.fragextto5kb.onesegment.over.hichip.over.othertech.tsv -f $pgm $pchic > pchic.all.relations.onefragoverpchicpromext5kb.overpchic.bedpe
 # real	0m1.822s  
 
 # fileRef1=pchicfragext5kb.over.hichipfrag.bed
@@ -35,6 +38,14 @@
 
 BEGIN{
     OFS="\t";
+    if(typecol=="")
+    {
+	typecol=11;
+    }
+    if(ordercol=="")
+    {
+	ordercol=12;
+    }
     # from the 1st file we get the coordinates of the pchic fragments extended to 5kb that overlapped hichip fragments
     while (getline < fileRef1 >0)
     {
@@ -61,15 +72,15 @@ BEGIN{
     # we first try and compute o1, based on whether we have a p-o or a p-p relation and in the 1st case whether we are in the init or rev order
     # in order to know which fragment is the prom one
     o1=0;
-    if($11=="p-o")
+    if($typecol=="p-o")
     {
-	if($12=="init.order")
+	if($ordercol=="init.order")
 	{
 	    o1=(o1||okpromfrag[$1":"e1]);
 	}
 	else
 	{
-	    if($12=="rev.order")
+	    if($ordercol=="rev.order")
 	    {
 		o1=(o1||okpromfrag[$4":"e2]);
 	    }
@@ -77,7 +88,7 @@ BEGIN{
     }
     else
     {
-	if($11=="p-p")
+	if($typecol=="p-p")
 	{
 	    o1=(o1||okpromfrag[$1":"e1]||okpromfrag[$4":"e2]);
 	}
