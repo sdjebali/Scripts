@@ -1,6 +1,6 @@
-# GS_srnafeat_expr_transpose.awk
+# GS_feat_exprmatrix_transpose.awk
 # Given:
-# - a srna feature with normalised expression in 84 GS experiments (rows=srnafeat, col=sample from 84, with header
+# - a feature matrix (small or long genes) with normalised expression in 84 GS experiments (rows=feat, col=sample from 84, with header
 #   that have the expt like stage1_cerebellum_rep1),
 # - a 1 column txt file with the experiments in the order we want them in the output file (as rows) and with
 #   tissue, stage number and biorep number (like cerebellum_1_1)
@@ -12,12 +12,11 @@
 # Example of usage
 ##################
 # basedir=~/fragencode/workspace/geneswitch/results/srnaseq
-# pgm=~/fragencode/tools/multi/Scripts/GS_srnafeat_expr_transpose.awk
+# pgm=~/fragencode/tools/multi/Scripts/GS_feat_exprmatrix_transpose.awk
 # sp=gallus_gallus
 # cd $basedir/$sp/mixomics
 # time awk -v fileRef=expt.txt -f $pgm maturemirna_tmm_84expts_1tissstage_4biorepnonzero.tsv > maturemirna_tmm_84expts_1tissstage_4biorepnonzero_transposed.tsv
 # real	0m0.043s
-
 
 # fileRef=expt.txt
 # cerebellum_1_1
@@ -28,6 +27,7 @@
 # MIRNA_hairpin_355	9.1309204885219	4.56990884532808	...	5.33139993759284	8.3973305403451
 # 363 (85 fields)
 
+# output file = maturemirna_tmm_84expts_1tissstage_4biorepnonzero_transposed.tsv
 # labExpId	tissue	dvtstage	rep	subjid	MIRNA_hairpin_355	MIRNA_hairpin_356	...	MIRNA_hairpin_264	MIRNA_hairpin_265
 # cerebellum_1_1	cerebellum	s1	r1	s1_r1	9.1309204885219	0	...	6.13921957760688	348.481216869675
 # 85 (367 fields)
