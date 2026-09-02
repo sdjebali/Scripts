@@ -6,7 +6,9 @@
 # !!! this script is made for diogenes data since it has the exprid starting with X in the norm files !!!
 # !!! and not in the exp and raw files, and also we output a file with cidno that only exists in this project !!!
 # !!! so I make another script more general called 3normmatrices21file_gal.awk and use it for GS !!!
+# !!! gather_3_norm_expr_on_50_expt.awk is a version of this script that starts from nicer files !!!
 
+# example
 # srun --x11 --mem=64G --pty bash
 # cd ~/fragencode/workspace/sdjebali/mixomics/Viguerie.Moro.Obesity/rnaseq.qpcr
 # pgm=~/fragencode/tools/multi/Scripts/3normmatrices21file.awk
